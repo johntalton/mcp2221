@@ -11,7 +11,6 @@ import {
 } from '../'
 
 describe('Message', () => {
-
   describe('Request', () => {
     describe('Common', () => {
       it('type StatusParametersRequest', () => {

@@ -6,11 +6,14 @@
   "module": "./lib/index.js",
   "type": "module",
   "files": [
-    "src/**/*.js"
+    "src/**/*.js",
+    "lib/**/*.js"
   ],
   "scripts": {
     "test": "npm run test:mocha",
-    "test:mocha": "mocha"
+    "test:mocha": "mocha",
+    "build": "tsc -p .",
+    "build:watch": "tsc -p . -w"
   },
   "mocha": {
     "spec": [

@@ -37,14 +37,14 @@
     "sourceMap": true,
 
     "outDir": "./lib",
-    "declarationDir": "./lib"
+    "declarationDir": "./types"
 
   },
   "compileOnSave": true,
   "include": [
-      "src/*.ts"
+      "./src/**/*.ts"
   ],
   "exclude": [
-      "node_modules"
+      "./node_modules/**"
   ]
 }

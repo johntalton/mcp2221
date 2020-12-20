@@ -57,5 +57,6 @@ export type I2CReadDataRepeatedSTARTBusyResponse = I2CReadDataRepeatedSTARTRespo
 
 //
 export type I2CReadGetDataResponse = Response & (Success | Error) & {
+  command: 0x40
   buffer?: ArrayBuffer
 }

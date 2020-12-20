@@ -7,7 +7,7 @@ export type StatusParametersResponse = Response & Success & {
   i2cClock?: number,
 
   i2c: {
-    address; number,
+    address: number,
     requestedTransferLength: number,
 
     transferedBytes: number,

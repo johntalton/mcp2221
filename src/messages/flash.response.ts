@@ -15,6 +15,8 @@ export type ReadFlashDataNotSupportedResponse = ReadFlashDataResponse & NotSuppo
 
 //  Read Chip Settings
 export type ReadFlashDataChipSettingsResponse = ReadFlashDataSuccessResponse & {
+  subCommand: 0x00,
+
   usb: {
     vendorId: number,
     productId: number,
