@@ -1,34 +1,89 @@
-import { Request, COMMAND_CODE } from './message'
+import { Request } from './message'
 
 // Read Flash Data
 export type ReadFlashDataRequest = Request & {
-  command: typeof COMMAND_CODE.READ_FLASH_DATA,
+  command: 0xB0,
   subCommands,
-  //  Read Chip Settings
-  //  Read GP Settings
-  //  Read USB Manufacturer Descriptor String
-  //  Read USB Product Descriptor String
-  //  Read USB Serial Number Descriptor String
-  //  Read Chip Factory Serial Number
+
 }
+
+//  Read Chip Settings
+export type ReadFlashDataChipSettingsRequest = ReadFlashDataRequest & {
+  subCommand: 0x00
+}
+
+//  Read GP Settings
+export type ReadFlashDataGPSettingsRequest = ReadFlashDataRequest & {
+  subCommand: 0x01
+}
+
+//  Read USB Manufacturer Descriptor String
+export type ReadFlashDataUSBManufacturerRequest = ReadFlashDataRequest & {
+  subCommand: 0x02
+}
+
+//  Read USB Product Descriptor String
+export type ReadFlashDataUSBProductRequest = ReadFlashDataRequest & {
+  subCommand: 0x03
+}
+
+//  Read USB Serial Number Descriptor String
+export type ReadFlashDataUSBSerialNumberRequest = ReadFlashDataRequest & {
+  subCommand: 0x04
+}
+
+//  Read Chip Factory Serial Number
+export type ReadFlashDataFactorySerialNumberRequest = ReadFlashDataRequest & {
+  subCommand: 0x05
+}
+
+
+
+
+
 
 // Write Flash Data
 export type WriteFlashDataRequest = Request & {
-  command: typeof COMMAND_CODE.WRITE_FLASH_DATA,
+  command: 0xB1,
   subCommand: number
-  // 00 Write Chip Settings
-  // 01 Write GP Settings
-  // 02 Write USB Manufacturer Descriptor String
-  // 03 Write USB Product Descriptor String
-  // 04 Write USB Serial Number Descriptor String
 
-  //data
+  length: number,
+  buffer: ArrayBuffer
 }
+
+// 00 Write Chip Settings
+export type WriteFlashDataChipSettingsRequest = WriteFlashDataRequest & {
+  subCommand: 0x00
+}
+
+// Write GP Settings
+export type WriteFlashDataGPettingsRequest = WriteFlashDataRequest & {
+  subCommand: 0x01
+}
+
+// Write USB Manufacturer Descriptor String
+export type WriteFlashDataUSBManufacturerRequest = WriteFlashDataRequest & {
+  subCommand: 0x02,
+  descriptor: string
+}
+
+// Write USB Product Descriptor String
+export type WriteFlashDataUSBProductRequest = WriteFlashDataRequest & {
+  subCommand: 0x03,
+  descriptor: string
+}
+
+// Write USB Serial Number Descriptor String
+export type WriteFlashDataUSBSerialNumberRequest = WriteFlashDataRequest & {
+  subCommand: 0x04,
+  descriptor: string
+}
+
 
 
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordRequest = Request & {
-  command: typeof COMMAND_CODE.SEND_FLASH_ACCESS_PASSWORD
-  // password
+  command: 0xB2
+  password: string
 }

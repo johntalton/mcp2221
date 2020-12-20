@@ -1,21 +1,25 @@
-import { Request, COMMAND_CODE } from './message'
+import { Request } from './message'
 
 // Set SRAM settings (runtime settings)
 export type SetSRAMSettingsRequest = Request & {
   command: 0x60,
 
   // Clock Output Divider Value:
-  clock: {},
+  clock?: {},
 
   // DAC Voltage Reference
   // Set DAC Output Value
-  dac: {},
+  dac?: {},
 
   // ADC Voltage Reference
-  adc: {},
+  adc?: {},
 
   // Setup the interrupt detection mechanism and clear the detection flag
-  interrupt: {},
+  interrupt?: {
+    edge?: 'positive' | 'negative' | 'both'
+    clear?: boolean
+    designation?: string
+  },
 
   // GP0 Settings
   // GP1 Settings

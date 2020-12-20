@@ -1,4 +1,4 @@
-import { Request, COMMAND_CODE } from './message'
+import { Request } from './message'
 
 export type DIRECTION_IN = 0
 export type DIRECTION_OUT = 1
@@ -16,7 +16,7 @@ type GpioConfig = {
 
 // Set GPIO Output Values
 export type SetGPIOOutputValuesRequest = Request & {
-  command: typeof COMMAND_CODE.SET_GPIO_OUTPUT_VALUES,
+  command: 0x50,
   alter: {
     gpio0?: GpioConfig,
     gpio1?: GpioConfig,
@@ -27,5 +27,5 @@ export type SetGPIOOutputValuesRequest = Request & {
 
 // Get GPIO Values
 export type GetGPIOValuesRequest = Request & {
-  command: typeof COMMAND_CODE.GET_GPIO_VALUES
+  command: 0x51
 }

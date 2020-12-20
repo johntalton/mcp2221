@@ -1,17 +1,17 @@
-import { Request, COMMAND_CODE } from './message'
+import { Request } from './message'
 
 
 // Status/Set Parameters
 export type StatusParametersRequest = Request & {
-  command: COMMAND_CODE.STATUS_SET_PARAMETERS,
+  command: 0x10,
 
-  cancleI2c?: boolean,
+  cancelI2c?: boolean,
   i2cClock?: number
 }
 
 
 // Reset Chip
 export type ResetChipRequest = Request & {
-  command: COMMAND_CODE.RESET
+  command: 0x70
   // 0xAB, 0xCD, 0xEF
 }
