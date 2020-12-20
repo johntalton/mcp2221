@@ -1,15 +1,10 @@
-import { ReadFlashDataRequest } from './flash.request'
-import { Response } from './message'
-
-type Success = { status: 'success', statusCode: 0x00 }
-type NotSupported = { status: 'not-supported', statusCode: 0x02 }
-type NotAllowed = { status: 'not-allowed', statusCode: 0x03 }
+import { Response, Success, NotSupported, NotAllowed } from './message'
 
 export type ReadFlashDataResponse = Response & (Success | NotSupported) & {
   command: 0xB0
 }
 
-export type ReadFlashDataSuccessResponse = ReadFlashDataRequest & Success & {
+export type ReadFlashDataSuccessResponse = ReadFlashDataResponse & Success & {
   length: number,
   data: ArrayBuffer
 }
@@ -20,6 +15,29 @@ export type ReadFlashDataNotSupportedResponse = ReadFlashDataResponse & NotSuppo
 
 //  Read Chip Settings
 export type ReadFlashDataChipSettingsResponse = ReadFlashDataSuccessResponse & {
+  usb: {
+    vendorId: number,
+    productId: number,
+    options: {}
+    mA: {}
+  }
+
+  chip: {
+    enabledCDCSerialEnumeration: boolean,
+
+    initialUartLED: { tx: boolean, rx: boolean },
+    initialI2cLED: boolean,
+    initialSSPND: boolean,
+    initialUSBCFG: boolean,
+
+    security: 'permanently-locked' | 'password-protected' | 'unsecured'
+  }
+
+  gp: {
+    clockDivider: number,
+    dac: {},
+    adc: {}
+  }
 
 }
 
@@ -53,6 +71,7 @@ export type ReadFlashDataFactorySerialNumberResponse = ReadFlashDataSuccessRespo
 
 
 export type WriteFlashDataResponse = Response & (Success | NotSupported | NotAllowed) & {
+  command: 0xB1
 }
 
 export type WriteFlashDataSuccessResponse = WriteFlashDataResponse & Success & {
@@ -66,4 +85,5 @@ export type WriteFlashDataNotAllowedResponse = WriteFlashDataResponse & NotAllow
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordResponse = Response & (Success | NotAllowed) & {
+  command: 0xB2
 }

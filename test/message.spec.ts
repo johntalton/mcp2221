@@ -24,6 +24,7 @@ describe('Message', () => {
 
       it('type ResetChipRequest', () => {
         const foo: ResetChipRequest = {
+          ...{ magic: [ 0xAB, 0xCD, 0xEF ] },
           opaque: '',
           command: 0x70
         }
@@ -124,7 +125,10 @@ describe('Message', () => {
       it('type SetSRAMSettingsRequest', () => {
         const foo: SetSRAMSettingsRequest  = {
           opaque: '',
-          command: 0x60
+          command: 0x60,
+
+          gp: {
+          }
         }
         expect(foo).to.exist
       })
@@ -142,7 +146,8 @@ describe('Message', () => {
       it('type ReadFlashDataRequest', () => {
         const foo: ReadFlashDataRequest = {
           opaque: '',
-          command: 0xB0
+          command: 0xB0,
+          subCommand: 0xFF
         }
         expect(foo).to.exist
       })
@@ -150,7 +155,11 @@ describe('Message', () => {
       it('type WriteFlashDataRequest', () => {
         const foo: WriteFlashDataRequest = {
           opaque: '',
-          command: 0xB1
+          command: 0xB1,
+          subCommand: 0xFF,
+
+          length: 0,
+          buffer: new Uint8Array()
         }
         expect(foo).to.exist
       })
@@ -158,7 +167,8 @@ describe('Message', () => {
       it('type SendFlashAccessPasswordRequest', () => {
         const foo: SendFlashAccessPasswordRequest = {
           opaque: '',
-          command: 0xB2
+          command: 0xB2,
+          password: 'P@$$\/\/0rD'
         }
         expect(foo).to.exist
       })

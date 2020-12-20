@@ -4,28 +4,21 @@ import { Request } from './message'
 export type SetSRAMSettingsRequest = Request & {
   command: 0x60,
 
-  // Clock Output Divider Value:
-  clock?: {},
+  gp: {
+    clockDivider?: number,
+    dac?: {},
+    adc?: {},
+    interrupt?: {
+      edge?: 'positive' | 'negative' | 'both'
+      clear?: boolean
+      designation?: string
+    },
 
-  // DAC Voltage Reference
-  // Set DAC Output Value
-  dac?: {},
-
-  // ADC Voltage Reference
-  adc?: {},
-
-  // Setup the interrupt detection mechanism and clear the detection flag
-  interrupt?: {
-    edge?: 'positive' | 'negative' | 'both'
-    clear?: boolean
-    designation?: string
-  },
-
-  // GP0 Settings
-  // GP1 Settings
-  // GP2 Settings
-  // GP3 Settings
-  gpio: {}
+    gpio0?: {},
+    gpio1?: {},
+    gpio2?: {},
+    gpio3?: {}
+  }
 }
 
 // Get SRAM Settings

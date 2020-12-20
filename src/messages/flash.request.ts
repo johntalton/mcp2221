@@ -3,7 +3,7 @@ import { Request } from './message'
 // Read Flash Data
 export type ReadFlashDataRequest = Request & {
   command: 0xB0,
-  subCommands,
+  subCommand: number,
 
 }
 
@@ -53,32 +53,58 @@ export type WriteFlashDataRequest = Request & {
 
 // 00 Write Chip Settings
 export type WriteFlashDataChipSettingsRequest = WriteFlashDataRequest & {
-  subCommand: 0x00
+  subCommand: 0x00,
+
+  chip: {
+    enabledCDCSerialEnumeration: boolean,
+
+    initialUartLED: { tx: boolean, rx: boolean },
+    initialI2cLED: boolean,
+    initialSSPND: boolean,
+    initialUSBCFG: boolean,
+
+    security: 'permanently-locked' | 'password-protected' | 'unsecured',
+    password: string
+  }
+
+  gp: {
+    clockDivider: number,
+    dac: {},
+    adc: {},
+    interrupt: {},
+  }
 }
 
 // Write GP Settings
 export type WriteFlashDataGPettingsRequest = WriteFlashDataRequest & {
-  subCommand: 0x01
+  subCommand: 0x01,
+
+  gpio0: {},
+  gpio1: {},
+  gpio2: {},
+  gpio3: {}
 }
 
 // Write USB Manufacturer Descriptor String
 export type WriteFlashDataUSBManufacturerRequest = WriteFlashDataRequest & {
   subCommand: 0x02,
+
   descriptor: string
 }
 
 // Write USB Product Descriptor String
 export type WriteFlashDataUSBProductRequest = WriteFlashDataRequest & {
   subCommand: 0x03,
+
   descriptor: string
 }
 
 // Write USB Serial Number Descriptor String
 export type WriteFlashDataUSBSerialNumberRequest = WriteFlashDataRequest & {
   subCommand: 0x04,
+
   descriptor: string
 }
-
 
 
 
