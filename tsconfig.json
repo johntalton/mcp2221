@@ -13,10 +13,12 @@
     "moduleResolution": "node",
 
     "strict": true,
-    "noEmitOnError": true,
-    "noUnusedParameters": true,
+
+    "noEmitOnError": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+
     "noImplicitAny": true,
-    "noUnusedLocals": true,
     "strictNullChecks": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -36,8 +38,7 @@
     "pretty": true,
     "sourceMap": true,
 
-    "outDir": "./lib",
-    "declarationDir": "./types"
+    "outDir": "./lib"
 
   },
   "compileOnSave": true,

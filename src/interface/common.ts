@@ -2,6 +2,6 @@ import { ResetChipRequest, StatusParametersRequest } from '../messages/common.re
 import { StatusParametersResponse } from '../messages/common.response'
 
 export interface Common {
-	status(req: StatusParametersRequest): Promise<StatusParametersResponse>
-	reset(req: ResetChipRequest): Promise<void>
+  status(req: StatusParametersRequest): Promise<StatusParametersResponse>
+  reset(req: ResetChipRequest): Promise<void>
 }
