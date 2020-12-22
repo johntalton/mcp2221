@@ -6,8 +6,6 @@ export type ReadFlashDataResponseBase = Response & (Success | NotSupported) & {
 }
 
 export type ReadFlashDataSuccessResponse = ReadFlashDataResponseBase & Success & {
-  length: number,
-  data: ArrayBuffer
 }
 
 export type ReadFlashDataNotSupportedResponse = ReadFlashDataResponseBase & NotSupported & {
@@ -24,6 +22,8 @@ export type ReadFlashDataChipSettingsResponse = ReadFlashDataSuccessResponse & {
 
 //  Read GP Settings
 export type ReadFlashDataGPSettingsResponse = ReadFlashDataSuccessResponse & {
+  subCommand: 0x01,
+
   gpio0: Gpio,
   gpio1: Gpio,
   gpio2: Gpio,
@@ -32,21 +32,29 @@ export type ReadFlashDataGPSettingsResponse = ReadFlashDataSuccessResponse & {
 
 //  Read USB Manufacturer Descriptor String
 export type ReadFlashDataUSBManufacturerResponse = ReadFlashDataSuccessResponse & {
+  subCommand: 0x02,
+
   descriptor: string
 }
 
 //  Read USB Product Descriptor String
 export type ReadFlashDataUSBProductResponse = ReadFlashDataSuccessResponse & {
+  subCommand: 0x03,
+
   descriptor: string
 }
 
 //  Read USB Serial Number Descriptor String
 export type ReadFlashDataUSBSerialNumberResponse = ReadFlashDataSuccessResponse & {
+  subCommand: 0x04,
+
   descriptor: string
 }
 
 //  Read Chip Factory Serial Number
 export type ReadFlashDataFactorySerialNumberResponse = ReadFlashDataSuccessResponse & {
+  subCommand: 0x05,
+
   descriptor: string
 }
 
@@ -58,6 +66,8 @@ export type ReadFlashDataResponse = ReadFlashDataNotSupportedResponse |
   ReadFlashDataUSBSerialNumberResponse |
   ReadFlashDataFactorySerialNumberResponse
 
+
+//
 export type WriteFlashDataResponseBase = Response & (Success | NotSupported | NotAllowed) & {
   command: 0xB1
 }

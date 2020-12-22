@@ -65,17 +65,21 @@ describe('Interface', () => {
     describe('read', () => {
       it('conforms', async () => {
         const flash: Flash = {
-          read: req => Promise.resolve({
+          read: async req => ({
             opaque: '',
-            command: 0xb0,
+            command: 0xB0,
+            subCommand: 0x02,
+
             status: 'success',
-            statusCode: 0x00
+            statusCode: 0x00,
+
+            descriptor: 'this is it'
           }),
           write: undefined,
           sendPassword: undefined
         }
 
-        const res = await flash.read({ opaque: '', command: 0xb0, subCommand: 0x00 })
+        const res = await flash.read({ opaque: '', command: 0xb0, subCommand: 0x02 })
       })
     })
 
@@ -92,7 +96,7 @@ describe('Interface', () => {
           sendPassword: undefined
         }
 
-        const res = await flash.write({ opaque: '', command: 0xb1, subCommand: 0x00, length: 0, buffer: new Uint8Array() })
+        const res = await flash.write({ opaque: '', command: 0xb1, subCommand: 0x00 })
       })
     })
 
@@ -127,7 +131,7 @@ describe('Interface', () => {
           get: undefined
         }
 
-        const res = await gpio.set({ opaque: '', command: 0x50, alter: {} })
+        const res = await gpio.set({ opaque: '', command: 0x50 })
       })
     })
 
@@ -223,7 +227,9 @@ describe('Interface', () => {
             command: 0x91,
             address: 0xFF,
             status: 'success',
-            statusCode: 0x00
+            statusCode: 0x00,
+
+            buffer: new Uint8Array(req.length)
           }),
           readRepeatedSTART: undefined,
           readGetData: undefined
@@ -245,7 +251,9 @@ describe('Interface', () => {
             command: 0x93,
             address: 0xFF,
             status: 'success',
-            statusCode: 0x00
+            statusCode: 0x00,
+
+            buffer: new Uint8Array(req.length)
           }),
           readGetData: undefined
         }
@@ -306,32 +314,58 @@ describe('Interface', () => {
             usb: {
               vendorId: 0,
               productId: 0,
-              options: {},
-              mA: {}
+              powerAttribute: 0,
+              mARequested: 0
             },
 
             chip: {
               enabledCDCSerialEnumeration: false,
 
-              initialUartLED: { tx: false, rx: false },
-              initialI2cLED: false,
-              initialSSPND: false,
-              initialUSBCFG: false,
+              uartLED: { tx: false, rx: false },
+              i2cLED: false,
+              SSPND: false,
+              USBCFG: false,
 
-              security: 'unsecured',
-              password: 'passWrd'
+              security: 'unsecured'
             },
+
+            password: 'passWrd',
 
             gp: {
               clockDivider: 0,
-              dac: {},
-              adc: {},
-              interrupt: {},
+              dac: {
+                referenceVoltage: 'Off',
+                referenceOptions: 'Vdd',
+                initialValue: 1
+              },
+              adc: {
+                referenceVoltage: 'Off',
+                referenceOptions: 'Vdd'
+              },
+              interrupt: {
+                edge: 'both'
+              },
+            },
 
-              gpio0: {},
-              gpio1: {},
-              gpio2: {},
-              gpio3: {}
+            gpio0: {
+              outputValue: 1,
+              direction: 'in',
+              designation: 'Gpio'
+            },
+            gpio1: {
+              outputValue: 1,
+              direction: 'in',
+              designation: 'Gpio'
+            },
+            gpio2: {
+              outputValue: 1,
+              direction: 'in',
+              designation: 'Gpio'
+            },
+            gpio3: {
+              outputValue: 1,
+              direction: 'in',
+              designation: 'Gpio'
             }
           })
         }

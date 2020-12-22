@@ -35,11 +35,7 @@ describe('Message', () => {
       it('type SetGPIOOutputValuesRequest', () => {
         const foo: SetGPIOOutputValuesRequest = {
           opaque: '',
-          command: 0x50,
-
-          alter: {
-
-          }
+          command: 0x50
         }
         expect(foo).to.exist
       })
@@ -155,10 +151,7 @@ describe('Message', () => {
         const foo: WriteFlashDataRequest = {
           opaque: '',
           command: 0xB1,
-          subCommand: 0xFF,
-
-          length: 0,
-          buffer: new Uint8Array()
+          subCommand: 0xFF
         }
         expect(foo).to.exist
       })
