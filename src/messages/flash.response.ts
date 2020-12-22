@@ -1,54 +1,33 @@
 import { Response, Success, NotSupported, NotAllowed } from './message'
+import { ChipSettings, GeneralPurpose, GpDesignation, UsbSettings, GpioDirection, GpioOutputValue, Gpio } from './message.fragments'
 
-export type ReadFlashDataResponse = Response & (Success | NotSupported) & {
+export type ReadFlashDataResponseBase = Response & (Success | NotSupported) & {
   command: 0xB0
 }
 
-export type ReadFlashDataSuccessResponse = ReadFlashDataResponse & Success & {
+export type ReadFlashDataSuccessResponse = ReadFlashDataResponseBase & Success & {
   length: number,
   data: ArrayBuffer
 }
 
-export type ReadFlashDataNotSupportedResponse = ReadFlashDataResponse & NotSupported & {
+export type ReadFlashDataNotSupportedResponse = ReadFlashDataResponseBase & NotSupported & {
 }
-
 
 //  Read Chip Settings
 export type ReadFlashDataChipSettingsResponse = ReadFlashDataSuccessResponse & {
   subCommand: 0x00,
 
-  usb: {
-    vendorId: number,
-    productId: number,
-    options: {}
-    mA: {}
-  }
-
-  chip: {
-    enabledCDCSerialEnumeration: boolean,
-
-    initialUartLED: { tx: boolean, rx: boolean },
-    initialI2cLED: boolean,
-    initialSSPND: boolean,
-    initialUSBCFG: boolean,
-
-    security: 'permanently-locked' | 'password-protected' | 'unsecured'
-  }
-
-  gp: {
-    clockDivider: number,
-    dac: {},
-    adc: {}
-  }
-
+  chip: ChipSettings,
+  gp: GeneralPurpose,
+  usb: UsbSettings
 }
 
 //  Read GP Settings
 export type ReadFlashDataGPSettingsResponse = ReadFlashDataSuccessResponse & {
-  gpio0: {},
-  gpio1: {},
-  gpio2: {},
-  gpio3: {}
+  gpio0: Gpio,
+  gpio1: Gpio,
+  gpio2: Gpio,
+  gpio3: Gpio
 }
 
 //  Read USB Manufacturer Descriptor String
@@ -71,19 +50,28 @@ export type ReadFlashDataFactorySerialNumberResponse = ReadFlashDataSuccessRespo
   descriptor: string
 }
 
+export type ReadFlashDataResponse = ReadFlashDataNotSupportedResponse |
+  ReadFlashDataChipSettingsResponse |
+  ReadFlashDataGPSettingsResponse |
+  ReadFlashDataUSBManufacturerResponse |
+  ReadFlashDataUSBProductResponse |
+  ReadFlashDataUSBSerialNumberResponse |
+  ReadFlashDataFactorySerialNumberResponse
 
-export type WriteFlashDataResponse = Response & (Success | NotSupported | NotAllowed) & {
+export type WriteFlashDataResponseBase = Response & (Success | NotSupported | NotAllowed) & {
   command: 0xB1
 }
 
-export type WriteFlashDataSuccessResponse = WriteFlashDataResponse & Success & {
+export type WriteFlashDataSuccessResponse = WriteFlashDataResponseBase & Success & {
 }
 
-export type WriteFlashDataNotSupportedResponse = WriteFlashDataResponse & NotSupported & {
+export type WriteFlashDataNotSupportedResponse = WriteFlashDataResponseBase & NotSupported & {
 }
 
-export type WriteFlashDataNotAllowedResponse = WriteFlashDataResponse & NotAllowed & {
+export type WriteFlashDataNotAllowedResponse = WriteFlashDataResponseBase & NotAllowed & {
 }
+
+export type WriteFlashDataResponse = WriteFlashDataSuccessResponse | WriteFlashDataNotSupportedResponse | WriteFlashDataNotAllowedResponse
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordResponse = Response & (Success | NotAllowed) & {

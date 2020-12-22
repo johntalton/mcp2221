@@ -13,12 +13,14 @@ export type I2CWriteDataRequest = Request & WithAddress & {
 // I²C Write Data Repeated-STAR
 export type I2CWriteDataRepeatedSTARTRequest = Request & WithAddress & {
   command?: 0x92,
+
   buffer: ArrayBuffer
 }
 
 // I²C Write Data No STOP
 export type I2CWriteDataNoSTOPRequest = Request & WithAddress & {
   command?: 0x94,
+
   buffer: ArrayBuffer
 }
 

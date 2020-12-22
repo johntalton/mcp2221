@@ -1,24 +1,39 @@
 import { Request } from './message'
+import { Gpio, InterruptEdge, Voltage, VoltageOption } from './message.fragments'
 
 // Set SRAM settings (runtime settings)
 export type SetSRAMSettingsRequest = Request & {
   command?: 0x60,
 
+  clock?: {
+    dutyCycle: '0%' | '25%' | '50%' | '75%',
+    divider: number
+  },
+
   gp: {
-    clockDivider?: number,
-    dac?: {},
-    adc?: {},
-    interrupt?: {
-      edge?: 'positive' | 'negative' | 'both'
-      clear?: boolean
-      designation?: string
+    dac?: {
+      referenceVoltage: Voltage,
+      referenceOptions: VoltageOption,
+
+      initialValue?: number
     },
 
-    gpio0?: {},
-    gpio1?: {},
-    gpio2?: {},
-    gpio3?: {}
+    adc?: {
+      referenceVoltage: Voltage,
+      referenceOptions: VoltageOption
+    },
+
+    interrupt?: {
+      edge?: InterruptEdge,
+      clear?: boolean,
+      designation?: string
+    }
   }
+
+  gpio0?: Gpio,
+  gpio1?: Gpio,
+  gpio2?: Gpio,
+  gpio3?: Gpio
 }
 
 // Get SRAM Settings

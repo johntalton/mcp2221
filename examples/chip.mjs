@@ -8,7 +8,7 @@ const usb = {
 
 const chip = await MCP2221.openPromisified(usb)
 
-const res = await chip.common.status({ opaque: 'synthetic', command: 0x10 })
+const res = await chip.common.status({ opaque: 'synthetic' })
 
 
 console.log(res)

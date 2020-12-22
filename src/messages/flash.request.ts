@@ -1,10 +1,10 @@
 import { Request } from './message'
+import { ChipSettings, GeneralPurpose, Gpio, UsbSettings } from './message.fragments'
 
 // Read Flash Data
 export type ReadFlashDataRequest = Request & {
   command?: 0xB0,
-  subCommand: number,
-
+  subCommand: number
 }
 
 //  Read Chip Settings
@@ -46,43 +46,27 @@ export type ReadFlashDataFactorySerialNumberRequest = ReadFlashDataRequest & {
 export type WriteFlashDataRequest = Request & {
   command?: 0xB1,
   subCommand: number
-
-  length: number,
-  buffer: ArrayBuffer
 }
 
 // 00 Write Chip Settings
 export type WriteFlashDataChipSettingsRequest = WriteFlashDataRequest & {
   subCommand: 0x00,
 
-  chip: {
-    enabledCDCSerialEnumeration: boolean,
+  chip: ChipSettings,
+  gp: GeneralPurpose,
+  usb: UsbSettings,
 
-    initialUartLED: { tx: boolean, rx: boolean },
-    initialI2cLED: boolean,
-    initialSSPND: boolean,
-    initialUSBCFG: boolean,
-
-    security: 'permanently-locked' | 'password-protected' | 'unsecured',
-    password: string
-  }
-
-  gp: {
-    clockDivider: number,
-    dac: {},
-    adc: {},
-    interrupt: {},
-  }
+  password: string
 }
 
 // Write GP Settings
-export type WriteFlashDataGPettingsRequest = WriteFlashDataRequest & {
+export type WriteFlashDataGPSettingsRequest = WriteFlashDataRequest & {
   subCommand: 0x01,
 
-  gpio0: {},
-  gpio1: {},
-  gpio2: {},
-  gpio3: {}
+  gpio0: Gpio,
+  gpio1: Gpio,
+  gpio2: Gpio,
+  gpio3: Gpio
 }
 
 // Write USB Manufacturer Descriptor String
