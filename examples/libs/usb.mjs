@@ -17,16 +17,18 @@ function dump(device) {
 usb.on('attach', device => console.log(device))
 usb.on('detach', device => console.log(device))
 
+const intF = 1
+
 usb.getDeviceList()
   //.filter(d => d.idVendor === 0x04d8 && d.idProduct === 0x00dd)
   .forEach(d => {
     d.open()
-    d.interface(1).claim()
+    d.interface(intF).claim()
     dump(d)
 
-    d.interface(1).endpoint(2).transfer([ 0x10, 0x00, 0x10 ], (err) => {
+    d.interface(intF).endpoint(2).transfer([ 0x10, 0x00, 0x10 ], (err) => {
       console.log('here', err)
-      d.interface(1).endpoint(130).transfer(1, (err, data) => {
+      d.interface(intF).endpoint(130).transfer(1, (err, data) => {
         console.log('there', err, data)
       })
     })

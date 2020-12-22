@@ -40,7 +40,7 @@ async function setupMcp2221(usb, device) {
   }
 
   if (device.configuration === null) {
-    console.log('unselected configuration, selecting 1')
+    console.log('unselected configuration, selecting')
     await device.selectConfiguration(cfg.configuration);
   }
 

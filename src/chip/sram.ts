@@ -1,19 +1,22 @@
-import { SRAM } from '../'
+import { SRAM, Binding } from '../'
+
 import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request'
 import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response'
 
-export class MCP2221SRAM<T> implements SRAM {
-  private readonly _hid: T
+import { SetSRAMSettings, GetSRAMSettings } from '../converter/sram'
 
-  constructor(hid: T) { this._hid = hid }
+import send_request from './util'
+
+export class MCP2221SRAM implements SRAM {
+  private readonly _binding: Binding
+
+  constructor(binding: Binding) { this._binding = binding }
 
   set(req: SetSRAMSettingsRequest): Promise<SetSRAMSettingsResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, SetSRAMSettings)
   }
 
   get(req: GetSRAMSettingsRequest): Promise<GetSRAMSettingsResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, GetSRAMSettings)
   }
 }

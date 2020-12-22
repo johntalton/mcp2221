@@ -1,24 +1,26 @@
-import { Flash} from '../'
+import { Flash, Binding } from '../'
+
 import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request'
 import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response'
 
-export class MCP2221Flash<T> implements Flash {
-  private readonly _hid: T
+import { ReadFlashData, SendFlashAccessPassword, WriteFlashData } from '../converter/flash'
 
-  constructor(hid: T) { this._hid = hid }
+import send_request from './util'
+
+export class MCP2221Flash implements Flash {
+  private readonly _binding: Binding
+
+  constructor(binding: Binding) { this._binding = binding }
 
   read(req: ReadFlashDataRequest): Promise<ReadFlashDataResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, ReadFlashData)
   }
 
   write(req: WriteFlashDataRequest): Promise<WriteFlashDataResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, WriteFlashData)
   }
 
   sendPassword(req: SendFlashAccessPasswordRequest): Promise<SendFlashAccessPasswordResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, SendFlashAccessPassword)
   }
 }

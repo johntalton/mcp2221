@@ -10,6 +10,7 @@
   "files": [
     "lib/**/*.js"
   ],
+  "types": "./lib",
   "scripts": {
     "test": "npm run test:mocha",
     "test:mocha": "mocha",

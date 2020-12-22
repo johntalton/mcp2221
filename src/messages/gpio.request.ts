@@ -16,7 +16,7 @@ type GpioConfig = {
 
 // Set GPIO Output Values
 export type SetGPIOOutputValuesRequest = Request & {
-  command: 0x50,
+  command?: 0x50,
   alter: {
     gpio0?: GpioConfig,
     gpio1?: GpioConfig,
@@ -27,5 +27,5 @@ export type SetGPIOOutputValuesRequest = Request & {
 
 // Get GPIO Values
 export type GetGPIOValuesRequest = Request & {
-  command: 0x51
+  command?: 0x51
 }

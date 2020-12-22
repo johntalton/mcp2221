@@ -14,6 +14,8 @@
 
     "strict": true,
 
+    "skipLibCheck": true,
+
     "noEmitOnError": false,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
@@ -30,7 +32,6 @@
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
 
     "declaration": true,
     "declarationMap": true,

@@ -2,7 +2,7 @@ import { Request } from './message'
 
 // Set SRAM settings (runtime settings)
 export type SetSRAMSettingsRequest = Request & {
-  command: 0x60,
+  command?: 0x60,
 
   gp: {
     clockDivider?: number,
@@ -23,5 +23,5 @@ export type SetSRAMSettingsRequest = Request & {
 
 // Get SRAM Settings
 export type GetSRAMSettingsRequest = Request & {
-  command: 0x61
+  command?: 0x61
 }

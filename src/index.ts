@@ -18,11 +18,5 @@ export * from './interface/gpio'
 export * from './interface/i2c'
 export * from './interface/sram'
 
-export * from './chip/common'
-export * from './chip/flash'
-export * from './chip/gpio'
-export * from './chip/i2c'
-export * from './chip/sram'
-
-
+export * from './binding'
 export * from './mcp2221'

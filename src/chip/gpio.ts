@@ -1,19 +1,22 @@
-import { Gpio } from '../'
+import { Gpio, Binding } from '../'
+
 import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request'
 import { SetGPIOOutputValuesResponse, GetGPIOValueResponse } from '../messages/gpio.response'
 
-export class MCP2221Gpio<T> implements Gpio {
-  private readonly _hid: T
+import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio'
 
-  constructor(hid: T) { this._hid = hid }
+import send_request from './util'
+
+export class MCP2221Gpio implements Gpio {
+  private readonly _binding: Binding
+
+  constructor(binding: Binding) { this._binding = binding }
 
   set(req: SetGPIOOutputValuesRequest): Promise<SetGPIOOutputValuesResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, SetGPIOOutputValues)
   }
 
   get(req: GetGPIOValuesRequest): Promise<GetGPIOValueResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, GetGPIOValues)
   }
 }

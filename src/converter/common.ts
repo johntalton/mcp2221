@@ -60,9 +60,12 @@ export class ResetChip {
   }
 
   static from(req: ResetChipRequest): ArrayBuffer {
+    const magic = [ 0xAB, 0xCD, 0xEF]
+
     return Uint8ClampedArray.from([
       0x10,
-      dont_care()
+      dont_care(),
+      ...magic
     ])
   }
 }

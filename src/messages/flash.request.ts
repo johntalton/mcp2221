@@ -2,7 +2,7 @@ import { Request } from './message'
 
 // Read Flash Data
 export type ReadFlashDataRequest = Request & {
-  command: 0xB0,
+  command?: 0xB0,
   subCommand: number,
 
 }
@@ -44,7 +44,7 @@ export type ReadFlashDataFactorySerialNumberRequest = ReadFlashDataRequest & {
 
 // Write Flash Data
 export type WriteFlashDataRequest = Request & {
-  command: 0xB1,
+  command?: 0xB1,
   subCommand: number
 
   length: number,
@@ -110,6 +110,6 @@ export type WriteFlashDataUSBSerialNumberRequest = WriteFlashDataRequest & {
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordRequest = Request & {
-  command: 0xB2
+  command?: 0xB2
   password: string
 }

@@ -20,7 +20,7 @@ describe('Interface', () => {
               address: 0x00,
               requestedTransferLength: 0,
 
-              transferedBytes: 0,
+              transferredBytes: 0,
               dataBufferCounter: 0,
               communicationSpeedDivider: 0,
               timeoutMs: 0,
@@ -56,7 +56,7 @@ describe('Interface', () => {
           reset: req => Promise.resolve()
         }
 
-        const res = await common.reset({ opaque: '', command: 0x70, magic: [ 0xab, 0xcd, 0xef ]})
+        const res = await common.reset({ opaque: '' })
       })
     })
   })

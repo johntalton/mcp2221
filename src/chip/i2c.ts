@@ -1,39 +1,41 @@
-import { I2C} from '../'
+import { I2C, Binding } from '../'
+
 import { I2CWriteDataRequest, I2CWriteDataRepeatedSTARTRequest, I2CWriteDataNoSTOPRequest, I2CReadDataRequest, I2CReadDataRepeatedSTARTRequest, I2CReadGetDataRequest } from '../messages/i2c.request'
 import { I2CWriteDataResponse, I2CWriteDataRepeatedSTARTResponse, I2CWriteDataNoSTOPResponse, I2CReadDataResponse, I2CReadDataRepeatedSTARTResponse, I2CReadGetDataResponse } from '../messages/i2c.response'
 
-export class MCP2221I2C<T> implements I2C {
-  private readonly _hid: T
+import {
+  I2CWriteData, I2CWriteDataRepeatedSTART, I2CWriteDataNoSTOP,
+  I2CReadData, I2CReadDataRepeatedSTART, I2CReadGetData
+} from '../converter/i2c'
 
-  constructor(hid: T) { this._hid = hid }
+import send_request from './util'
+
+export class MCP2221I2C implements I2C {
+  private readonly _binding: Binding
+
+  constructor(binding: Binding) { this._binding = binding }
 
   writeData(req: I2CWriteDataRequest): Promise<I2CWriteDataResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, I2CWriteData)
   }
 
   writeRepeatedSTART(req: I2CWriteDataRepeatedSTARTRequest): Promise<I2CWriteDataRepeatedSTARTResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, I2CWriteDataRepeatedSTART)
   }
 
   writeNoSTOP(req: I2CWriteDataNoSTOPRequest): Promise<I2CWriteDataNoSTOPResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, I2CWriteDataNoSTOP)
   }
 
   readData(req: I2CReadDataRequest): Promise<I2CReadDataResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, I2CReadData)
   }
 
   readRepeatedSTART(req: I2CReadDataRepeatedSTARTRequest): Promise<I2CReadDataRepeatedSTARTResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, I2CReadDataRepeatedSTART)
   }
 
   readGetData(req: I2CReadGetDataRequest): Promise<I2CReadGetDataResponse> {
-    const { opaque } = req
-    throw new Error('Method not implemented.' + opaque)
+    return send_request(this._binding, req, I2CReadGetData)
   }
 }

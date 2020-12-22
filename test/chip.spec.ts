@@ -1,34 +1,18 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
-import { MCP2221Common, StatusParametersResponse } from '../src'
+import { MCP2221A } from '../src'
 
-describe('MCP2221Common', () => {
+describe('MCP2221A', () => {
   describe('constructor', () => {
-    it('succeeds', () => {
-      const hid = undefined
-      const common = new MCP2221Common(hid)
-      expect(common).to.not.be.undefined
-      expect(common).to.be.instanceOf(MCP2221Common)
+    it('succeeds (new)', () => {
+      const binding = undefined
+      new MCP2221A(binding)
     })
-  })
 
-  describe('status', () => {
-    it('succeeds', async () => {
-      const hid = undefined
-      const common = new MCP2221Common(hid)
-      const res = await common.status({ opaque: '', command: 0x10 })
-      expect(res).to.not.be.undefined
-      expect(res as StatusParametersResponse).to.be.exist
-    })
-  })
-
-  describe('reset', () => {
-    it('succeeds', async () => {
-      const hid = undefined
-      const common = new MCP2221Common(hid)
-      const res = await common.reset({ opaque: '', command: 0x70, magic: [171, 205, 239] })
-      expect(res).to.be.undefined
+    it('succeeds (openPromisified)', () => {
+      const binding = undefined
+      MCP2221A.openPromisified(binding)
     })
   })
 })
