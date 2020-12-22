@@ -3,14 +3,26 @@ const { USB } = require('webusb')
 const { MCP2221 } = require('@johntalton/mcp2221')
 
 function dumpConfig(device) {
+  console.log(device.manufacturerName)
+  console.log(device.productName)
+  console.log(device.serialNumber)
+  console.log()
   device.configurations.forEach(c => {
-    console.log('Config: ', c.configurationValue, c.configurationName)
+    const defaultConfig = c === device.configuration ? '*' : ''
+    console.log(defaultConfig, 'Config: ', c.configurationValue, c.configurationName)
     c.interfaces.forEach(i => {
-      console.log('\tInterface: ', i.interfaceNumber, i.claimed)
+      const defaultInt = i === c.interface ? '*' : ''
+      console.log('\t', defaultInt, i.claimed ? '(' : '', 'Interface', i.claimed ? '): ' : ': ', i.interfaceNumber)
       i.alternates.forEach(a => {
-        console.log('\t\tAlternate: ', a.interfaceName, 'class', a.interfaceClass, 'protocol', a.interfaceProtocol)
+        const defaultAlt = a === i.alternate ? '*' : ''
+        const aClass = a.interfaceClass === 10 ? '"CDC-Data"' :
+          a.interfaceClass === 2 ? '"Com / CDC-Ctrl"' :
+          a.interfaceClass === 3 ? '"HID"' :
+          a.interfaceClass
+        console.log('\t\t', defaultAlt, 'Alternate: ', a.interfaceName, 'class', aClass, 'protocol', a.interfaceProtocol)
         a.endpoints.forEach(e => {
-          console.log('\t\t\tEndpoint: ', e.endpointNumber, e.direction, e.type)
+          const defaultEp = e === a.endpoint ? '*' : ''
+          console.log('\t\t\t', defaultEp, 'Endpoint: ', e.endpointNumber, e.direction, e.type)
         })
       })
     })
@@ -18,14 +30,8 @@ function dumpConfig(device) {
 }
 
 async function setupMcp2221(usb, device) {
-  console.log(device.manufacturerName)
-  console.log(device.productName)
-  console.log(device.serialNumber)
 
   await device.open()
-  //console.log('Open')
-  dumpConfig(device)
-
 
   const cfg = {
     configuration: 1,
@@ -35,13 +41,26 @@ async function setupMcp2221(usb, device) {
 
   if (device.configuration === null) {
     console.log('unselected configuration, selecting 1')
-    await device.selectConfiguration(1);
+    await device.selectConfiguration(cfg.configuration);
   }
 
-  console.log('claim interface 1')
-  await device.claimInterface(1);
+  console.log('claim interface ', cfg.interface)
+  await device.claimInterface(cfg.interface);
 
-  const buffer = [ 0x10, 0, 0x20 ]
+  dumpConfig(device)
+
+  const buffer = Uint8Array.from([ 0x10, 0, 0x20 ])
+
+  const report_number = 1
+  const foo = await device.controlTransferOut({
+    requestType: 'class',
+    recipient: 'endpoint',
+    request: 0x09,
+    value: (2 << 8) | report_number,
+    index: 2
+  })
+  console.log('controlTransferOut', foo)
+
 
   const out = await device.transferOut(2, buffer)
   console.log('transferOut', out)
