@@ -13,12 +13,22 @@
   ],
   "types": "./lib",
   "scripts": {
+    "lint": "npm --silent run lint:ts",
+    "lint:ts": "./node_modules/.bin/eslint --no-inline-config --report-unused-disable-directives --ext .ts src/*.ts",
     "test": "npm run test:mocha",
     "test:mocha": "mocha",
     "build": "tsc -p .",
     "build:watch": "tsc -p . -w",
     "coverage": "npm --silent run coverage:c8",
     "coverage:c8": "c8 --check-coverage --all --lines 70 --functions 80 --branches 90 -r lcovonly npm --silent run test:mocha -- --no-parallel --reporter min"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@johntalton/eslint-config/ts"
+    ],
+    "env": {
+      "node": true
+    }
   },
   "mocha": {
     "spec": [
@@ -44,12 +54,26 @@
   "author": "johntalton@gmail.com",
   "license": "MIT",
   "devDependencies": {
+    "@johntalton/eslint-config": "github:johntalton/eslint-config",
     "@serialport/stream": "^9.0.2",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
     "@types/node": "^14.6.4",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
     "c8": "^7.3.5",
     "chai": "^4.2.0",
+    "eslint": "^7.16.0",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-functional": "^3.1.0",
+    "eslint-plugin-immutable": "^1.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^30.7.9",
+    "eslint-plugin-mocha": "^8.0.0",
+    "eslint-plugin-no-loops": "^0.3.0",
+    "eslint-plugin-no-use-extend-native": "^0.5.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-spellcheck": "^0.0.17",
     "mocha": "^8.2.1",
     "node-hid": "^2.1.1",
     "nodemon": "^2.0.4",
