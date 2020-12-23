@@ -16,7 +16,9 @@
     "test": "npm run test:mocha",
     "test:mocha": "mocha",
     "build": "tsc -p .",
-    "build:watch": "tsc -p . -w"
+    "build:watch": "tsc -p . -w",
+    "coverage": "npm --silent run coverage:c8",
+    "coverage:c8": "c8 --check-coverage --all --lines 70 --functions 80 --branches 90 -r lcovonly npm --silent run test:mocha -- --no-parallel --reporter min"
   },
   "mocha": {
     "spec": [
@@ -46,7 +48,7 @@
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
     "@types/node": "^14.6.4",
-    "c8": "^7.3.0",
+    "c8": "^7.3.5",
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
     "node-hid": "^2.1.1",
