@@ -67,7 +67,6 @@ export class ResetChipRequestCoder {
 
     return Uint8ClampedArray.from([
       0x70,
-      dont_care(),
       ...magic
     ])
   }
