@@ -4,7 +4,8 @@
   "description": "",
   "exports": {
     "require": "./lib/index.js",
-    "import": "./lib/index.js"
+    "import": "./lib/index.js",
+    "coder": "./lib/converter/coder.js"
   },
   "type": "commonjs",
   "files": [

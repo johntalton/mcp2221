@@ -1,4 +1,5 @@
 import { Response, Success } from './message'
+import { ReadPending } from './message.fragments'
 
 export type StatusParametersResponse = Response & Success & {
   command: 0x10,
@@ -18,7 +19,7 @@ export type StatusParametersResponse = Response & Success & {
     SCL: number,
     SDA: number,
 
-    pendingValue: 0 | 1 | 2
+    pendingValue: ReadPending
   },
 
   adc: {
@@ -27,7 +28,7 @@ export type StatusParametersResponse = Response & Success & {
     ch2: number
   },
 
-  interruptEdgeDetectorState: 0 | 1,
+  interruptEdgeDetectorState: boolean,
 
   revision: {
     hardware: { major: 'A', minor: '6' },

@@ -1,6 +1,5 @@
 import { Request } from './message'
 
-
 type WithAddress = { address: number }
 
 // I²C Write Data
@@ -27,12 +26,14 @@ export type I2CWriteDataNoSTOPRequest = Request & WithAddress & {
 // I²C Read Data
 export type I2CReadDataRequest = Request & WithAddress & {
   command?: 0x91,
+
   length: number
 }
 
 // I²C Read Data Repeated-START
 export type I2CReadDataRepeatedSTARTRequest = Request & WithAddress & {
   command?: 0x93,
+
   length: number
 }
 

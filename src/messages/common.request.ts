@@ -1,6 +1,5 @@
 import { Request } from './message'
 
-
 // Status/Set Parameters
 export type StatusParametersRequest = Request & {
   command?: 0x10,
@@ -9,9 +8,8 @@ export type StatusParametersRequest = Request & {
   i2cClock?: number
 }
 
-
 // Reset Chip
 export type ResetChipRequest = Request & {
-  command?: 0x70
+  command?: 0x70,
   magic?: [ 0xAB, 0xCD, 0xEF ]
 }

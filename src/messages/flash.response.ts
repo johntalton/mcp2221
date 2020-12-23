@@ -1,5 +1,5 @@
 import { Response, Success, NotSupported, NotAllowed } from './message'
-import { ChipSettings, GeneralPurpose, GpDesignation, UsbSettings, GpioDirection, GpioOutputValue, Gpio } from './message.fragments'
+import { ChipSettings, GeneralPurpose, UsbSettings, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Product, SerialNumber } from './message.fragments'
 
 export type ReadFlashDataResponseBase = Response & (Success | NotSupported) & {
   command: 0xB0
@@ -24,38 +24,38 @@ export type ReadFlashDataChipSettingsResponse = ReadFlashDataSuccessResponse & {
 export type ReadFlashDataGPSettingsResponse = ReadFlashDataSuccessResponse & {
   subCommand: 0x01,
 
-  gpio0: Gpio,
-  gpio1: Gpio,
-  gpio2: Gpio,
-  gpio3: Gpio
+  gpio0: Gpio0,
+  gpio1: Gpio1,
+  gpio2: Gpio2,
+  gpio3: Gpio3
 }
 
 //  Read USB Manufacturer Descriptor String
 export type ReadFlashDataUSBManufacturerResponse = ReadFlashDataSuccessResponse & {
   subCommand: 0x02,
 
-  descriptor: string
+  descriptor: Manufacturer
 }
 
 //  Read USB Product Descriptor String
 export type ReadFlashDataUSBProductResponse = ReadFlashDataSuccessResponse & {
   subCommand: 0x03,
 
-  descriptor: string
+  descriptor: Product
 }
 
 //  Read USB Serial Number Descriptor String
 export type ReadFlashDataUSBSerialNumberResponse = ReadFlashDataSuccessResponse & {
   subCommand: 0x04,
 
-  descriptor: string
+  descriptor: SerialNumber
 }
 
 //  Read Chip Factory Serial Number
 export type ReadFlashDataFactorySerialNumberResponse = ReadFlashDataSuccessResponse & {
   subCommand: 0x05,
 
-  descriptor: string
+  descriptor: SerialNumber
 }
 
 export type ReadFlashDataResponse = ReadFlashDataNotSupportedResponse |

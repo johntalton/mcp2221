@@ -1,5 +1,5 @@
 import { Response, Success } from './message'
-import { ChipSettings, GeneralPurpose, Gpio, UsbSettings } from './message.fragments'
+import { Password, ChipSettings, GeneralPurpose, Gpio0, Gpio1, Gpio2, Gpio3, UsbSettings } from './message.fragments'
 
 export type SetSRAMSettingsResponse = Response & Success & {
   command: 0x60
@@ -12,10 +12,10 @@ export type GetSRAMSettingsResponse = Response & Success & {
   gp: GeneralPurpose,
   usb: UsbSettings,
 
-  password: string,
+  password: Password,
 
-  gpio0: Gpio,
-  gpio1: Gpio,
-  gpio2: Gpio,
-  gpio3: Gpio
+  gpio0: Gpio0,
+  gpio1: Gpio1,
+  gpio2: Gpio2,
+  gpio3: Gpio3
 }

@@ -1,7 +1,7 @@
 import { Gpio, Binding } from '../'
 
 import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request'
-import { SetGPIOOutputValuesResponse, GetGPIOValueResponse } from '../messages/gpio.response'
+import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response'
 
 import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio'
 
@@ -16,7 +16,7 @@ export class MCP2221Gpio implements Gpio {
     return send_request(this._binding, req, SetGPIOOutputValues)
   }
 
-  get(req: GetGPIOValuesRequest): Promise<GetGPIOValueResponse> {
+  get(req: GetGPIOValuesRequest): Promise<GetGPIOValuesResponse> {
     return send_request(this._binding, req, GetGPIOValues)
   }
 }

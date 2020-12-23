@@ -69,6 +69,7 @@ export type I2CReadDataRepeatedSTARTResponse = I2CReadDataRepeatedSTARTSuccessRe
 
 //
 export type I2CReadGetDataResponse = Response & (Success | Error) & {
-  command: 0x40
+  command: 0x40,
+
   buffer?: ArrayBuffer
 }
