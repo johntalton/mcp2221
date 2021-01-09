@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request'
 import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response'
 import { Converter } from './converter'

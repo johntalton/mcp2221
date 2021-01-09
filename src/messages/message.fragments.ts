@@ -1,4 +1,3 @@
-
 type stringOf<L extends number> = {
   length: L
 } & { __gard__: never }

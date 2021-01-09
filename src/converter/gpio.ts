@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request'
 import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response'
 import { Converter } from './converter'

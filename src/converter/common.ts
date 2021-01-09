@@ -1,4 +1,4 @@
-
+/* eslint-disable max-classes-per-file */
 import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request'
 import { StatusParametersResponse } from '../messages/common.response'
 import { Converter } from './converter'

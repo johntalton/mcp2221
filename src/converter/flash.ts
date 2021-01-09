@@ -1,4 +1,4 @@
-import { encode } from 'punycode'
+/* eslint-disable max-classes-per-file */
 import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request'
 import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response'
 import { Converter } from './converter'

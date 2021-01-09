@@ -28,6 +28,19 @@
     ],
     "env": {
       "node": true
+    },
+    "rules":{
+      "spellcheck/spell-checker": [
+        "error",
+        {
+          "ignoreRequire": true,
+          "identifiers": false,
+          "minLength": 4,
+          "skipWords": [
+            "gpio", "sram", "mcp2221"
+          ]
+        }
+      ]
     }
   },
   "mocha": {

@@ -1,3 +1,5 @@
+/* eslint-disable immutable/no-mutation */
+/* eslint-disable fp/no-mutation */
 import { Common, Flash, Gpio, I2C, SRAM } from './'
 import { Binding } from './binding'
 
@@ -7,15 +9,14 @@ import { MCP2221Gpio } from './chip/gpio'
 import { MCP2221I2C } from './chip/i2c'
 import { MCP2221SRAM } from './chip/sram'
 
-export class MCP2221
-{
+export class MCP2221 {
   private readonly _binding: Binding
 
-  public readonly common: Common
-  public readonly flash: Flash
-  public readonly gpio: Gpio
-  public readonly i2c: I2C
-  public readonly sram: SRAM
+  readonly common: Common
+  readonly flash: Flash
+  readonly gpio: Gpio
+  readonly i2c: I2C
+  readonly sram: SRAM
 
   // factory
   static async openPromisified(binding: Binding): Promise<MCP2221> { return new MCP2221(binding) }

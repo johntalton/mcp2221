@@ -37,10 +37,7 @@ export type ReadFlashDataFactorySerialNumberRequest = ReadFlashDataRequest & {
   subCommand: 0x05
 }
 
-
-
-
-
+// -----------------------------------------------------------------------------
 
 // Write Flash Data
 export type WriteFlashDataRequest = Request & {
@@ -91,7 +88,7 @@ export type WriteFlashDataUSBSerialNumberRequest = WriteFlashDataRequest & {
   descriptor: SerialNumber
 }
 
-
+// -----------------------------------------------------------------------------
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordRequest = Request & {
