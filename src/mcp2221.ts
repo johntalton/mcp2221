@@ -1,5 +1,9 @@
+/* eslint-disable fp/no-this */
+/* eslint-disable immutable/no-this */
+/* eslint-disable fp/no-class */
 /* eslint-disable immutable/no-mutation */
 /* eslint-disable fp/no-mutation */
+/* eslint-disable fp/no-nil */
 import { Common, Flash, Gpio, I2C, SRAM } from './'
 import { Binding } from './binding'
 
@@ -19,7 +23,9 @@ export class MCP2221 {
   readonly sram: SRAM
 
   // factory
-  static async openPromisified(binding: Binding): Promise<MCP2221> { return new MCP2221(binding) }
+  static openPromisified(binding: Binding): Promise<MCP2221> {
+    return Promise.resolve(new MCP2221(binding))
+  }
 
   constructor(binding: Binding) {
     this._binding = binding
