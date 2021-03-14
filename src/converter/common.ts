@@ -1,3 +1,5 @@
+/* eslint-disable sort-imports */
+/* eslint-disable no-magic-numbers */
 /* eslint-disable max-classes-per-file */
 import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request.js'
 import { StatusParametersResponse } from '../messages/common.response.js'
@@ -8,7 +10,7 @@ function dont_care() { return 0x00 }
 function any_other() { return 0x00 }
 
 export class StatusParametersResponseCoder {
-  static encode(res: StatusParametersResponse): ArrayBuffer { throw new Error('unused') }
+  static encode(_res: StatusParametersResponse): ArrayBuffer { throw new Error('unused') }
 
   static decode(bufferSource: DecoderBufferSource): StatusParametersResponse {
     const dv = ArrayBuffer.isView(bufferSource) ?
@@ -17,6 +19,12 @@ export class StatusParametersResponseCoder {
 
     const command = dv.getUint8(0)
     const statusCode = dv.getUint8(1)
+
+    if(command !== 0x10) { throw new Error('invalid command byte decoded') }
+    if(statusCode !== 0x00) {
+      throw new Error('invalid statusCode')
+    }
+
     const cancelTransferByte = dv.getUint8(2)
     const setSpeedByte = dv.getUint8(3)
     const speedDividerByte = dv.getUint8(4)
@@ -45,23 +53,17 @@ export class StatusParametersResponseCoder {
     const ch1 = dv.getUint16(52, true)
     const ch2 = dv.getUint16(54, true)
 
-
-
-
+    //
     const interruptEdgeDetectorState = interruptEdgeDetectorStateByte === 1
     const setSpeedSet = setSpeedByte !== 0x00
     const i2cCancelled = cancelTransferByte !== 0x00
     const i2cClock = setSpeedSet ? speedDividerByte : undefined
 
-    if(command !== 0x10) { throw new Error('invalid command byte decoded') }
-    if(statusCode !== 0x00) {
-      throw new Error('invalid statusCode')
-    }
-
+    //
     if(rhmaj !== 'A') { throw new Error('invalid hardware major byte decoded') }
     if(rhmin !== '6') { throw new Error('invalid hardware minor byte decoded') }
     if(rfmaj !== '1') { throw new Error('invalid firmware major byte decoded') }
-    // if(rfmin !== '1') { throw new Error('invalid firmware minor byte decoded') }
+    if(!['1', '2'].includes(rfmin)) { console.log('invalid firmware minor byte decoded') }
 
     const revision = {
       hardware: { major: rhmaj, minor: rhmin },

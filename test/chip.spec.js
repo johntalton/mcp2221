@@ -15,19 +15,4 @@ describe('MCP2221A', () => {
       MCP2221A.from(binding)
     })
   })
-
-  describe('Common', () => {
-    describe('status', () => {
-      it('succeeds', async () => {
-        const usb = {
-          read: async length => Uint8Array.from([]),
-          write: async buffer => 64
-        }
-
-        const chip = MCP2221A.from(usb)
-
-        const res = await chip.common.status({ opaque: 'synthetic' })
-      })
-    })
-  })
 })

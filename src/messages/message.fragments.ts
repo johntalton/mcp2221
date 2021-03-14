@@ -2,7 +2,7 @@ type stringOf<L extends number> = {
   length: L
 } & { __gard__: never }
 
-export type Password = stringOf<8>
+export type Password = string // & stringOf<8>
 
 export type ReadPending = 0 | 1 | 2
 
