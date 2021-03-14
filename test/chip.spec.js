@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
-import { MCP2221A } from '../src'
+import { MCP2221A } from '@johntalton/mcp2221'
 
 describe('MCP2221A', () => {
   describe('constructor', () => {

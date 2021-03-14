@@ -1,14 +1,12 @@
 /* eslint-disable max-classes-per-file */
-import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request'
-import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response'
+import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request.js'
+import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response.js'
 import { Converter } from './converter'
 
 export class SetGPIOOutputValuesResponseCoder {
   static encode(res: SetGPIOOutputValuesResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): SetGPIOOutputValuesResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -25,10 +23,7 @@ export class SetGPIOOutputValuesRequestCoder {
 export class GetGPIOValuesResponseCoder {
   static encode(res: GetGPIOValuesResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): GetGPIOValuesResponse {
-    return {
-      opaque: '__invalid__'
-    }
-
+    throw new Error('invalid')
   }
 }
 

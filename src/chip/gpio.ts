@@ -1,22 +1,20 @@
-import { Gpio, Binding } from '../'
+import { Gpio } from '../interface/gpio.js'
 
-import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request'
-import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response'
+import { Bindable } from '../binding.js'
 
-import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio'
+import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request.js'
+import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response.js'
 
-import send_request from './util'
+import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio.js'
 
-export class MCP2221Gpio implements Gpio {
-  private readonly _binding: Binding
+import send_request from './util.js'
 
-  constructor(binding: Binding) { this._binding = binding }
-
+export class MCP2221Gpio extends Bindable implements Gpio {
   set(req: SetGPIOOutputValuesRequest): Promise<SetGPIOOutputValuesResponse> {
-    return send_request(this._binding, req, SetGPIOOutputValues)
+    return send_request(this.binding, req, SetGPIOOutputValues)
   }
 
   get(req: GetGPIOValuesRequest): Promise<GetGPIOValuesResponse> {
-    return send_request(this._binding, req, GetGPIOValues)
+    return send_request(this.binding, req, GetGPIOValues)
   }
 }

@@ -1,5 +1,5 @@
-import { Request } from './message'
-import { ChipSettings, GeneralPurpose, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Password, Product, SerialNumber, UsbSettings } from './message.fragments'
+import { Request } from './message.js'
+import { ChipSettings, GeneralPurpose, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Password, Product, SerialNumber, UsbSettings } from './message.fragments.js'
 
 // Read Flash Data
 export type ReadFlashDataRequest = Request & {

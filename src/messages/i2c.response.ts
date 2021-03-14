@@ -1,4 +1,4 @@
-import { Response, Success, Busy } from './message'
+import { Response, Success, Busy, Error } from './message.js'
 
 //
 export type I2CWriteDataResponseBase = Response & (Success | Busy) & {

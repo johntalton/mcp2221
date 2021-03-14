@@ -1,5 +1,5 @@
-import { Request } from './message'
-import { GpioAlter } from './message.fragments'
+import { Request } from './message.js'
+import { GpioAlter } from './message.fragments.js'
 
 // Set GPIO Output Values
 export type SetGPIOOutputValuesRequest = Request & {

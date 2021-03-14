@@ -1,5 +1,5 @@
-import { Response, Success, NotSupported, NotAllowed } from './message'
-import { ChipSettings, GeneralPurpose, UsbSettings, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Product, SerialNumber } from './message.fragments'
+import { Response, Success, NotSupported, NotAllowed } from './message.js'
+import { ChipSettings, GeneralPurpose, UsbSettings, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Product, SerialNumber } from './message.fragments.js'
 
 export type ReadFlashDataResponseBase = Response & (Success | NotSupported) & {
   command: 0xB0

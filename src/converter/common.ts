@@ -1,9 +1,10 @@
 /* eslint-disable max-classes-per-file */
-import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request'
-import { StatusParametersResponse } from '../messages/common.response'
-import { Converter } from './converter'
+import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request.js'
+import { StatusParametersResponse } from '../messages/common.response.js'
+import { Converter } from './converter.js'
 
 function dont_care() { return 0x00 }
+
 function any_other() { return 0x00 }
 
 export class StatusParametersResponseCoder {

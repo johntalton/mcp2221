@@ -1,5 +1,5 @@
-import { Response, Success } from './message'
-import { GpioAlter } from './message.fragments'
+import { Response, Success } from './message.js'
+import { GpioAlter } from './message.fragments.js'
 
 export type SetGPIOOutputValuesResponse = Response & Success & {
   command: 0x50,

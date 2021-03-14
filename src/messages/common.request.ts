@@ -1,4 +1,4 @@
-import { Request } from './message'
+import { Request } from './message.js'
 
 // Status/Set Parameters
 export type StatusParametersRequest = Request & {

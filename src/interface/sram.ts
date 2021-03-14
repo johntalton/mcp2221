@@ -1,5 +1,5 @@
-import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request'
-import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response'
+import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request.js'
+import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response.js'
 
 export interface SRAM {
   set(req: SetSRAMSettingsRequest): Promise<SetSRAMSettingsResponse>

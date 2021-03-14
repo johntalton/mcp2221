@@ -19,20 +19,20 @@ import {
   GetSRAMSettingsRequestCoder, GetSRAMSettingsResponseCoder,
   SetSRAMSettingsRequestCoder, SetSRAMSettingsResponseCoder
 
-} from '../src/converter/coder'
-import { Coder } from '../src/converter/converter'
-import { Message } from '../src/messages/message'
+} from '@johntalton/mcp2221'
+// import { Coder } from '../src/converter/converter'
+// import { Message } from '../src/messages/message'
 
-
+/*
 type Test<T> = {
   coder: Coder<T>
   buffer: ArrayBuffer
   message: T
-}
+}*/
 
 describe('Converter', () => {
   describe('encode & decode', () => {
-    const matrix: Array<Test<any>>= [
+    const matrix /* :Array<Test<any>> */ = [
       //
       { coder: StatusParametersRequestCoder, buffer: Uint8Array.from([ 16, 0, 0, 0, 0 ]), message: { opaque: '' } },
       { coder: StatusParametersRequestCoder, buffer: Uint8Array.from([ 16, 0, 0x10, 0, 0 ]), message: { opaque: '', cancelI2c: true } },

@@ -1,26 +1,24 @@
-import { Flash, Binding } from '../'
+import { Flash } from '../interface/flash.js'
 
-import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request'
-import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response'
+import { Bindable } from '../binding.js'
 
-import { ReadFlashData, SendFlashAccessPassword, WriteFlashData } from '../converter/flash'
+import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request.js'
+import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response.js'
 
-import send_request from './util'
+import { ReadFlashData, SendFlashAccessPassword, WriteFlashData } from '../converter/flash.js'
 
-export class MCP2221Flash implements Flash {
-  private readonly _binding: Binding
+import send_request from './util.js'
 
-  constructor(binding: Binding) { this._binding = binding }
-
+export class MCP2221Flash extends Bindable implements Flash {
   read(req: ReadFlashDataRequest): Promise<ReadFlashDataResponse> {
-    return send_request(this._binding, req, ReadFlashData)
+    return send_request(this.binding, req, ReadFlashData)
   }
 
   write(req: WriteFlashDataRequest): Promise<WriteFlashDataResponse> {
-    return send_request(this._binding, req, WriteFlashData)
+    return send_request(this.binding, req, WriteFlashData)
   }
 
   sendPassword(req: SendFlashAccessPasswordRequest): Promise<SendFlashAccessPasswordResponse> {
-    return send_request(this._binding, req, SendFlashAccessPassword)
+    return send_request(this.binding, req, SendFlashAccessPassword)
   }
 }

@@ -1,4 +1,3 @@
-
 export type Message = {
   opaque: string,
 }
@@ -7,11 +6,11 @@ export type Request = Message & {
   command?: number
 }
 
-export type Response = Message & {
+export type Response = (Message & {
   command: number,
   status: string,
   statusCode?: number
-}
+})
 
 export type Success = Response & { status: 'success', statusCode: 0x00 }
 export type Busy = Response & { status: 'busy', statusCode: 0x01 }

@@ -1,14 +1,12 @@
 /* eslint-disable max-classes-per-file */
-import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request'
-import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response'
+import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request.js'
+import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response.js'
 import { Converter } from './converter'
 
 export class ReadFlashDataResponseCoder {
   static encode(res: ReadFlashDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): ReadFlashDataResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -25,9 +23,7 @@ export class ReadFlashDataRequestCoder {
 export class WriteFlashDataResponseCoder {
   static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): WriteFlashDataResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -44,9 +40,7 @@ export class WriteFlashDataRequestCoder {
 export class SendFlashAccessPasswordResponseCoder {
   static encode(res: SendFlashAccessPasswordResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): SendFlashAccessPasswordResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 

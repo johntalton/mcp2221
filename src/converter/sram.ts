@@ -1,14 +1,11 @@
-/* eslint-disable max-classes-per-file */
-import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request'
-import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response'
+import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request.js'
+import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response.js'
 import { Converter } from './converter'
 
 export class SetSRAMSettingsResponseCoder {
   static encode(msg: SetSRAMSettingsResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): SetSRAMSettingsResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -25,9 +22,7 @@ export class SetSRAMSettingsRequestCoder {
 export class GetSRAMSettingsResponseCoder {
   static encode(msg: GetSRAMSettingsResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): GetSRAMSettingsResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 

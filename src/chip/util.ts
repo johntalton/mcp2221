@@ -1,5 +1,6 @@
-import { Converter } from '../converter/converter'
-import { Binding } from '../binding'
+/* eslint-disable fp/no-throw */
+import { Converter } from '../converter/converter.js'
+import { Binding } from '../binding.js'
 
 export default async function send_request<Req, Res>(binding: Binding, req: Req, converter: Converter<Req, Res>): Promise<Res> {
   const buffer = converter.from(req)

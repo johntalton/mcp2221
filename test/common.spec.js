@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
-import { StatusParametersResponse } from '../src'
-import { MCP2221Common } from '../src/chip/common'
+// import { StatusParametersResponse } from '../src'
+import { MCP2221Common } from '@johntalton/mcp2221'
 
 describe('MCP2221Common', () => {
   describe('constructor', () => {
@@ -20,7 +20,7 @@ describe('MCP2221Common', () => {
       const common = new MCP2221Common(binding)
       const res = await common.status({ opaque: '', command: 0x10 })
       expect(res).to.not.be.undefined
-      expect(res as StatusParametersResponse).to.be.exist
+      expect(res).to.be.exist
     })
   })
 

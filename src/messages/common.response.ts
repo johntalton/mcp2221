@@ -1,5 +1,5 @@
-import { Response, Success } from './message'
-import { ReadPending } from './message.fragments'
+import { Response, Success } from './message.js'
+import { ReadPending } from './message.fragments.js'
 
 export type StatusParametersResponse = Response & Success & {
   command: 0x10,

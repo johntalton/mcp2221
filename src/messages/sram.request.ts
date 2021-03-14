@@ -1,5 +1,5 @@
-import { Request } from './message'
-import { DutyCycle, Gpio0, Gpio1, Gpio2, Gpio3, InterruptEdge, Voltage, VoltageOption } from './message.fragments'
+import { Request } from './message.js'
+import { DutyCycle, Gpio0, Gpio1, Gpio2, Gpio3, InterruptEdge, Voltage, VoltageOption } from './message.fragments.js'
 
 // Set SRAM settings (runtime settings)
 export type SetSRAMSettingsRequest = Request & {

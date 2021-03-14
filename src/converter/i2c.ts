@@ -1,14 +1,14 @@
+/* eslint-disable fp/no-nil */
+/* eslint-disable fp/no-class */
 /* eslint-disable max-classes-per-file */
-import { I2CWriteDataRequest, I2CWriteDataRepeatedSTARTRequest, I2CWriteDataNoSTOPRequest, I2CReadDataRequest, I2CReadDataRepeatedSTARTRequest, I2CReadGetDataRequest } from '../messages/i2c.request'
-import { I2CWriteDataResponse, I2CWriteDataRepeatedSTARTResponse, I2CWriteDataNoSTOPResponse, I2CReadDataResponse, I2CReadDataRepeatedSTARTResponse, I2CReadGetDataResponse } from '../messages/i2c.response'
+import { I2CWriteDataRequest, I2CWriteDataRepeatedSTARTRequest, I2CWriteDataNoSTOPRequest, I2CReadDataRequest, I2CReadDataRepeatedSTARTRequest, I2CReadGetDataRequest } from '../messages/i2c.request.js'
+import { I2CWriteDataResponse, I2CWriteDataRepeatedSTARTResponse, I2CWriteDataNoSTOPResponse, I2CReadDataResponse, I2CReadDataRepeatedSTARTResponse, I2CReadGetDataResponse } from '../messages/i2c.response.js'
 import { Converter } from './converter'
 
 export class I2CWriteDataResponseCoder {
   static encode(msg: I2CWriteDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): I2CWriteDataResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -25,9 +25,7 @@ export class I2CWriteDataRequestCoder {
 export class I2CWriteDataRepeatedSTARTResponseCoder {
   static encode(msg: I2CWriteDataRepeatedSTARTResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): I2CWriteDataRepeatedSTARTResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -44,9 +42,7 @@ export class I2CWriteDataRepeatedSTARTRequestCoder {
 export class I2CWriteDataNoSTOPResponseCoder {
   static encode(msg: I2CWriteDataNoSTOPResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): I2CWriteDataNoSTOPResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -63,9 +59,7 @@ export class I2CWriteDataNoSTOPRequestCoder {
 export class I2CReadDataResponseCoder {
   static encode(msg: I2CReadDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): I2CReadDataResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -82,9 +76,7 @@ export class I2CReadDataRequestCoder {
 export class I2CReadDataRepeatedSTARTResponseCoder {
   static encode(msg: I2CReadDataRepeatedSTARTResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): I2CReadDataRepeatedSTARTResponse{
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
@@ -101,9 +93,7 @@ export class I2CReadDataRepeatedSTARTRequestCoder {
 export class I2CReadGetDataResponseCoder {
   static encode(msg: I2CReadGetDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(buffer: ArrayBuffer): I2CReadGetDataResponse {
-    return {
-      opaque: '__invalid__'
-    }
+    throw new Error('invalid')
   }
 }
 
