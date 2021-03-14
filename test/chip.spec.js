@@ -10,9 +10,9 @@ describe('MCP2221A', () => {
       new MCP2221A(binding)
     })
 
-    it('succeeds (openPromisified)', () => {
+    it('succeeds (from)', () => {
       const binding = undefined
-      MCP2221A.openPromisified(binding)
+      MCP2221A.from(binding)
     })
   })
 
@@ -24,7 +24,7 @@ describe('MCP2221A', () => {
           write: async buffer => 64
         }
 
-        const chip = await MCP2221A.openPromisified(usb)
+        const chip = MCP2221A.from(usb)
 
         const res = await chip.common.status({ opaque: 'synthetic' })
       })

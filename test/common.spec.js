@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
 // import { StatusParametersResponse } from '../src'
-import { MCP2221Common } from '@johntalton/mcp2221'
+import { MCP2221Common } from '@johntalton/mcp2221/bindings'
 
 describe('MCP2221Common', () => {
   describe('constructor', () => {

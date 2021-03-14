@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request.js'
 import { StatusParametersResponse } from '../messages/common.response.js'
-import { Converter } from './converter.js'
+import { Converter, DecoderBufferSource } from './converter.js'
 
 function dont_care() { return 0x00 }
 
@@ -10,41 +10,99 @@ function any_other() { return 0x00 }
 export class StatusParametersResponseCoder {
   static encode(res: StatusParametersResponse): ArrayBuffer { throw new Error('unused') }
 
-  static decode(buffer: ArrayBuffer): StatusParametersResponse {
+  static decode(bufferSource: DecoderBufferSource): StatusParametersResponse {
+    const dv = ArrayBuffer.isView(bufferSource) ?
+      new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+      new DataView(bufferSource)
+
+    const command = dv.getUint8(0)
+    const statusCode = dv.getUint8(1)
+    const cancelTransferByte = dv.getUint8(2)
+    const setSpeedByte = dv.getUint8(3)
+    const speedDividerByte = dv.getUint8(4)
+
+    const requestedTransferLength = dv.getUint16(9, true)
+    const transferredBytes = dv.getUint16(11, true)
+
+    const dataBufferCounter = dv.getUint8(13)
+    const communicationSpeedDivider = dv.getUint8(14)
+    const timeoutMs = dv.getUint8(15)
+
+    const address = dv.getUint16(16, true)
+
+    const SCL = dv.getUint8(22)
+    const SDA = dv.getUint8(23)
+
+    const interruptEdgeDetectorStateByte = dv.getUint8(24)
+    const pendingValue = dv.getUint8(25)
+
+    const rhmaj = String.fromCharCode(dv.getUint8(46))
+    const rhmin = String.fromCharCode(dv.getUint8(47))
+    const rfmaj = String.fromCharCode(dv.getUint8(48))
+    const rfmin = String.fromCharCode(dv.getUint8(49))
+
+    const ch0 = dv.getUint16(50, true)
+    const ch1 = dv.getUint16(52, true)
+    const ch2 = dv.getUint16(54, true)
+
+
+
+
+    const interruptEdgeDetectorState = interruptEdgeDetectorStateByte === 1
+    const setSpeedSet = setSpeedByte !== 0x00
+    const i2cCancelled = cancelTransferByte !== 0x00
+    const i2cClock = setSpeedSet ? speedDividerByte : undefined
+
+    if(command !== 0x10) { throw new Error('invalid command byte decoded') }
+    if(statusCode !== 0x00) {
+      throw new Error('invalid statusCode')
+    }
+
+    if(rhmaj !== 'A') { throw new Error('invalid hardware major byte decoded') }
+    if(rhmin !== '6') { throw new Error('invalid hardware minor byte decoded') }
+    if(rfmaj !== '1') { throw new Error('invalid firmware major byte decoded') }
+    // if(rfmin !== '1') { throw new Error('invalid firmware minor byte decoded') }
+
+    const revision = {
+      hardware: { major: rhmaj, minor: rhmin },
+      firmware: { major: rfmaj, minor: rfmin }
+    }
+
     return {
-      opaque: '__incorrect__',
-      command: 0x10,
+      opaque: '__kinda_mostly_close__',
+      command,
       status: 'success',
-      statusCode: 0x00,
+      statusCode,
+
+      i2cCancelled,
+      i2cClock,
 
       i2c: {
-        address: 0,
-        requestedTransferLength: 0,
+        address,
 
-        transferredBytes: 0,
-        dataBufferCounter: 0,
-        communicationSpeedDivider: 0,
-        timeoutMs: 0,
+        requestedTransferLength,
+        transferredBytes,
 
-        SCL: 0,
-        SDA: 0,
+        dataBufferCounter,
+        communicationSpeedDivider,
+        timeoutMs,
 
-        pendingValue: 0
+        SCL,
+        SDA,
+
+        pendingValue
       },
 
       adc: {
-        ch0: 0,
-        ch1: 0,
-        ch2: 0
+        ch0,
+        ch1,
+        ch2
       },
 
-      interruptEdgeDetectorState: false,
+      interruptEdgeDetectorState,
 
-      revision: {
-        hardware: { major: 'A', minor: '6' },
-        firmware: { major: '1', minor: '1' }
-      }
-    }
+      revision
+    } as StatusParametersResponse
   }
 }
 
@@ -59,7 +117,7 @@ export class StatusParametersRequestCoder {
     ])
   }
 
-  static decode(buffer: ArrayBuffer): StatusParametersRequest { throw new Error('unused') }
+  static decode(bufferSource: DecoderBufferSource): StatusParametersRequest { throw new Error('unused') }
 }
 
 export class ResetChipRequestCoder {
@@ -72,12 +130,12 @@ export class ResetChipRequestCoder {
     ])
   }
 
-  static decode(buffer: ArrayBuffer): ResetChipRequest { throw new Error('unused') }
+  static decode(bufferSource: DecoderBufferSource): ResetChipRequest { throw new Error('unused') }
 }
 
 export class ResetChipResponseCoder {
   static encode(res: void): ArrayBuffer { throw new Error('unused') }
-  static decode(buffer: ArrayBuffer): void { return }
+  static decode(bufferSource: DecoderBufferSource): void { return }
 }
 
 export const StatusParameter: Converter<StatusParametersRequest, StatusParametersResponse> = {

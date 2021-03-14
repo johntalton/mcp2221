@@ -18,8 +18,7 @@ import {
   I2CWriteDataRepeatedSTARTRequestCoder, I2CWriteDataRepeatedSTARTResponseCoder,
   GetSRAMSettingsRequestCoder, GetSRAMSettingsResponseCoder,
   SetSRAMSettingsRequestCoder, SetSRAMSettingsResponseCoder
-
-} from '@johntalton/mcp2221'
+} from '@johntalton/mcp2221/coders'
 // import { Coder } from '../src/converter/converter'
 // import { Message } from '../src/messages/message'
 

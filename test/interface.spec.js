@@ -1,15 +1,17 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
+/*
 import {
   Common, Flash, Gpio, I2C, SRAM
 } from '@johntalton/mcp2221'
+*/
 
 describe('Interface', () => {
   describe('Common', () => {
     describe('status', () => {
       it('conforms', async () => {
-        const common: Common = {
+        const common /* : Common */ = {
           status: req => Promise.resolve({
             opaque: '',
             command: 0x10,
@@ -51,7 +53,7 @@ describe('Interface', () => {
 
     describe('reset', () => {
       it('conforms', async () => {
-        const common: Common = {
+        const common /* : Common */ = {
           status: undefined,
           reset: req => Promise.resolve()
         }
@@ -64,7 +66,7 @@ describe('Interface', () => {
   describe('Flash', () => {
     describe('read', () => {
       it('conforms', async () => {
-        const flash: Flash = {
+        const flash /* : Flash */ = {
           read: async req => ({
             opaque: '',
             command: 0xB0,
@@ -85,7 +87,7 @@ describe('Interface', () => {
 
     describe('write', () => {
       it('conforms', async () => {
-        const flash: Flash = {
+        const flash /* : Flash */ = {
           read: undefined,
           write: req => Promise.resolve({
             opaque: '',
@@ -102,7 +104,7 @@ describe('Interface', () => {
 
     describe('sendPassword', () => {
       it('conforms', async () => {
-        const flash: Flash = {
+        const flash /* : Flash */ = {
           read: undefined,
           write: undefined,
           sendPassword: req => Promise.resolve({
@@ -121,7 +123,7 @@ describe('Interface', () => {
   describe('Gpio', () => {
     describe('set', () => {
       it('conforms', async () => {
-        const gpio: Gpio = {
+        const gpio /* : Gpio */ = {
           set: req => Promise.resolve({
             opaque: '',
             command: 0x50,
@@ -137,7 +139,7 @@ describe('Interface', () => {
 
     describe('get', () => {
       it('conforms', async () => {
-        const gpio: Gpio = {
+        const gpio /* : Gpio */ = {
           set: undefined,
           get: req => Promise.resolve({
             opaque: '',
@@ -155,7 +157,7 @@ describe('Interface', () => {
   describe('I²C', () => {
     describe('writeData', () => {
       it('conforms', async () => {
-        const i2c: I2C = {
+        const i2c /* : I2C */ = {
           writeData: req => Promise.resolve({
             opaque: '',
             command: 0x90,
@@ -176,7 +178,7 @@ describe('Interface', () => {
 
     describe('writeRepeatedSTART', () => {
       it('conforms', async () => {
-        const i2c: I2C = {
+        const i2c /* : I2C */ = {
           writeData: undefined,
           writeRepeatedSTART: req => Promise.resolve({
             opaque: '',
@@ -197,7 +199,7 @@ describe('Interface', () => {
 
     describe('writeNoSTOP', () => {
       it('conforms', async () => {
-        const i2c: I2C = {
+        const i2c /* : I2C */ = {
           writeData: undefined,
           writeRepeatedSTART: undefined,
           writeNoSTOP: req => Promise.resolve({
@@ -218,7 +220,7 @@ describe('Interface', () => {
 
     describe('readData', () => {
       it('conforms', async () => {
-        const i2c: I2C = {
+        const i2c /* : I2C */ = {
           writeData: undefined,
           writeRepeatedSTART: undefined,
           writeNoSTOP: undefined,
@@ -241,7 +243,7 @@ describe('Interface', () => {
 
     describe('readRepeatedSTART', () => {
       it('conforms', async () => {
-        const i2c: I2C = {
+        const i2c /* : I2C */ = {
           writeData: undefined,
           writeRepeatedSTART: undefined,
           writeNoSTOP: undefined,
@@ -264,7 +266,7 @@ describe('Interface', () => {
 
     describe('readGetData', () => {
       it('conforms', async () => {
-        const i2c: I2C = {
+        const i2c /* : I2C */ = {
           writeData: undefined,
           writeRepeatedSTART: undefined,
           writeNoSTOP: undefined,
@@ -287,7 +289,7 @@ describe('Interface', () => {
   describe('SRAM', () => {
     describe('set', () => {
       it('conforms', async () => {
-        const sram: SRAM = {
+        const sram /* : SRAM */ = {
           set: req => Promise.resolve({
             opaque: '',
             command: 0x60,
@@ -303,7 +305,7 @@ describe('Interface', () => {
 
     describe('get', () => {
       it('conforms', async () => {
-        const sram: SRAM = {
+        const sram /* : SRAM */ = {
           set: undefined,
           get: req => Promise.resolve({
             opaque: '',

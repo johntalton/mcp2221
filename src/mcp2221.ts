@@ -4,7 +4,12 @@
 /* eslint-disable immutable/no-mutation */
 /* eslint-disable fp/no-mutation */
 /* eslint-disable fp/no-nil */
-import { Common, Flash, Gpio, I2C, SRAM } from './'
+import { Common } from './interface/common.js'
+import { Flash } from './interface/flash.js'
+import { Gpio } from './interface/gpio.js'
+import { I2C } from './interface/i2c.js'
+import { SRAM } from './interface/sram.js'
+
 import { Bindable, Binding } from './binding.js'
 
 import { MCP2221Common } from './chip/common.js'
@@ -21,8 +26,8 @@ export class MCP2221 extends Bindable {
   readonly sram: SRAM
 
   // factory
-  static openPromisified(binding: Binding): Promise<MCP2221> {
-    return Promise.resolve(new MCP2221(binding))
+  static from(binding: Binding): MCP2221 {
+    return new MCP2221(binding)
   }
 
   constructor(binding: Binding) {

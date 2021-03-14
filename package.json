@@ -3,8 +3,9 @@
   "version": "2.0.0",
   "description": "",
   "exports": {
-    "import": "./lib/index.js",
-    "coder": "./lib/converter/coder.js"
+    ".": "./lib/index.js",
+    "./bindings": "./lib/index.bindings.js",
+    "./coders": "./lib//converter/coder.js"
   },
   "type": "module",
   "files": [
@@ -23,8 +24,9 @@
   },
   "eslintConfig": {
     "ignorePatterns": [
-      "test/**/*.spec.js",
-      "examples/**", "lib/**"
+      "test/**/*.spec.*",
+      "examples/**",
+      "lib/**"
     ],
     "extends": [
       "@johntalton/eslint-config/ts"
@@ -39,12 +41,10 @@
           "code": 120
         }
       ],
-
-    "fp/no-throw": "off",
-    "fp/no-nil": "off",
-    "fp/no-class": "off",
-    "max-classes-per-file": "off",
-
+      "fp/no-throw": "off",
+      "fp/no-nil": "off",
+      "fp/no-class": "off",
+      "max-classes-per-file": "off",
       "spellcheck/spell-checker": [
         "error",
         {
@@ -105,7 +105,7 @@
     "serialport": "^9.0.3",
     "source-map-support": "^0.5.19",
     "ts-node": "^9.1.1",
-    "usb": "^1.6.3",
+    "usb": "^1.6.5",
     "usb-detection": "^4.10.0",
     "webusb": "^2.2.0"
   }

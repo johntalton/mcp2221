@@ -1,11 +1,11 @@
 /* eslint-disable max-classes-per-file */
 import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request.js'
 import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response.js'
-import { Converter } from './converter'
+import { Converter, DecoderBufferSource } from './converter.js'
 
 export class SetGPIOOutputValuesResponseCoder {
   static encode(res: SetGPIOOutputValuesResponse): ArrayBuffer { throw new Error('unused') }
-  static decode(buffer: ArrayBuffer): SetGPIOOutputValuesResponse {
+  static decode(bufferSource: DecoderBufferSource): SetGPIOOutputValuesResponse {
     throw new Error('invalid')
   }
 }
@@ -17,12 +17,12 @@ export class SetGPIOOutputValuesRequestCoder {
 
     ])
   }
-  static decode(buffer: ArrayBuffer): SetGPIOOutputValuesRequest { throw new Error('unused') }
+  static decode(bufferSource: DecoderBufferSource): SetGPIOOutputValuesRequest { throw new Error('unused') }
 }
 
 export class GetGPIOValuesResponseCoder {
   static encode(res: GetGPIOValuesResponse): ArrayBuffer { throw new Error('unused') }
-  static decode(buffer: ArrayBuffer): GetGPIOValuesResponse {
+  static decode(bufferSource: DecoderBufferSource): GetGPIOValuesResponse {
     throw new Error('invalid')
   }
 }
@@ -34,7 +34,7 @@ export class GetGPIOValuesRequestCoder {
 
     ])
   }
-  static decode(buffer: ArrayBuffer): GetGPIOValuesRequest { throw new Error('unused') }
+  static decode(bufferSource: DecoderBufferSource): GetGPIOValuesRequest { throw new Error('unused') }
 }
 
 export const SetGPIOOutputValues: Converter<SetGPIOOutputValuesRequest, SetGPIOOutputValuesResponse> ={
