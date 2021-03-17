@@ -28,7 +28,10 @@ export class ReadFlashDataResponseCoder {
     }
 
     const byteLength = dv.getUint8(2)
-    const statusMaskByte = dv.getUint8(3)
+    const chipMaskByte = dv.getUint8(4)
+    const clockDividerByte = dv.getUint8(5)
+
+    console.log({ chipMaskByte , clockDividerByte })
 
     return {
       opaque: '__can_you_guess__',

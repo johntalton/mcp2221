@@ -108,5 +108,8 @@
     "usb": "^1.6.5",
     "usb-detection": "^4.10.0",
     "webusb": "^2.2.0"
+  },
+  "dependencies": {
+    "@johntalton/bitsmush": "^1.0.0"
   }
 }

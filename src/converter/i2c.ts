@@ -40,24 +40,62 @@ export class I2CWriteDataRepeatedSTARTRequestCoder {
 }
 
 export class I2CWriteDataNoSTOPResponseCoder {
-  static encode(msg: I2CWriteDataNoSTOPResponse): ArrayBuffer { throw new Error('unused') }
+  static encode(_msg: I2CWriteDataNoSTOPResponse): ArrayBuffer { throw new Error('unused') }
   static decode(bufferSource: DecoderBufferSource): I2CWriteDataNoSTOPResponse {
-    throw new Error('invalid')
+    const dv = ArrayBuffer.isView(bufferSource) ?
+      new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+      new DataView(bufferSource)
+
+    const command = dv.getUint8(0)
+    const statusCode = dv.getUint8(1)
+
+    if(command !== 0x94) { throw new Error('invalid command byte decoded') }
+    if(statusCode !== 0x00) {
+      if(statusCode === 0x01) {
+        // I2C Engine is busy (command not completed)
+        return {
+          opaque: '__busy__',
+          command,
+          status: 'busy',
+          statusCode
+        }
+      }
+      throw new Error('invalid statusCode')
+    }
+
+    return {
+      opaque: '__thanks_for_that__',
+      command,
+      status: 'success',
+      statusCode
+    }
   }
 }
 
 export class I2CWriteDataNoSTOPRequestCoder {
   static encode(msg: I2CWriteDataNoSTOPRequest): ArrayBuffer {
-    return Uint8ClampedArray.from([
-      0x94,
 
-    ])
+    const buffer = new ArrayBuffer(64)
+    const dv = new DataView(buffer)
+
+    const userData = new Uint8Array(buffer, 4)
+    const inputUserData = ArrayBuffer.isView(msg.buffer) ?
+      new Uint8Array(msg.buffer.buffer, msg.buffer.byteOffset, msg.buffer.byteLength) :
+      new Uint8Array(msg.buffer)
+
+    userData.set(inputUserData)
+
+    dv.setUint8(0, 0x94)
+    dv.setUint16(1, inputUserData.byteLength, true)
+    dv.setUint8(3, (msg.address << 1) | 0)
+
+    return buffer
   }
-  static decode(bufferSource: DecoderBufferSource): I2CWriteDataNoSTOPRequest { throw new Error('unused') }
+  static decode(_bufferSource: DecoderBufferSource): I2CWriteDataNoSTOPRequest { throw new Error('unused') }
 }
 
 export class I2CReadDataResponseCoder {
-  static encode(msg: I2CReadDataResponse): ArrayBuffer { throw new Error('unused') }
+  static encode(_msg: I2CReadDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(bufferSource: DecoderBufferSource): I2CReadDataResponse {
     const dv = ArrayBuffer.isView(bufferSource) ?
       new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
@@ -97,17 +135,20 @@ export class I2CReadDataRequestCoder {
   static encode(msg: I2CReadDataRequest): ArrayBuffer {
     const buffer = new ArrayBuffer(64)
     const dv = new DataView(buffer)
+
     dv.setUint8(0, 0x91)
-    dv.setUint16(3, msg.length, true)
-    dv.setUint8(3, msg.address)
+    dv.setUint16(1, msg.length, true)
+    dv.setUint8(3, (msg.address << 1) | 1)
+
+    //console.log('i2c read request buffer', msg.length, msg.address, buffer)
 
     return buffer
   }
-  static decode(bufferSource: DecoderBufferSource): I2CReadDataRequest { throw new Error('unused') }
+  static decode(_bufferSource: DecoderBufferSource): I2CReadDataRequest { throw new Error('unused') }
 }
 
 export class I2CReadDataRepeatedSTARTResponseCoder {
-  static encode(msg: I2CReadDataRepeatedSTARTResponse): ArrayBuffer { throw new Error('unused') }
+  static encode(_msg: I2CReadDataRepeatedSTARTResponse): ArrayBuffer { throw new Error('unused') }
   static decode(bufferSource: DecoderBufferSource): I2CReadDataRepeatedSTARTResponse {
     throw new Error('invalid')
   }
@@ -120,11 +161,11 @@ export class I2CReadDataRepeatedSTARTRequestCoder {
 
     ])
   }
-  static decode(bufferSource: DecoderBufferSource): I2CReadDataRepeatedSTARTRequest { throw new Error('unused') }
+  static decode(_bufferSource: DecoderBufferSource): I2CReadDataRepeatedSTARTRequest { throw new Error('unused') }
 }
 
 export class I2CReadGetDataResponseCoder {
-  static encode(msg: I2CReadGetDataResponse): ArrayBuffer { throw new Error('unused') }
+  static encode(_msg: I2CReadGetDataResponse): ArrayBuffer { throw new Error('unused') }
   static decode(bufferSource: DecoderBufferSource): I2CReadGetDataResponse {
     const dv = ArrayBuffer.isView(bufferSource) ?
       new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
@@ -170,7 +211,7 @@ export class I2CReadGetDataRequestCoder {
       0x40
     ])
   }
-  static decode(bufferSource: DecoderBufferSource): I2CReadGetDataRequest { throw new Error('unused') }
+  static decode(_bufferSource: DecoderBufferSource): I2CReadGetDataRequest { throw new Error('unused') }
 }
 
 

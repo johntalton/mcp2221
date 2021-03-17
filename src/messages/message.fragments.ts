@@ -46,6 +46,25 @@ export type GeneralPurpose = {
   },
 }
 
+export type GeneralPurposeAlter = {
+  dac?: {
+    referenceVoltage: Voltage,
+    referenceOptions: VoltageOption,
+
+    initialValue?: number
+  },
+
+  adc?: {
+    referenceVoltage: Voltage,
+    referenceOptions: VoltageOption
+  },
+
+  interrupt?: {
+    edge?: InterruptEdge,
+    clear?: boolean,
+  }
+}
+
 export type UsbSettings = {
   vendorId: number,
   productId: number,
