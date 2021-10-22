@@ -93,7 +93,7 @@
     "nodemon": "^2.0.4",
     "serialport": "^9.0.3",
     "source-map-support": "^0.5.19",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.4.0",
     "usb": "^1.6.3",
     "usb-detection": "^4.10.0",
     "webusb": "^2.2.0"
