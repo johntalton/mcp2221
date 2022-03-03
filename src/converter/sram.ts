@@ -6,6 +6,7 @@ import { BitSmush } from '@johntalton/bitsmush'
 
 import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request.js'
 import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response.js'
+import { Voltage, VoltageOption } from '../messages/message.fragments.js'
 import { Converter, DecoderBufferSource } from './converter.js'
 
 export class SetSRAMSettingsResponseCoder {
@@ -48,13 +49,12 @@ export class SetSRAMSettingsRequestCoder {
           referenceVoltage: { smush: [], enumeration: { '': '' } },
           referenceOptions: {}
         }
-      }
+      },
       dacOutputValue: {
 
       }
     }
 
-    foo.forEach(entry => {})
 
     dv.setUint8(0, 0x60)
 
@@ -62,7 +62,7 @@ export class SetSRAMSettingsRequestCoder {
     const clockOutputByte = hasClock ? 0 : 0
     dv.setUint8(2, clockOutputByte)
 
-    function dacSettingsAlterByte(msg) {
+    function dacSettingsAlterByte(msg: SetSRAMSettingsRequest) {
       const hasDac = msg.gp?.dac !== undefined
       if(!hasDac) { return 0x00 }
 
@@ -115,7 +115,7 @@ export class SetSRAMSettingsRequestCoder {
 
     return buffer
   }
-  static decode(_buffefSource: DecoderBufferSource): SetSRAMSettingsRequest { throw new Error('unused') }
+  static decode(_bufferSource: DecoderBufferSource): SetSRAMSettingsRequest { throw new Error('unused') }
 }
 
 export class GetSRAMSettingsResponseCoder {
@@ -162,17 +162,15 @@ export class GetSRAMSettingsResponseCoder {
     const gpio2 = dv.getUint8(24)
     const gpio3 = dv.getUint8(25)
 
-    console.log('************', gpio0)
-
-
-    function dacAlterByteToSettings(dacSettingsMaskByte) {
-      const result = BitSmush.unSmushBits([], dacStatusMaskByte)
+    function dacAlterByteToSettings(dacAlterByte: number) {
+      const result = BitSmush.unSmushBits([], dacAlterByte)
       return {
-        referenceVoltage: 0,
-        referenceOptions: 0
+        referenceVoltage: 'Off' as Voltage,
+        referenceOptions: 'Vdd' as VoltageOption,
+        initialValue: 0
       }
     }
-    const dac =
+    const dac = dacAlterByteToSettings(dacStatusMaskByte)
 
     return {
       opaque: '__here_we_go__',
@@ -190,11 +188,7 @@ export class GetSRAMSettingsResponseCoder {
       },
       gp: {
         clockDivider: 0,
-        dac: {
-          referenceVoltage: 'Off',
-          referenceOptions: 'Vdd',
-          initialValue: 0
-        },
+        dac,
         adc: {
           referenceVoltage: 'Off',
           referenceOptions: 'Vdd'

@@ -29,18 +29,32 @@ type Test<T> = {
   message: T
 }*/
 
+function padZeros(count) {
+  return new Array(count).fill(0)
+}
+
+const USB_MAJ_MIN = [
+  'A'.charCodeAt(0),
+  '6'.charCodeAt(0),
+  '1'.charCodeAt(0),
+  '1'.charCodeAt(0)
+]
+
 describe('Converter', () => {
   describe('encode & decode', () => {
     const matrix /* :Array<Test<any>> */ = [
       //
       { coder: StatusParametersRequestCoder, buffer: Uint8Array.from([ 16, 0, 0, 0, 0 ]), message: { opaque: '' } },
       { coder: StatusParametersRequestCoder, buffer: Uint8Array.from([ 16, 0, 0x10, 0, 0 ]), message: { opaque: '', cancelI2c: true } },
-      { coder: StatusParametersResponseCoder, buffer: Uint8Array.from([ 16 ]), message:
+      { coder: StatusParametersResponseCoder, buffer: Uint8Array.from([ 16, 0, ...padZeros(44), ...USB_MAJ_MIN, ...padZeros(20) ]), message:
         {
-          opaque: '__incorrect__',
+          opaque: '__kinda_mostly_close__',
           status: 'success', statusCode: 0,
           command: 0x10,
           interruptEdgeDetectorState: false,
+
+          i2cCancelled: false,
+          i2cClock: undefined,
 
           adc: {
             ch0: 0,
@@ -66,8 +80,8 @@ describe('Converter', () => {
       { coder: ResetChipRequestCoder, buffer: Uint8Array.from([ 0x70, 0xAB, 0xCD, 0xEF ]), message: { opaque: '' } },
       { coder: ResetChipResponseCoder, buffer: Uint8Array.from([ ]), message: undefined },
       //
-      { coder: ReadFlashDataRequestCoder, buffer: Uint8Array.from([ 0xB0 ]), message: { opaque: '' } },
-      { coder: ReadFlashDataRequestCoder, buffer: Uint8Array.from([ 0xB0 ]), message: { opaque: '' } },
+      { coder: ReadFlashDataRequestCoder, buffer: Uint8Array.from([ 0xB0, 0x00 ]), message: { opaque: '' } },
+      { coder: ReadFlashDataRequestCoder, buffer: Uint8Array.from([ 0xB0, 0x00 ]), message: { opaque: '' } },
       { coder: ReadFlashDataResponseCoder, buffer: Uint8Array.from([ 0xB0 ]), message: { opaque: '__invalid__' } },
       //
       { coder: WriteFlashDataRequestCoder, buffer: Uint8Array.from([ 0xB1 ]), message: { opaque: '' } },

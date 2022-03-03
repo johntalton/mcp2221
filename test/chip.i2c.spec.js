@@ -16,6 +16,12 @@ const RESPONSE_I2C_WRITE_DATA_BUSY = Uint8Array.from(
   .concat(Array.from({ length: 62 }))
 ).buffer
 
+const RESPONSE_I2C_WRITE_NO_STOP = Uint8Array.from(
+  [ 0x94, 0x01 ]
+  .concat(Array.from({ length: 62 }))
+).buffer
+
+
 
 
 
@@ -41,7 +47,7 @@ describe('MCP2221I2C', () => {
       expect(res).to.be.exist
     })
 
-    it('succeeds', async () => {
+    it('succeeds data busy', async () => {
       const binding = { read: async length => RESPONSE_I2C_WRITE_DATA_BUSY, write: async buffer => 64 }
       const i2c = new MCP2221I2C(binding)
       const res = await i2c.writeData({
@@ -68,7 +74,7 @@ describe('MCP2221I2C', () => {
 
   describe('writeNoSTOP', () => {
     it('succeeds', async () => {
-      const binding = { read: async length => RESPONSE_I2C_, write: async buffer => 64 }
+      const binding = { read: async length => RESPONSE_I2C_WRITE_NO_STOP, write: async buffer => 64 }
       const i2c = new MCP2221I2C(binding)
       const res = await i2c.writeNoSTOP({
         address: 0x00,
