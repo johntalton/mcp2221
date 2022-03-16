@@ -3,3 +3,4 @@ lib/
 types/
 coverage/
 .vscode/
+package-lock.json
