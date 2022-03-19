@@ -5,7 +5,7 @@ import { Bindable } from '../binding.js'
 import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request.js'
 import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response.js'
 
-import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio.js'
+import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio/gpio.js'
 
 import send_request from './util.js'
 

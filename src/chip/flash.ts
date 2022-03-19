@@ -5,7 +5,7 @@ import { Bindable } from '../binding.js'
 import { ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest } from '../messages/flash.request.js'
 import { ReadFlashDataResponse, WriteFlashDataResponse, SendFlashAccessPasswordResponse } from '../messages/flash.response.js'
 
-import { ReadFlashData, SendFlashAccessPassword, WriteFlashData } from '../converter/flash.js'
+import { ReadFlashData, SendFlashAccessPassword, WriteFlashData } from '../converter/flash/flash.js'
 
 import send_request from './util.js'
 

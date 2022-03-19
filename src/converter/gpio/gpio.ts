@@ -1,12 +1,20 @@
 /* eslint-disable max-classes-per-file */
-import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../messages/gpio.request.js'
-import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../messages/gpio.response.js'
-import { Converter, DecoderBufferSource } from './converter.js'
+import { SetGPIOOutputValuesRequest, GetGPIOValuesRequest } from '../../messages/gpio.request.js'
+import { SetGPIOOutputValuesResponse, GetGPIOValuesResponse } from '../../messages/gpio.response.js'
+import { Converter, DecoderBufferSource } from '../converter.js'
+
+import { decodeStatusResponse } from '../_.js'
 
 export class SetGPIOOutputValuesResponseCoder {
   static encode(res: SetGPIOOutputValuesResponse): ArrayBuffer { throw new Error('unused') }
   static decode(bufferSource: DecoderBufferSource): SetGPIOOutputValuesResponse {
-    throw new Error('invalid')
+    const dv = ArrayBuffer.isView(bufferSource) ?
+      new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+      new DataView(bufferSource)
+
+    const { command, status, statusCode } = decodeStatusResponse(dv, 0x50) as SetGPIOOutputValuesResponse
+
+    throw new Error(' un implemented :( ')
   }
 }
 
@@ -23,7 +31,13 @@ export class SetGPIOOutputValuesRequestCoder {
 export class GetGPIOValuesResponseCoder {
   static encode(res: GetGPIOValuesResponse): ArrayBuffer { throw new Error('unused') }
   static decode(bufferSource: DecoderBufferSource): GetGPIOValuesResponse {
-    throw new Error('invalid')
+    const dv = ArrayBuffer.isView(bufferSource) ?
+      new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+      new DataView(bufferSource)
+
+    const { command, status, statusCode } = decodeStatusResponse(dv, 0x51) as GetGPIOValuesResponse
+
+    throw new Error(' no impl yet :(')
   }
 }
 

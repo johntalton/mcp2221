@@ -4,7 +4,7 @@ import { Common } from '../interface/common.js'
 import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request.js'
 import { StatusParametersResponse } from '../messages/common.response.js'
 
-import { StatusParameter, ResetChip } from '../converter/common.js'
+import { StatusParameter, ResetChip } from '../converter/common/common.js'
 
 import send_request from './util.js'
 

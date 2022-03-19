@@ -5,7 +5,7 @@ import { Bindable } from '../binding.js'
 import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request.js'
 import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response.js'
 
-import { SetSRAMSettings, GetSRAMSettings } from '../converter/sram.js'
+import { SetSRAMSettings, GetSRAMSettings } from '../converter/sram/sram.js'
 
 import send_request from './util.js'
 

@@ -1,14 +1,11 @@
 import { Request } from './message.js'
-import { DutyCycle, Gpio0, Gpio1, Gpio2, Gpio3, GeneralPurposeAlter } from './message.fragments.js'
+import { GPClock, Gpio0, Gpio1, Gpio2, Gpio3, GeneralPurposeAlter } from './message.fragments.js'
 
 // Set SRAM settings (runtime settings)
 export type SetSRAMSettingsRequest = Request & {
   command?: 0x60,
 
-  clock?: {
-    dutyCycle: DutyCycle,
-    divider: number
-  },
+  clock?: GPClock
 
   gp?: GeneralPurposeAlter
 

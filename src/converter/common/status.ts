@@ -1,13 +1,10 @@
-/* eslint-disable sort-imports */
-/* eslint-disable no-magic-numbers */
-/* eslint-disable max-classes-per-file */
-import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request.js'
-import { StatusParametersResponse } from '../messages/common.response.js'
-import { Converter, DecoderBufferSource } from './converter.js'
+import { StatusParametersRequest } from '../../messages/common.request.js'
+import { StatusParametersResponse } from '../../messages/common.response.js'
+import { DecoderBufferSource } from '../converter.js'
 
-function dont_care() { return 0x00 }
+import { dont_care, any_other } from '../../messages/message.consts.js'
 
-function any_other() { return 0x00 }
+import { decodeStatusResponse } from '../_.js'
 
 export class StatusParametersResponseCoder {
   static encode(_res: StatusParametersResponse): ArrayBuffer { throw new Error('unused') }
@@ -17,13 +14,8 @@ export class StatusParametersResponseCoder {
       new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
       new DataView(bufferSource)
 
-    const command = dv.getUint8(0)
-    const statusCode = dv.getUint8(1)
 
-    if(command !== 0x10) { throw new Error('invalid command byte decoded') }
-    if(statusCode !== 0x00) {
-      throw new Error('invalid statusCode')
-    }
+    const { command, status, statusCode } = decodeStatusResponse(dv, 0x10)
 
     const cancelTransferByte = dv.getUint8(2)
     const setSpeedByte = dv.getUint8(3)
@@ -55,9 +47,16 @@ export class StatusParametersResponseCoder {
 
     //
     const interruptEdgeDetectorState = interruptEdgeDetectorStateByte === 1
-    const setSpeedSet = setSpeedByte !== 0x00
+
     const i2cCancelled = cancelTransferByte !== 0x00
-    const i2cClock = setSpeedSet ? speedDividerByte : undefined
+
+    const setSpeedRequested = setSpeedByte !== 0x00
+    const setSpeedSuccessfull = setSpeedByte === 0x20
+
+    const i2cClock = setSpeedSuccessfull ? speedDividerByte : undefined
+
+    //const newSpeed = setSpeedSet ? speedDividerByte : undefined
+    //console.log('________', i2cClock)
 
     //
     if(rhmaj !== 'A') { throw new Error('invalid hardware major byte decoded') }
@@ -77,6 +76,9 @@ export class StatusParametersResponseCoder {
       statusCode,
 
       i2cCancelled,
+
+      setSpeedRequested,
+      setSpeedSuccessfull,
       i2cClock,
 
       i2c: {
@@ -110,42 +112,36 @@ export class StatusParametersResponseCoder {
 
 export class StatusParametersRequestCoder {
   static encode(req: StatusParametersRequest): ArrayBuffer {
+
+    const { cancelI2c, i2cClock } = req
+
+    const shouldCancel = cancelI2c !== undefined
+    const shouldClock = i2cClock !== undefined
+
+    const cancleValue = shouldCancel ? 0x10 : any_other()
+    const setClockValue = shouldClock ? 0x20 : any_other()
+    const clockValue = shouldClock ? i2cClock : any_other()
+
+    const buffer = new ArrayBuffer(64)
+    const dv = new DataView(buffer)
+
+    dv.setUint8(0, 0x10)
+    dv.setUint8(1, dont_care())
+    dv.setUint8(2, cancleValue)
+    dv.setUint8(3, setClockValue)
+    dv.setUint8(3, clockValue)
+
+
+
     return Uint8ClampedArray.from([
       0x10,
       dont_care(),
-      req.cancelI2c ? 0x10 : any_other(),
-      req.i2cClock ? 0x20 : any_other(),
-      req.i2cClock ? req.i2cClock : 0x00
+      req.cancelI2c !== undefined ? 0x10 : any_other(),
+
+      req.i2cClock !== undefined ? 0x20 : any_other(),
+      req.i2cClock !== undefined ? req.i2cClock : 0x00
     ])
   }
 
   static decode(bufferSource: DecoderBufferSource): StatusParametersRequest { throw new Error('unused') }
-}
-
-export class ResetChipRequestCoder {
-  static encode(req: ResetChipRequest): ArrayBuffer {
-    const magic = [ 0xAB, 0xCD, 0xEF]
-
-    return Uint8ClampedArray.from([
-      0x70,
-      ...magic
-    ])
-  }
-
-  static decode(bufferSource: DecoderBufferSource): ResetChipRequest { throw new Error('unused') }
-}
-
-export class ResetChipResponseCoder {
-  static encode(res: void): ArrayBuffer { throw new Error('unused') }
-  static decode(bufferSource: DecoderBufferSource): void { return }
-}
-
-export const StatusParameter: Converter<StatusParametersRequest, StatusParametersResponse> = {
-  to: StatusParametersResponseCoder.decode,
-  from: StatusParametersRequestCoder.encode
-}
-
-export const ResetChip: Converter<ResetChipRequest, void> = {
-  to: ResetChipResponseCoder.decode,
-  from: ResetChipRequestCoder.encode
 }

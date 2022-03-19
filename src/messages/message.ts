@@ -6,11 +6,27 @@ export type Request = Message & {
   command?: number
 }
 
-export type Response = (Message & {
-  command: number,
-  status: string,
+export type Status = 'success' | 'busy' | 'not-supported' | 'not-allowed' | 'error'
+export const StatusSuccess: Status = 'success'
+export const StatusBusy: Status = 'busy'
+export const StatusError: Status = 'error'
+export const StatusNotAllowed: Status = 'not-allowed'
+export const StatusNotSupported: Status = 'not-supported'
+
+export type WithStatus = {
+  status: Status,
   statusCode?: number
-})
+ }
+
+export type Response = Message & WithStatus & {
+  command: number,
+  i2cState?: number
+}
+
+const I2C_STATES = {
+  98: { } // got while busy trying to read
+}
+
 
 export type Success = Response & { status: 'success', statusCode: 0x00 }
 export type Busy = Response & { status: 'busy', statusCode: 0x01 }

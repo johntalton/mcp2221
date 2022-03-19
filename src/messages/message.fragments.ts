@@ -10,27 +10,40 @@ export type Manufacturer = stringOf<30>
 export type Product = stringOf<30>
 export type SerialNumber = stringOf<30>
 
-export type DutyCycle = '0%' | '25%' | '50%' | '75%'
 
-export type InterruptEdge = 'positive' | 'negative' | 'both'
-export type Voltage = '4.096V' | '2.048V' | '1.024' | 'Off'
+export type I2CClock = number
+
+export type DutyCycle = '0%' | '25%' | '50%' | '75%'
+export type Divider = '375 kHz' | '750 kHz' | '1.5 MHz' | '3 MHz' | '6 MHz' | '12 MHz' | '24 MHz'
+
+export type GPClock = {
+  dutyCycle: DutyCycle,
+  divider: Divider
+}
+
+export type InterruptEdge = 'positive' | 'negative' | 'both' | 'off'
+export type Voltage = '4.096V' | '2.048V' | '1.024V' | 'Off'
 export type VoltageOption = 'Vdd' | 'Vrm'
 export type Security = 'permanently-locked' | 'password-protected' | 'unsecured'
+
+export type InitialLEDState = 'on' | 'off'
+export type SuspendState = 'on' | 'off'
+export type USBCFGState = 'on' | 'off'
+
 
 export type ChipSettings = {
   enabledCDCSerialEnumeration: boolean,
 
-  uartLED: { tx: boolean, rx: boolean },
-  i2cLED: boolean,
-  SSPND: boolean,
-  USBCFG: boolean,
+  uartLED: { tx: InitialLEDState, rx: InitialLEDState },
+  i2cLED: InitialLEDState,
+  SSPND: SuspendState,
+  USBCFG: USBCFGState,
 
   security: Security,
 }
 
 export type GeneralPurpose = {
-  clockDivider: number,
-
+  clock: GPClock,
   dac: {
     referenceVoltage: Voltage,
     referenceOptions: VoltageOption,

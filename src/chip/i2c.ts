@@ -15,7 +15,7 @@ import { I2CWriteDataResponse, I2CWriteDataRepeatedSTARTResponse, I2CWriteDataNo
 import {
   I2CWriteData, I2CWriteDataRepeatedSTART, I2CWriteDataNoSTOP,
   I2CReadData, I2CReadDataRepeatedSTART, I2CReadGetData
-} from '../converter/i2c.js'
+} from '../converter/i2c/i2c.js'
 
 import send_request from './util.js'
 
