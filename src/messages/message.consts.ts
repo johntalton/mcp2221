@@ -5,15 +5,30 @@ import {
   LOGIC_0, LOGIC_1, GpioDirection,
   Voltage, VoltageOption,
   Security, InterruptEdge,
-  Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation
+  Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
+  I2CReadPending
 } from './message.fragments.js'
 
 export const RESET_MAGIC = [ 0xAB, 0xCD, 0xEF ]
+
+export const RevisionA6_11 = {
+  hardware: { major: 'A', minor: '6' },
+  firmware: { major: '1', minor: '1' }
+}
+
+export const RevisionA6_12 = {
+  hardware: { major: 'A', minor: '6' },
+  firmware: { major: '1', minor: '2' }
+}
 
 export function dont_care() { return 0x00 }
 
 export function any_other() { return 0x00 }
 
+//
+export const I2CReadPending0: I2CReadPending = 0
+export const I2CReadPending1: I2CReadPending = 1
+export const I2CReadPending2: I2CReadPending = 2
 
 //
 export const VoltageOptionVrm: VoltageOption = 'Vrm'

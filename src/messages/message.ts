@@ -18,15 +18,14 @@ export type WithStatus = {
   statusCode?: number
  }
 
-export type Response = Message & WithStatus & {
-  command: number,
-  i2cState?: number
+export type WithI2CState = {
+  i2cState?: number,  // todo this is optional until split respon w/ and w/o status and state
+  i2cStateName?: string
 }
 
-const I2C_STATES = {
-  98: { } // got while busy trying to read
+export type Response = Message & WithStatus & WithI2CState & {
+  command: number
 }
-
 
 export type Success = Response & { status: 'success', statusCode: 0x00 }
 export type Busy = Response & { status: 'busy', statusCode: 0x01 }

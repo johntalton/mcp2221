@@ -2,9 +2,13 @@ import { StatusParametersRequest } from '../../messages/common.request.js'
 import { StatusParametersResponse } from '../../messages/common.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { dont_care, any_other } from '../../messages/message.consts.js'
+import { dont_care, any_other, I2CReadPending2, I2CReadPending0, I2CReadPending1 } from '../../messages/message.consts.js'
 
-import { decodeStatusResponse } from '../_.js'
+import { decodeStatusResponse } from '../decoders.js'
+import { I2CReadPending } from '../../messages/message.fragments.js'
+
+// 50 - 400
+const calcI2CDivider = (freq: number) => Math.floor((12000000 / (freq * 1000)) - 3);
 
 export class StatusParametersResponseCoder {
   static encode(_res: StatusParametersResponse): ArrayBuffer { throw new Error('unused') }
@@ -15,11 +19,13 @@ export class StatusParametersResponseCoder {
       new DataView(bufferSource)
 
 
-    const { command, status, statusCode } = decodeStatusResponse(dv, 0x10)
+    const { command, status, statusCode } = decodeStatusResponse(dv, 0x10) as StatusParametersResponse
 
     const cancelTransferByte = dv.getUint8(2)
     const setSpeedByte = dv.getUint8(3)
     const speedDividerByte = dv.getUint8(4)
+
+    const i2cState = dv.getUint8(8)
 
     const requestedTransferLength = dv.getUint16(9, true)
     const transferredBytes = dv.getUint16(11, true)
@@ -34,7 +40,7 @@ export class StatusParametersResponseCoder {
     const SDA = dv.getUint8(23)
 
     const interruptEdgeDetectorStateByte = dv.getUint8(24)
-    const pendingValue = dv.getUint8(25)
+    const pendingValue = dv.getUint8(25) as I2CReadPending
 
     const rhmaj = String.fromCharCode(dv.getUint8(46))
     const rhmin = String.fromCharCode(dv.getUint8(47))
@@ -72,14 +78,18 @@ export class StatusParametersResponseCoder {
     return {
       opaque: '__kinda_mostly_close__',
       command,
-      status: 'success',
+      status,
       statusCode,
+
 
       i2cCancelled,
 
+      setSpeedByte, speedDividerByte,
       setSpeedRequested,
       setSpeedSuccessfull,
       i2cClock,
+
+      i2cState,
 
       i2c: {
         address,
@@ -106,21 +116,21 @@ export class StatusParametersResponseCoder {
       interruptEdgeDetectorState,
 
       revision
-    } as StatusParametersResponse
+    }
   }
 }
 
 export class StatusParametersRequestCoder {
   static encode(req: StatusParametersRequest): ArrayBuffer {
+    const { cancelI2c, i2cClock } = req ?? {}
 
-    const { cancelI2c, i2cClock } = req
-
-    const shouldCancel = cancelI2c !== undefined
+    const shouldCancel = cancelI2c !== undefined && cancelI2c === true
     const shouldClock = i2cClock !== undefined
 
     const cancleValue = shouldCancel ? 0x10 : any_other()
     const setClockValue = shouldClock ? 0x20 : any_other()
-    const clockValue = shouldClock ? i2cClock : any_other()
+    const clockValue = shouldClock ? calcI2CDivider(i2cClock) : any_other()
+    //console.log('>>>', shouldClock, setClockValue, clockValue, 12000000 / 100000 - 3)
 
     const buffer = new ArrayBuffer(64)
     const dv = new DataView(buffer)
@@ -129,18 +139,9 @@ export class StatusParametersRequestCoder {
     dv.setUint8(1, dont_care())
     dv.setUint8(2, cancleValue)
     dv.setUint8(3, setClockValue)
-    dv.setUint8(3, clockValue)
+    dv.setUint8(4, clockValue)
 
-
-
-    return Uint8ClampedArray.from([
-      0x10,
-      dont_care(),
-      req.cancelI2c !== undefined ? 0x10 : any_other(),
-
-      req.i2cClock !== undefined ? 0x20 : any_other(),
-      req.i2cClock !== undefined ? req.i2cClock : 0x00
-    ])
+    return buffer
   }
 
   static decode(bufferSource: DecoderBufferSource): StatusParametersRequest { throw new Error('unused') }

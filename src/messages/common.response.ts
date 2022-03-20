@@ -1,11 +1,16 @@
 import { Response, Success } from './message.js'
-import { ReadPending, I2CClock } from './message.fragments.js'
+import { I2CReadPending, I2CClock, Revision } from './message.fragments.js'
 
 export type StatusParametersResponse = Response & Success & {
   command: 0x10,
 
   i2cCancelled?: boolean,
   i2cClock?: I2CClock,
+
+  setSpeedByte?: number, // extra
+  speedDividerByte?: number,
+  setSpeedRequested?: boolean,
+  setSpeedSuccessfull?: boolean,
 
   i2c: {
     address: number,
@@ -19,7 +24,7 @@ export type StatusParametersResponse = Response & Success & {
     SCL: number,
     SDA: number,
 
-    pendingValue: ReadPending
+    pendingValue: I2CReadPending
   },
 
   adc: {
@@ -30,8 +35,5 @@ export type StatusParametersResponse = Response & Success & {
 
   interruptEdgeDetectorState: boolean,
 
-  revision: {
-    hardware: { major: 'A', minor: '6' },
-    firmware: { major: '1', minor: '1' }
-  }
+  revision: Revision
 }

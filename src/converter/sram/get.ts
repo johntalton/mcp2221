@@ -1,11 +1,12 @@
 import {
 	decodeStatusResponse,
-	splitStatusByte,
-	dacByteToSettings, adcByteToSettings,
-	gpio, gpio0Designation, gpio1Designation, gpio2Designation, gpio3Designation,
-	intBitsToEdge,
-	gpClockFromValues
-} from '../_.js'
+	decodeChipByte,
+	decodeDACByte, decodeADCByte,
+	decodeGpioByte,
+	gpio0Designation, gpio1Designation, gpio2Designation, gpio3Designation,
+	decodeInterruptFlags,
+	decodeGPClockValues
+} from '../decoders.js'
 
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { GetSRAMSettingsResponse } from '../../messages/sram.response.js'
@@ -46,24 +47,24 @@ export class GetSRAMSettingsResponseCoder {
 		const gpio3Byte = dv.getUint8(25)
 
 		//
-		const chip = splitStatusByte(statusMaskByte)
+		const chip = decodeChipByte(statusMaskByte)
 
-		const dutyCycle = (gpClockOutputByte >> 2) & 0b11
+		const dutyCycle = (gpClockOutputByte >> 3) & 0b11
 		const divider = gpClockOutputByte & 0b111
 
-		const clock = gpClockFromValues(dutyCycle, divider)
+		const clock = decodeGPClockValues(dutyCycle, divider)
 
-		const dac = dacByteToSettings(dacStatusMaskByte)
-		const adc = adcByteToSettings(adcStatusMaskByte)
+		const dac = decodeDACByte(dacStatusMaskByte)
+		const adc = decodeADCByte(adcStatusMaskByte)
 
-		const gpio0 = gpio(gpio0Byte, gpio0Designation)
-		const gpio1 = gpio(gpio1Byte, gpio1Designation)
-		const gpio2 = gpio(gpio2Byte, gpio2Designation)
-		const gpio3 = gpio(gpio3Byte, gpio3Designation)
+		const gpio0 = decodeGpioByte(gpio0Byte, gpio0Designation)
+		const gpio1 = decodeGpioByte(gpio1Byte, gpio1Designation)
+		const gpio2 = decodeGpioByte(gpio2Byte, gpio2Designation)
+		const gpio3 = decodeGpioByte(gpio3Byte, gpio3Designation)
 
 		const negativeEdge = (adcStatusMaskByte >> 6 & 0b1) === 1
 		const positiveEdge = (adcStatusMaskByte >> 5 & 0b1) === 1
-		const edge = intBitsToEdge(negativeEdge, positiveEdge)
+		const edge = decodeInterruptFlags(negativeEdge, positiveEdge)
 
 		return {
 			opaque: '__here_we_go__',

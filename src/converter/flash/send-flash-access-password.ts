@@ -2,7 +2,7 @@ import { SendFlashAccessPasswordRequest } from '../../messages/flash.request.js'
 import { SendFlashAccessPasswordResponse } from '../../messages/flash.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeStatusResponse } from '../_.js'
+import { decodeStatusResponse } from '../decoders.js'
 
 export class SendFlashAccessPasswordResponseCoder {
 	static encode(res: SendFlashAccessPasswordResponse): ArrayBuffer { throw new Error('unused') }

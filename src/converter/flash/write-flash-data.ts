@@ -2,7 +2,7 @@ import { WriteFlashDataRequest } from '../../messages/flash.request.js'
 import { WriteFlashDataResponse } from '../../messages/flash.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeStatusResponse } from '../_.js'
+import { decodeStatusResponse } from '../decoders.js'
 
 export class WriteFlashDataResponseCoder {
 	static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Error('unused') }

@@ -2,7 +2,7 @@ import { I2CReadDataRequest } from '../../messages/i2c.request.js'
 import { I2CReadDataResponse } from '../../messages/i2c.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeReadWriteResponse } from '../_.js'
+import { decodeReadWriteResponse } from '../decoders.js'
 
 export class I2CReadDataResponseCoder {
 	static encode(_msg: I2CReadDataResponse): ArrayBuffer { throw new Error('unused') }

@@ -4,7 +4,8 @@ import {
 	InterruptEdge,
 	Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
-	GPClock
+	GPClock,
+	ChipSettings
 } from '../messages/message.fragments.js'
 
 import {
@@ -36,11 +37,11 @@ import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupp
 
 import { DecoderBufferSource } from './converter.js'
 
-export function gpClockFromValues(dutyCycleValue: number, dividerValue: number): GPClock {
-	const dutyCycle = dutyCycleValue === 0b00 ? DutyCycle00 :
-		dutyCycleValue === 0b01 ? DutyCycle25 :
-			dutyCycleValue === 0b10 ? DutyCycle50 :
-				dutyCycleValue === 0b11 ? DutyCycle75 :
+export function decodeGPClockValues(dutyCycleValue: number, dividerValue: number): GPClock {
+	const dutyCycle =( dutyCycleValue === 0b00) ? DutyCycle00 :
+		(dutyCycleValue === 0b01) ? DutyCycle25 :
+			(dutyCycleValue === 0b10) ? DutyCycle50 :
+				(dutyCycleValue === 0b11) ? DutyCycle75 :
 					undefined
 
 	if (dutyCycle === undefined) { throw new Error('unknown duty cycle') }
@@ -60,11 +61,11 @@ export function gpClockFromValues(dutyCycleValue: number, dividerValue: number):
 	return { dutyCycle, divider }
 }
 
-export function voltageBitToOption(voltageBit: number): VoltageOption {
+function decodeVotageOptionBit(voltageBit: number): VoltageOption {
 	return voltageBit === 1 ? VoltageOptionVrm : VoltageOptionVdd
 }
 
-export function referenceVoltageToVoltage(volt: number): Voltage {
+function decodeReferenceVoltageBits(volt: number): Voltage {
 	const rv: Voltage | undefined = (volt === 0b00) ? VoltageOff :
 		volt === 0b01 ? Voltage1V :
 			volt === 0b10 ? Voltage2V :
@@ -76,9 +77,9 @@ export function referenceVoltageToVoltage(volt: number): Voltage {
 	return rv
 }
 
-export function dacByteToSettings(dacByte: number) {
-	const referenceOptions = voltageBitToOption(dacByte >> 5 & 0b1)
-	const referenceVoltage = referenceVoltageToVoltage((dacByte >> 6) & 0b11)
+export function decodeDACByte(dacByte: number) {
+	const referenceOptions = decodeVotageOptionBit(dacByte >> 5 & 0b1)
+	const referenceVoltage = decodeReferenceVoltageBits((dacByte >> 6) & 0b11)
 	const initialValue = dacByte & 0b1
 
 	return {
@@ -88,9 +89,9 @@ export function dacByteToSettings(dacByte: number) {
 	}
 }
 
-export function adcByteToSettings(adcByte: number) {
-	const referenceOptions = voltageBitToOption((adcByte >> 2) & 0b1)
-	const referenceVoltage = referenceVoltageToVoltage((adcByte >> 3) & 0b11)
+export function decodeADCByte(adcByte: number) {
+	const referenceOptions = decodeVotageOptionBit((adcByte >> 2) & 0b1)
+	const referenceVoltage = decodeReferenceVoltageBits((adcByte >> 3) & 0b11)
 
 	return {
 		referenceVoltage,
@@ -103,17 +104,17 @@ export function gpio0Designation(value: number): Gp0Designation {
 	if (value === 0b01) { return Gp0DesignationSSPND }
 	if (value === 0b00) { return Gp0DesignationGPIO }
 
-	throw new Error('unknown directions')
+	throw new Error('unknown designation')
 }
 
 export function gpio1Designation(value: number): Gp1Designation {
 	if (value === 0b100) { return Gp1DesignationInterruptDetection }
-	if (value === 0b011) { return Gp1DesignationUART_TX}
+	if (value === 0b011) { return Gp1DesignationUART_TX }
 	if (value === 0b010) { return Gp1DesignationADC_1 }
 	if (value === 0b001) { return Gp1DesignationClockOutput }
 	if (value === 0b000) { return Gp1DesignationGPIO }
 
-	throw new Error('unknown directions')
+	throw new Error('unknown designation')
 }
 
 export function gpio2Designation(value: number): Gp2Designation {
@@ -122,7 +123,7 @@ export function gpio2Designation(value: number): Gp2Designation {
 	if (value === 0b01) { return Gp2DesignationUSB }
 	if (value === 0b00) { return Gp2DesignationGPIO }
 
-	throw new Error('unknown directions')
+	throw new Error('unknown designation')
 }
 
 export function gpio3Designation(value: number): Gp3Designation {
@@ -131,39 +132,49 @@ export function gpio3Designation(value: number): Gp3Designation {
 	if (value === 0b01) { return Gp3DesignationLedI2C }
 	if (value === 0b00) { return Gp3DesignationGPIO }
 
-	throw new Error('unknown directions')
+	throw new Error('unknown designation')
 }
 
-export function gpio<D>(gpioByte: number, designation: (value: number) => D): Gpio<D> {
+export function decodeGpioByte<D>(gpioByte: number, designationFn: (value: number) => D): Gpio<D> {
 	return {
 		outputValue: ((gpioByte >> 4) & 0b1) === 1 ? Logic1 : Logic0,
 		direction: ((gpioByte >> 3) & 0b1) === 1 ? GpioDirectionIn : GpioDirectionOut,
-		designation: designation(gpioByte & 0b111)
+		designation: designationFn(gpioByte & 0b111)
 	}
 }
 
-export function splitStatusByte(statusMaskByte: number) {
-	const isBitSet = (statusMaskByte: number, shiftBy: number) => {
-		return ((statusMaskByte >> shiftBy) & 0b1) === 0b1
+export function decodeGpioValues(valueValue: number, directionValue: number) {
+	if(valueValue === 0xEE) { return undefined }
+	if(directionValue === 0xEF) { return undefined }
+
+	return {
+		outputValue: (valueValue === 1) ? Logic1 : Logic0,
+		direction: (directionValue === 1) ? GpioDirectionIn : GpioDirectionOut
 	}
-	const ledState = (statusMaskByte: number, shiftBy: number) => {
-		return isBitSet(statusMaskByte, shiftBy) ? InitialLEDStateOn : InitialLEDStateOff
+}
+
+export function decodeChipByte(chipByte: number): ChipSettings {
+	const isBitSet = (chipByte: number, shiftBy: number) => {
+		return ((chipByte >> shiftBy) & 0b1) === 0b1
 	}
-	const suspendState = (statusMaskByte: number, shiftBy: number) => {
-		return isBitSet(statusMaskByte, shiftBy) ? SuspendStateOn : SuspendStateOff
+	const ledState = (chipByte: number, shiftBy: number) => {
+		return isBitSet(chipByte, shiftBy) ? InitialLEDStateOn : InitialLEDStateOff
 	}
-	const configState = (statusMaskByte: number, shiftBy: number) => {
-		return isBitSet(statusMaskByte, shiftBy) ? USBCFGStateOn : USBCFGStateOff
+	const suspendState = (chipByte: number, shiftBy: number) => {
+		return isBitSet(chipByte, shiftBy) ? SuspendStateOn : SuspendStateOff
+	}
+	const configState = (chipByte: number, shiftBy: number) => {
+		return isBitSet(chipByte, shiftBy) ? USBCFGStateOn : USBCFGStateOff
 	}
 
-	const enabledCDCSerialEnumeration = isBitSet(statusMaskByte, 7)
-	const rx = ledState(statusMaskByte, 6)
-	const tx = ledState(statusMaskByte, 5)
-	const i2cLED = ledState(statusMaskByte, 4)
-	const SSPND = suspendState(statusMaskByte, 3)
-	const USBCFG = configState(statusMaskByte, 2)
+	const enabledCDCSerialEnumeration = isBitSet(chipByte, 7)
+	const rx = ledState(chipByte, 6)
+	const tx = ledState(chipByte, 5)
+	const i2cLED = ledState(chipByte, 4)
+	const SSPND = suspendState(chipByte, 3)
+	const USBCFG = configState(chipByte, 2)
 
-	const chipSecurityCode = 0b11 & statusMaskByte
+	const chipSecurityCode = 0b11 & chipByte
 	const security: Security | undefined = chipSecurityCode === 0b00 ? SecurityUnsecured :
 		chipSecurityCode === 0b01 ? SecurityPasswordProtected :
 			chipSecurityCode === 0b10 ? SecurityPermanentlyLocked :
@@ -184,7 +195,7 @@ export function splitStatusByte(statusMaskByte: number) {
 	}
 }
 
-export function intBitsToEdge(negativEdge: boolean, positiveEdge: boolean): InterruptEdge {
+export function decodeInterruptFlags(negativEdge: boolean, positiveEdge: boolean): InterruptEdge {
 	if (negativEdge && positiveEdge) { return InterruptEdgeBoth }
 	if (negativEdge) { return InterruptEdgeNegative }
 	if (positiveEdge) { return InterruptEdgePositive }
@@ -237,7 +248,7 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 	if (statusCode === 0x01) {
 		// I2C Engine is busy (command not completed)
 		return {
-			opaque: '__busy__', // not supported
+			opaque: '__busy_alt_not_supported__', // alt not supported
 			command,
 			status: StatusBusy,
 			statusCode
@@ -259,15 +270,14 @@ function _decodeReadWriteResponse(dv: DataView, commandNumber: number) {
 	const { command, status, statusCode } = decodeStatusResponse(dv, commandNumber)
 
 	const i2cState = dv.getUint8(2)
-	//const byteLength = dv.getUint8(3)
 
 	if (i2cState === undefined) { throw new Error('undefined i2c state') }
+	const i2cStateName = i2cStateLookkup(i2cState)
 
 	return {
 		command,
-		status,
-		statusCode,
-		i2cState
+		status, statusCode,
+		i2cState, i2cStateName
 	}
 }
 
@@ -276,7 +286,11 @@ export function decodeReadWriteResponse(commandNumber: number, bufferSource: Dec
 		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 		new DataView(bufferSource)
 
-	const { command, status, statusCode, i2cState } = _decodeReadWriteResponse(dv, commandNumber)
+	const {
+		command,
+		status, statusCode,
+		i2cState, i2cStateName
+	} = _decodeReadWriteResponse(dv, commandNumber)
 
 	//const userData = new Uint8Array(dv.buffer, dv.byteOffset + 3)
 	//const userData = new Uint8Array(dv.buffer, dv.byteOffset + 4, byteLength)
@@ -285,21 +299,58 @@ export function decodeReadWriteResponse(commandNumber: number, bufferSource: Dec
 	return {
 		opaque: '__its_getting_closer__',
 		command,
-		status,
-		i2cState,
-		statusCode,
-
+		status, statusCode,
+		i2cState, i2cStateName
 		//buffer: userData.slice().buffer
 	}
 }
 
+const I2C_STATES: Record<number, string> = {
+	0x00: 'IDLE',
+	//
+	0x10: 'START',
+	0x11: 'START_ACK',
+	0x12: 'START_TIMEOUT',
+	0x15: 'REPEAT_START',
+	0x16: 'REPEAT_START_ACK',
+	0x17: 'REPEAT_START_TIMEOUT',
+	//
+	0x20: 'ADDRESS',
+	0x21: 'ADDRESS_WAIT_SEND',
+	0x22: 'ADDRESS_ACK',
+	0x23: 'ADDRESS_TIMEOUT',
+	0x24: 'ADDRESS_NACK_STOP_END',
+	0x25: 'ADDRESS_NACK_STOP', // ?
+	//
+	0x30: 'ADDRESS_',
+	0x31: 'ADDRESS__WAIT_SEND',
+	0x32: 'ADDRESS__ACK',
+	0x33: 'ADDRESS__TIMEOUT',
+	//
+	0x40: 'WRITE_DATA',
+	0x41: 'WRITE_DATA_WAIT_SEND', // partial data
+	0x42: 'WRITE_DATA_ACK',
+	0x43: 'WRITE_DATA_WAIT', // more data
+	0x44: 'WRITE_DATA_TIMEOUT',
+	0x45: 'WRITE_DATA_END_NO_STOP', // writing not stop
+	//
+	0x50: 'READ_DATA',
+	0x51: 'READ_DATA_',
+	0x52: 'READ_DATA_timeout', // timeout
+	0x53: 'READ_DATA_',
+	0x54: 'READ_DATA_partial', // partial
+	0x55: 'READ_DATA_complete', // complete
+	//
+	0x60: 'STOP',
+	0x61: 'STOP_WAIT',
+	0x62: 'STOP_TIMEOUT',
+	//
+	0x70: '?',
+	0x7F: 'ERR', // ?
+	//
+	0x80: '?'
+}
 
-// export function decodeReadFlashSubCommand() {
-//     const { command, status, statusCode } = decodeStatusResponse(dv, 0xB0) as ReadFlashDataResponse
-
-//     const subCommandByteLength = dv.getUint8(2)
-
-
-//   switch()
-
-// }
+export function i2cStateLookkup(value: number) {
+	return I2C_STATES[value]
+}
