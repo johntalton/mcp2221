@@ -10,11 +10,11 @@ import { SetGPIOOutputValues, GetGPIOValues } from '../converter/gpio/gpio.js'
 import send_request from './util.js'
 
 export class MCP2221Gpio extends Bindable implements Gpio {
-  set(req: SetGPIOOutputValuesRequest): Promise<SetGPIOOutputValuesResponse> {
+  async set(req: SetGPIOOutputValuesRequest): Promise<SetGPIOOutputValuesResponse> {
     return send_request(this.binding, req, SetGPIOOutputValues)
   }
 
-  get(req: GetGPIOValuesRequest): Promise<GetGPIOValuesResponse> {
+  async get(req: GetGPIOValuesRequest): Promise<GetGPIOValuesResponse> {
     return send_request(this.binding, req, GetGPIOValues)
   }
 }

@@ -10,11 +10,11 @@ import { SetSRAMSettings, GetSRAMSettings } from '../converter/sram/sram.js'
 import send_request from './util.js'
 
 export class MCP2221SRAM extends Bindable implements SRAM {
-  set(req: SetSRAMSettingsRequest): Promise<SetSRAMSettingsResponse> {
+  async set(req: SetSRAMSettingsRequest): Promise<SetSRAMSettingsResponse> {
     return send_request(this.binding, req, SetSRAMSettings)
   }
 
-  get(req: GetSRAMSettingsRequest): Promise<GetSRAMSettingsResponse> {
+  async get(req: GetSRAMSettingsRequest): Promise<GetSRAMSettingsResponse> {
     return send_request(this.binding, req, GetSRAMSettings)
   }
 }

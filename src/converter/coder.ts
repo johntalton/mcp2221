@@ -3,7 +3,12 @@ export {
   ResetChipRequestCoder, ResetChipResponseCoder
 } from './common/common.js'
 export {
-  ReadFlashDataResponseCoder, ReadFlashDataRequestCoder,
+  ReadFlashDataChipSettingsRequestCoder, ReadFlashDataChipSettingsResponseCoder,
+  ReadFlashDataGPSettingsRequestCoder, ReadFlashDataGPSettingsResponseCoder,
+  ReadFlashDataUSBManufacturerRequestCoder, ReadFlashDataUSBManufacturerResponseCoder,
+  ReadFlashDataUSBProductRequestCoder, ReadFlashDataUSBProductResponseCoder,
+  ReadFlashDataUSBSerialNumberRequestCoder, ReadFlashDataUSBSerialNumberResponseCoder,
+  ReadFlashDataFactorySerialNumberRequestCoder, ReadFlashDataFactorySerialNumberResponseCoder,
   WriteFlashDataResponseCoder, WriteFlashDataRequestCoder,
   SendFlashAccessPasswordResponseCoder, SendFlashAccessPasswordRequestCoder
 } from './flash/flash.js'

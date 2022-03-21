@@ -1,9 +1,19 @@
-export { ReadFlashDataRequestCoder, ReadFlashDataResponseCoder } from './read-flash-data.js'
-export { WriteFlashDataRequestCoder, WriteFlashDataResponseCoder } from './write-flash-data.js'
-export { SendFlashAccessPasswordRequestCoder, SendFlashAccessPasswordResponseCoder } from './send-flash-access-password.js'
+export { ReadFlashDataChipSettingsRequestCoder, ReadFlashDataChipSettingsResponseCoder} from './read-chip-settings.js'
+export { ReadFlashDataGPSettingsRequestCoder, ReadFlashDataGPSettingsResponseCoder } from './read-gp-settings.js'
+export { ReadFlashDataUSBManufacturerRequestCoder, ReadFlashDataUSBManufacturerResponseCoder } from './read-manufacturer-desc.js'
+export { ReadFlashDataUSBProductRequestCoder, ReadFlashDataUSBProductResponseCoder } from './read-product-desc.js'
+export { ReadFlashDataUSBSerialNumberRequestCoder, ReadFlashDataUSBSerialNumberResponseCoder } from './read-serial-number-desc.js'
+export { ReadFlashDataFactorySerialNumberRequestCoder, ReadFlashDataFactorySerialNumberResponseCoder } from './read-factory-serial-number.js'
+export { WriteFlashDataRequestCoder, WriteFlashDataResponseCoder } from './write.js'
+export { SendFlashAccessPasswordRequestCoder, SendFlashAccessPasswordResponseCoder } from './send-access-password.js'
 
 export {
-	ReadFlashData,
+	ReadFlashDataChipSettings,
+	ReadFlashDataGPSettings,
+	ReadFlashDataUSBManufacturer,
+	ReadFlashDataUSBProduct,
+	ReadFlashDataUSBSerialNumber,
+	ReadFlashDataFactorySerialNumber,
 	WriteFlashData,
 	SendFlashAccessPassword
 } from './converter.js'

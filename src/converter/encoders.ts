@@ -1,5 +1,3 @@
-import { BitSmush } from '@johntalton/bitsmush'
-
 import {
 	dont_care,
 	DutyCycle00, DutyCycle25, DutyCycle50, DutyCycle75,
@@ -9,13 +7,21 @@ import {
 	Gp0DesignationUART_RX, Gp0DesignationGPIO, Gp0DesignationSSPND,
 	Gp1DesignationADC_1, Gp1DesignationClockOutput, Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
-	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C
+	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C,
+	VoltageOff, Voltage1V, Voltage2V, Voltage4V,
+	VoltageOptionVdd, VoltageOptionVrm
 } from '../messages/message.consts.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,
-	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation
+	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption
 } from '../messages/message.fragments.js'
+
+
+export function newReportBuffer() {
+	const buffer = Uint8Array.from({ length: 64 }, () => Math.trunc(Math.random() * 255))
+	return buffer.buffer
+}
 
 export function encodeGPClockAlter(clock?: GPClock): number {
 	if(clock === undefined) { return dont_care() & 0x7f }
@@ -42,24 +48,38 @@ export function encodeGPClockAlter(clock?: GPClock): number {
 	return 0x80 | (dutyCycleBits << 3) | dividerBits
 }
 
+export function encodeVoltateBits(referenceVoltage: Voltage): number | undefined {
+	return referenceVoltage === VoltageOff ? 0b00 :
+		referenceVoltage === Voltage1V ? 0b01 :
+		referenceVoltage === Voltage2V ? 0b10 :
+		referenceVoltage === Voltage4V ? 0b11 :
+			undefined
+}
+
+export function encodeVoltageOptionsBits(referenceOptions: VoltageOption): number {
+	return referenceOptions === VoltageOptionVrm ? 0b1 : 0b0
+}
+
 export function encodeDACReferenceAlter(dac?: GeneralPurposeAlterDAC): number {
 	if (dac === undefined) { return dont_care() & 0x7f }
 
-	const { referenceVoltage, referenceOptions, initialValue } = dac
+	const { referenceVoltage, referenceOptions } = dac
 
-	const enableUpdateBits = 0b1 // 0x80
-	const voltageBits = 0
-	const optionsBits = 0
+	// check for defined dac but undefined refs (this is initialValue set only)
+	if (referenceVoltage === undefined) { return dont_care() & 0x7f }
+	if (referenceOptions === undefined) { return dont_care() & 0x7f }
 
-	return BitSmush.smushBits(
-		[[7, 1], [2, 2], [0, 1]],
-		[enableUpdateBits, voltageBits, optionsBits])
+	const referenceVoltageBits = encodeVoltateBits(referenceVoltage)
+	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
+
+	if(referenceVoltageBits === undefined) { throw new Error('unknown dac reference voltage') }
+
+	return 0x80 | (referenceVoltageBits << 1) | referenceOptionsBit
 }
 
 export function encodeDACValueAlter(initialValue?: number): number {
 	if(initialValue === undefined) { return dont_care() &  0x7f }
-
-	return 0x80 | (initialValue & 0b1111)
+	return 0x80 | (initialValue & 0b11111)
 }
 
 export function encodeADCReferenceAlter(adc?: GeneralPurposeAlterADC): number {
@@ -67,13 +87,32 @@ export function encodeADCReferenceAlter(adc?: GeneralPurposeAlterADC): number {
 
 	const { referenceVoltage, referenceOptions } = adc
 
-	return 0
+	const referenceVoltageBits  = encodeVoltateBits(referenceVoltage)
+	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
+
+	if(referenceVoltageBits === undefined) { throw new Error('unknown adc reference voltage') }
+
+	return 0x80 | (referenceVoltageBits << 1) | referenceOptionsBit
 }
 
 export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): number {
 	if(interrupt === undefined) { return dont_care() & 0x7f }
 
-	return 0
+	const { edge, clear  } = interrupt
+
+	const hasEdge = edge !== undefined
+	const hasClear = clear !== undefined
+
+	if(!hasClear || !hasEdge) { return dont_care() & 0x7f }
+
+	const positiveEdgeBit = (edge === 'both' || edge === 'positive') ? 0b1 : 0b0
+	const negativeEdgeBit = (edge === 'both' || edge === 'negative') ? 0b1 : 0b0
+	const edgeBitsPrelim = 0b1010 | (positiveEdgeBit << 2) | negativeEdgeBit
+	const edgeBits = hasEdge ? edgeBitsPrelim : 0b0000
+
+	const clearBit = clear === true ? 0b1 : 0b0
+
+	return 0x80 | edgeBits | clearBit
 }
 
 export function encodeGpio0Designation(designation: Gp0Designation) {

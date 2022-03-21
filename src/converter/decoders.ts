@@ -80,7 +80,7 @@ function decodeReferenceVoltageBits(volt: number): Voltage {
 export function decodeDACByte(dacByte: number) {
 	const referenceOptions = decodeVotageOptionBit(dacByte >> 5 & 0b1)
 	const referenceVoltage = decodeReferenceVoltageBits((dacByte >> 6) & 0b11)
-	const initialValue = dacByte & 0b1
+	const initialValue = dacByte & 0b11111
 
 	return {
 		referenceVoltage,
@@ -272,7 +272,7 @@ function _decodeReadWriteResponse(dv: DataView, commandNumber: number) {
 	const i2cState = dv.getUint8(2)
 
 	if (i2cState === undefined) { throw new Error('undefined i2c state') }
-	const i2cStateName = i2cStateLookkup(i2cState)
+	const i2cStateName = decodeI2CState(i2cState)
 
 	return {
 		command,
@@ -351,6 +351,6 @@ const I2C_STATES: Record<number, string> = {
 	0x80: '?'
 }
 
-export function i2cStateLookkup(value: number) {
+export function decodeI2CState(value: number) {
 	return I2C_STATES[value]
 }

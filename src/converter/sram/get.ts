@@ -39,7 +39,7 @@ export class GetSRAMSettingsResponseCoder {
 		const mARequestedHalf = dv.getUint8(13)
 		const mARequested = mARequestedHalf * 2
 
-		const password = new Uint8Array(dv.buffer, dv.byteOffset + 14, 8)
+		const currentSuppliedPassword = new Uint8Array(dv.buffer, dv.byteOffset + 14, 8)
 
 		const gpio0Byte = dv.getUint8(22)
 		const gpio1Byte = dv.getUint8(23)
@@ -88,7 +88,7 @@ export class GetSRAMSettingsResponseCoder {
 				mARequested
 			},
 
-			password: String.fromCharCode(...password),
+			password: String.fromCharCode(...currentSuppliedPassword),
 
 			gpio0,
 			gpio1,

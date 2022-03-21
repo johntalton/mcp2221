@@ -1,10 +1,3 @@
-/* eslint-disable fp/no-this */
-/* eslint-disable immutable/no-this */
-/* eslint-disable sort-imports */
-/* eslint-disable immutable/no-mutation */
-/* eslint-disable fp/no-nil */
-/* eslint-disable fp/no-class */
-/* eslint-disable fp/no-mutation */
 import { I2C } from '../interface/i2c.js'
 
 import { Bindable } from '../binding.js'
@@ -20,27 +13,27 @@ import {
 import send_request from './util.js'
 
 export class MCP2221I2C extends Bindable implements I2C {
-  writeData(req: I2CWriteDataRequest): Promise<I2CWriteDataResponse> {
+  async writeData(req: I2CWriteDataRequest): Promise<I2CWriteDataResponse> {
     return send_request(this.binding, req, I2CWriteData)
   }
 
-  writeRepeatedSTART(req: I2CWriteDataRepeatedSTARTRequest): Promise<I2CWriteDataRepeatedSTARTResponse> {
+  async writeRepeatedSTART(req: I2CWriteDataRepeatedSTARTRequest): Promise<I2CWriteDataRepeatedSTARTResponse> {
     return send_request(this.binding, req, I2CWriteDataRepeatedSTART)
   }
 
-  writeNoSTOP(req: I2CWriteDataNoSTOPRequest): Promise<I2CWriteDataNoSTOPResponse> {
+  async writeNoSTOP(req: I2CWriteDataNoSTOPRequest): Promise<I2CWriteDataNoSTOPResponse> {
     return send_request(this.binding, req, I2CWriteDataNoSTOP)
   }
 
-  readData(req: I2CReadDataRequest): Promise<I2CReadDataResponse> {
+  async readData(req: I2CReadDataRequest): Promise<I2CReadDataResponse> {
     return send_request(this.binding, req, I2CReadData)
   }
 
-  readRepeatedSTART(req: I2CReadDataRepeatedSTARTRequest): Promise<I2CReadDataRepeatedSTARTResponse> {
+  async readRepeatedSTART(req: I2CReadDataRepeatedSTARTRequest): Promise<I2CReadDataRepeatedSTARTResponse> {
     return send_request(this.binding, req, I2CReadDataRepeatedSTART)
   }
 
-  readGetData(req: I2CReadGetDataRequest): Promise<I2CReadGetDataResponse> {
+  async readGetData(req: I2CReadGetDataRequest): Promise<I2CReadGetDataResponse> {
     return send_request(this.binding, req, I2CReadGetData)
   }
 }

@@ -3,6 +3,7 @@ import { I2CWriteDataNoSTOPResponse } from '../../messages/i2c.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeReadWriteResponse } from '../decoders.js'
+import { newReportBuffer } from '../encoders.js'
 
 export class I2CWriteDataNoSTOPResponseCoder {
 	static encode(_msg: I2CWriteDataNoSTOPResponse): ArrayBuffer { throw new Error('unused') }
@@ -13,8 +14,7 @@ export class I2CWriteDataNoSTOPResponseCoder {
 
 export class I2CWriteDataNoSTOPRequestCoder {
 	static encode(msg: I2CWriteDataNoSTOPRequest): ArrayBuffer {
-
-		const buffer = new ArrayBuffer(64)
+		const buffer = newReportBuffer()
 		const dv = new DataView(buffer)
 
 		const userData = new Uint8Array(buffer, 4)

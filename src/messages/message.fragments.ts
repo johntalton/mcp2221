@@ -65,8 +65,8 @@ export type GeneralPurpose = {
 }
 
 export type GeneralPurposeAlterDAC = {
-	referenceVoltage: Voltage,
-	referenceOptions: VoltageOption,
+	referenceVoltage?: Voltage,
+	referenceOptions?: VoltageOption,
 
 	initialValue?: number
 }

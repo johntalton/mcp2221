@@ -18,7 +18,7 @@ import {
 	encodeInterruptAlter,
 	encodeGpioAlter,
 	encodeGpio0Designation, encodeGpio1Designation,
-	encodeGpio2Designation, encodeGpio3Designation
+	encodeGpio2Designation, encodeGpio3Designation, newReportBuffer
 } from '../encoders.js'
 
 export class SetSRAMSettingsResponseCoder {
@@ -59,7 +59,7 @@ export class SetSRAMSettingsRequestCoder {
 			gpio3 !== undefined
 
 		//
-		const alterGpioByte = hasAnyGpio ? 0x80 : 0
+		const alterGpioByte = hasAnyGpio ? 0x80 : 0x00
 
 		const gpio0Byte = encodeGpioAlter(gpio0, encodeGpio0Designation)
 		const gpio1Byte = encodeGpioAlter(gpio1, encodeGpio1Designation)
@@ -67,7 +67,7 @@ export class SetSRAMSettingsRequestCoder {
 		const gpio3Byte = encodeGpioAlter(gpio3, encodeGpio3Designation)
 
 		//
-		const buffer = new ArrayBuffer(64)
+		const buffer = newReportBuffer()
 		const dv = new DataView(buffer)
 
 		dv.setUint8(0, 0x60)

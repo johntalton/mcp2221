@@ -2,10 +2,11 @@ import { StatusParametersRequest } from '../../messages/common.request.js'
 import { StatusParametersResponse } from '../../messages/common.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { dont_care, any_other, I2CReadPending2, I2CReadPending0, I2CReadPending1 } from '../../messages/message.consts.js'
+import { dont_care, any_other } from '../../messages/message.consts.js'
 
-import { decodeStatusResponse } from '../decoders.js'
+import { decodeStatusResponse, decodeI2CState } from '../decoders.js'
 import { I2CReadPending } from '../../messages/message.fragments.js'
+import { newReportBuffer } from '../encoders.js'
 
 // 50 - 400
 const calcI2CDivider = (freq: number) => Math.floor((12000000 / (freq * 1000)) - 3);
@@ -61,6 +62,7 @@ export class StatusParametersResponseCoder {
 
     const i2cClock = setSpeedSuccessfull ? speedDividerByte : undefined
 
+    const i2cStateName = decodeI2CState(i2cState)
     //const newSpeed = setSpeedSet ? speedDividerByte : undefined
     //console.log('________', i2cClock)
 
@@ -89,7 +91,7 @@ export class StatusParametersResponseCoder {
       setSpeedSuccessfull,
       i2cClock,
 
-      i2cState,
+      i2cState, i2cStateName,
 
       i2c: {
         address,
@@ -132,7 +134,7 @@ export class StatusParametersRequestCoder {
     const clockValue = shouldClock ? calcI2CDivider(i2cClock) : any_other()
     //console.log('>>>', shouldClock, setClockValue, clockValue, 12000000 / 100000 - 3)
 
-    const buffer = new ArrayBuffer(64)
+    const buffer = newReportBuffer()
     const dv = new DataView(buffer)
 
     dv.setUint8(0, 0x10)
