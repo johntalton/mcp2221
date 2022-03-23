@@ -6,9 +6,9 @@ export type Password = string // & stringOf<8>
 
 export type I2CReadPending = 0 | 1 | 2
 
-export type Manufacturer = stringOf<30>
-export type Product = stringOf<30>
-export type SerialNumber = stringOf<30>
+export type Manufacturer = string
+export type Product = string
+export type SerialNumber = string
 
 export type MajorMinor = { major: string, minor: string }
 export type Revision = {
@@ -38,13 +38,14 @@ export type USBCFGState = 'on' | 'off'
 
 export type ChipSettings = {
 	enabledCDCSerialEnumeration: boolean,
+	security: Security,
+}
 
+export type RuntimeChipSettings = ChipSettings & {
 	uartLED: { tx: InitialLEDState, rx: InitialLEDState },
 	i2cLED: InitialLEDState,
 	SSPND: SuspendState,
-	USBCFG: USBCFGState,
-
-	security: Security,
+	USBCFG: USBCFGState
 }
 
 export type GeneralPurpose = {

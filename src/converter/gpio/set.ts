@@ -13,7 +13,9 @@ export class SetGPIOOutputValuesResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const { command, status, statusCode } = decodeStatusResponse(dv, 0x50) as SetGPIOOutputValuesResponse
+		const response = decodeStatusResponse(dv, 0x50) as SetGPIOOutputValuesResponse
+		const { command, status, statusCode } = response
+		if(statusCode !== 0) { return response }
 
 		throw new Error(' un implemented :( ')
 	}

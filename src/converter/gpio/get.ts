@@ -14,7 +14,9 @@ export class GetGPIOValuesResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const { command, status, statusCode } = decodeStatusResponse(dv, 0x51) as GetGPIOValuesResponse
+		const response = decodeStatusResponse(dv, 0x51) as GetGPIOValuesResponse
+		const { command, status, statusCode } = response
+		if(statusCode !== 0) { return response }
 
 		const gpio0Value = dv.getUint8(2)
 		const gpio0Direction = dv.getUint8(3)

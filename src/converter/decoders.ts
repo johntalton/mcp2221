@@ -5,7 +5,7 @@ import {
 	Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
 	GPClock,
-	ChipSettings
+	RuntimeChipSettings
 } from '../messages/message.fragments.js'
 
 import {
@@ -36,6 +36,16 @@ import {
 import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported, Response } from '../messages/message.js'
 
 import { DecoderBufferSource } from './converter.js'
+
+export function decodeUSBString(sourceBuffer: DecoderBufferSource, byteLength: number) {
+	const length = byteLength / 2
+
+	const ab16 = ArrayBuffer.isView(sourceBuffer) ?
+		new Uint16Array(sourceBuffer.buffer, sourceBuffer.byteOffset, length) :
+		new Uint16Array(sourceBuffer, length)
+
+	return String.fromCharCode(...ab16)
+}
 
 export function decodeGPClockValues(dutyCycleValue: number, dividerValue: number): GPClock {
 	const dutyCycle =( dutyCycleValue === 0b00) ? DutyCycle00 :
@@ -153,7 +163,19 @@ export function decodeGpioValues(valueValue: number, directionValue: number) {
 	}
 }
 
-export function decodeChipByte(chipByte: number): ChipSettings {
+export function decodeRequestedmA(mARequestedByte: number): number {
+	return mARequestedByte * 2
+}
+
+export function decodeChipSecurityCode(chipSecurityCode: number): Security {
+	if(chipSecurityCode === 0b00) { return SecurityUnsecured }
+	if(chipSecurityCode === 0b01) { return SecurityPasswordProtected }
+	if(chipSecurityCode === 0b10) { return SecurityPermanentlyLocked }
+
+	throw new Error('security attribute undefined')
+}
+
+export function decodeRuntimeChipByte(chipByte: number): RuntimeChipSettings {
 	const isBitSet = (chipByte: number, shiftBy: number) => {
 		return ((chipByte >> shiftBy) & 0b1) === 0b1
 	}
@@ -175,12 +197,7 @@ export function decodeChipByte(chipByte: number): ChipSettings {
 	const USBCFG = configState(chipByte, 2)
 
 	const chipSecurityCode = 0b11 & chipByte
-	const security: Security | undefined = chipSecurityCode === 0b00 ? SecurityUnsecured :
-		chipSecurityCode === 0b01 ? SecurityPasswordProtected :
-			chipSecurityCode === 0b10 ? SecurityPermanentlyLocked :
-				undefined
-
-	if (security === undefined) { throw new Error('security attribute undefined') }
+	const security = decodeChipSecurityCode(chipSecurityCode)
 
 	return {
 		enabledCDCSerialEnumeration,
@@ -260,6 +277,7 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 	}
 
 	return {
+		opaque: '__transparent_from_decoder__',
 		command,
 		status: StatusSuccess,
 		statusCode
@@ -267,7 +285,7 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 }
 
 function _decodeReadWriteResponse(dv: DataView, commandNumber: number) {
-	const { command, status, statusCode } = decodeStatusResponse(dv, commandNumber)
+	const { opaque, command, status, statusCode } = decodeStatusResponse(dv, commandNumber)
 
 	const i2cState = dv.getUint8(2)
 
@@ -275,6 +293,7 @@ function _decodeReadWriteResponse(dv: DataView, commandNumber: number) {
 	const i2cStateName = decodeI2CState(i2cState)
 
 	return {
+		opaque,
 		command,
 		status, statusCode,
 		i2cState, i2cStateName
@@ -287,6 +306,7 @@ export function decodeReadWriteResponse(commandNumber: number, bufferSource: Dec
 		new DataView(bufferSource)
 
 	const {
+		opaque,
 		command,
 		status, statusCode,
 		i2cState, i2cStateName
@@ -297,7 +317,7 @@ export function decodeReadWriteResponse(commandNumber: number, bufferSource: Dec
 	//if(byteLength < 0 || byteLength > 60) { throw new Error('invalid byte length: ' + byteLength) }
 
 	return {
-		opaque: '__its_getting_closer__',
+		opaque,
 		command,
 		status, statusCode,
 		i2cState, i2cStateName

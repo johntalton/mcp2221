@@ -23,6 +23,22 @@ export function newReportBuffer() {
 	return buffer.buffer
 }
 
+export function encodeUSBString(str: string): ArrayBuffer {
+	const dest16 = new Uint16Array(str.length)
+
+	// js strings are utf16, length refers to 16bit charCodes, not multi byte codePoints
+	// and the typed array is in its unit length, also 16bit (it should work :P)
+	if(str.length > dest16.length) { throw new Error('destination buffer too small') }
+
+	//
+	for(var i = 0; i < str.length; i++){
+		dest16[i] = str.charCodeAt(i)
+	}
+
+	// return raw ArrayBuffer
+	return dest16.buffer
+}
+
 export function encodeGPClockAlter(clock?: GPClock): number {
 	if(clock === undefined) { return dont_care() & 0x7f }
 	const { dutyCycle, divider } = clock

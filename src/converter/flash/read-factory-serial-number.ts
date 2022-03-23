@@ -12,10 +12,25 @@ export class ReadFlashDataFactorySerialNumberResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const { command, status, statusCode } = decodeStatusResponse(dv, 0xB0) as ReadFlashDataFactorySerialNumberResponse
+		const response = decodeStatusResponse(dv, 0xB0) as ReadFlashDataFactorySerialNumberResponse
+		const { command, status, statusCode } = response
+		if(statusCode !== 0) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
-		throw new Error('😟')
+
+		const byteOffset = 4
+		const begin = dv.byteOffset + byteOffset
+		const end = subCommandByteLength
+		const factorySN = new Uint8Array(dv.buffer, begin, end)
+
+		return {
+			opaque: '__direct_from_the_facts__',
+			command, subCommand: 0x05,
+			status, statusCode,
+
+			descriptor: String.fromCharCode(...factorySN),
+			//factorySN
+		}
 	}
 }
 

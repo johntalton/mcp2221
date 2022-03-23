@@ -9,7 +9,13 @@ export {
   ReadFlashDataUSBProductRequestCoder, ReadFlashDataUSBProductResponseCoder,
   ReadFlashDataUSBSerialNumberRequestCoder, ReadFlashDataUSBSerialNumberResponseCoder,
   ReadFlashDataFactorySerialNumberRequestCoder, ReadFlashDataFactorySerialNumberResponseCoder,
-  WriteFlashDataResponseCoder, WriteFlashDataRequestCoder,
+
+  WriteFlashDataChipSettingsRequestCoder, WriteFlashDataChipSettingsResponseCoder,
+  WriteFlashDataGPSettingsRequestCoder, WriteFlashDataGPSettingsResponseCoder,
+  WriteFlashDataUSBManufacturerRequestCoder, WriteFlashDataUSBManufacturerResponseCoder,
+  WriteFlashDataUSBProductRequestCoder, WriteFlashDataUSBProductResponseCoder,
+  WriteFlashDataUSBSerialNumberRequestCoder, WriteFlashDataUSBSerialNumberResponseCoder,
+
   SendFlashAccessPasswordResponseCoder, SendFlashAccessPasswordRequestCoder
 } from './flash/flash.js'
 export {

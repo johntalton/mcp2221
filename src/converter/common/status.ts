@@ -20,7 +20,9 @@ export class StatusParametersResponseCoder {
       new DataView(bufferSource)
 
 
-    const { command, status, statusCode } = decodeStatusResponse(dv, 0x10) as StatusParametersResponse
+    const response = decodeStatusResponse(dv, 0x10) as StatusParametersResponse
+    const { command, status, statusCode } = response
+		if(statusCode !== 0) { return response }
 
     const cancelTransferByte = dv.getUint8(2)
     const setSpeedByte = dv.getUint8(3)

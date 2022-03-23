@@ -11,8 +11,9 @@ export class SendFlashAccessPasswordResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const { command, status, statusCode } = decodeStatusResponse(dv, 0xB2) as SendFlashAccessPasswordResponse
-
+		const response = decodeStatusResponse(dv, 0xB2) as SendFlashAccessPasswordResponse
+		const { command, status, statusCode } = response
+		if(statusCode !== 0) { return response }
 
 		throw new Error(' incomplete :( ')
 	}

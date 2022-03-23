@@ -5,10 +5,7 @@ import { RESET_MAGIC } from '../../messages/message.consts.js'
 
 export class ResetChipRequestCoder {
 	static encode(req: ResetChipRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([
-			0x70,
-			...RESET_MAGIC
-		])
+		return Uint8ClampedArray.from([ 0x70, ...RESET_MAGIC ])
 	}
 
 	static decode(bufferSource: DecoderBufferSource): ResetChipRequest { throw new Error('unused') }
