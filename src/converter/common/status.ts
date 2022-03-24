@@ -2,15 +2,13 @@ import { StatusParametersRequest } from '../../messages/common.request.js'
 import { StatusParametersResponse } from '../../messages/common.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { dont_care, any_other, STATUS_COMMAND } from '../../messages/message.consts.js'
+import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCLE_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.consts.js'
 
 import { decodeStatusResponse, decodeI2CState } from '../decoders.js'
 import { I2CReadPending } from '../../messages/message.fragments.js'
-import { newReportBuffer } from '../encoders.js'
+import { encodeI2CDivider, newReportBuffer } from '../encoders.js'
 import { Invalid, Unused } from '../throw.js'
 
-// 50 - 400
-const calcI2CDivider = (freq: number) => Math.floor((12000000 / (freq * 1000)) - 3);
 
 export class StatusParametersResponseCoder {
   static encode(_res: StatusParametersResponse): ArrayBuffer { throw new Unused() }
@@ -131,9 +129,9 @@ export class StatusParametersRequestCoder {
     const shouldCancel = cancelI2c !== undefined && cancelI2c === true
     const shouldClock = i2cClock !== undefined
 
-    const cancleValue = shouldCancel ? 0x10 : any_other()
-    const setClockValue = shouldClock ? 0x20 : any_other()
-    const clockValue = shouldClock ? calcI2CDivider(i2cClock) : any_other()
+    const cancleValue = shouldCancel ? STATUS_I2C_CANCLE_FLAG : any_other(STATUS_I2C_CANCLE_FLAG)
+    const setClockValue = shouldClock ? STATUS_SET_CLOCK_FLAG : any_other(STATUS_SET_CLOCK_FLAG)
+    const clockValue = shouldClock ? encodeI2CDivider(i2cClock) : dont_care()
 
     const buffer = newReportBuffer()
     const dv = new DataView(buffer)

@@ -1,12 +1,12 @@
 import { ReadFlashDataChipSettingsRequest, ReadFlashDataRequest } from '../../messages/flash.request.js'
 import { ReadFlashDataChipSettingsResponse } from '../../messages/flash.response.js'
-import { READ_FLASH_DATA_COMMAND } from '../../messages/message.consts.js'
+import { READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, READ_FLASH_DATA_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeADCByte, decodeChipSecurityCode, decodeDACByte, decodeGPClockValues, decodeInterruptFlags, decodeRequestedmA, decodeStatusResponse } from '../decoders.js'
+import { decodeADCByte, decodeChipSecurityCode, decodeDACByte, decodeGPClockValues, decodeInterruptFlags, decodeRequestedmA, decodeStatusResponse, isBitSet } from '../decoders.js'
 import { Unused } from '../throw.js'
 
-const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
+export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
 
 export class ReadFlashDataChipSettingsResponseCoder {
 	static encode(res: ReadFlashDataChipSettingsRequest): ArrayBuffer { throw new Unused() }
@@ -34,14 +34,14 @@ export class ReadFlashDataChipSettingsResponseCoder {
 
 		//
 		const security = decodeChipSecurityCode(enableAndSecurityByte & 0b11)
-		const enabledCDCSerialEnumeration = enableAndSecurityByte >> 7 === 0b1
+		const enabledCDCSerialEnumeration = isBitSet(enableAndSecurityByte, 7) // enableAndSecurityByte >> 7 === 0b1
 
 		const dutyCycle = (gpClockDividerByte >> 3) & 0b11
 		const divider = gpClockDividerByte & 0b111
 		const clock = decodeGPClockValues(dutyCycle, divider)
 
-		const negativeEdge = (interruptAndADCReferenceByte >> 6 & 0b1) === 0b1
-		const positiveEdge = (interruptAndADCReferenceByte >> 5 & 0b1) === 0b1
+		const negativeEdge = isBitSet(interruptAndADCReferenceByte, 6) // (interruptAndADCReferenceByte >> 6 & 0b1) === 0b1
+		const positiveEdge = isBitSet(interruptAndADCReferenceByte, 5) // (interruptAndADCReferenceByte >> 5 & 0b1) === 0b1
 		const edge = decodeInterruptFlags(negativeEdge, positiveEdge)
 
 		const dac = decodeDACByte(dacReferenceByte)
@@ -68,7 +68,7 @@ export class ReadFlashDataChipSettingsResponseCoder {
 
 		return {
 			opaque: '__is_this_what_you_want__',
-			command, subCommand: 0x00,
+			command, subCommand: READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND,
 			status, statusCode,
 			chip, gp, usb
 		}
@@ -77,7 +77,7 @@ export class ReadFlashDataChipSettingsResponseCoder {
 
 export class ReadFlashDataChipSettingsRequestCoder {
 	static encode(req:  ReadFlashDataRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([ READ_FLASH_DATA_COMMAND, 0x00 ])
+		return Uint8ClampedArray.from([ READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND ])
 	}
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse { throw new Unused() }
 }

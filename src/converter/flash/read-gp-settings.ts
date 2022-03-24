@@ -6,7 +6,7 @@ import { DecoderBufferSource } from '../converter.js'
 import { decodeGpioByte, decodeStatusResponse, gpio0Designation, gpio1Designation, gpio2Designation, gpio3Designation } from '../decoders.js'
 import { Unused } from '../throw.js'
 
-const EXPECTED_GP_BYTE_LENGTH = 4
+export const EXPECTED_GP_BYTE_LENGTH = 4
 
 export class ReadFlashDataGPSettingsResponseCoder {
 	static encode(res: ReadFlashDataGPSettingsResponse): ArrayBuffer { throw new Unused() }
@@ -34,7 +34,7 @@ export class ReadFlashDataGPSettingsResponseCoder {
 
 		return {
 			opaque: '__general_io__',
-			command, subCommand: 0x01,
+			command, subCommand: READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND,
 			status, statusCode,
 
 			gpio0, gpio1, gpio2, gpio3

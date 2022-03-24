@@ -7,7 +7,6 @@ import { decodeStatusResponse } from '../decoders.js'
 import { encodeFlashDataUSBStringRequest } from '../encoders.js'
 import { Unused } from '../throw.js'
 
-
 export class WriteFlashDataUSBManufacturerResponseCoder {
 	static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): WriteFlashDataResponse {

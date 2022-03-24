@@ -1,4 +1,3 @@
-
 import {
   DutyCycle, Divider,
   InitialLEDState, SuspendState, USBCFGState,
@@ -8,6 +7,7 @@ import {
   Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
   I2CReadPending
 } from './message.fragments.js'
+import { Status } from './message.js'
 
 export const STATUS_COMMAND = 0x10
 export const RESET_CHIP_COMMAND = 0x70
@@ -26,6 +26,7 @@ export const I2C_WRITE_DATA_REPEATED_START_COMMAND = 0x92
 export const I2C_WRITE_DATA_COMMAND = 0x90
 
 export const READ_FLASH_DATA_COMMAND = 0xB0
+export const READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND = 0x00
 export const READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND = 0x01
 export const READ_FLASH_USB_MANUFACTURER_SUB_COMMAND_CODE = 0x02
 export const READ_FLASH_USB_PRODUCT_SUB_COMMAND_CODE = 0x03
@@ -42,6 +43,12 @@ export const WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND = 0x04
 export const SEND_FLASH_ACCESS_COMMAND = 0xB2
 
 //
+export const MAX_REPORT_SIZE = 64
+
+//
+export const USB_STRING_MAGIC_THREE = 0x03
+
+//
 export const RESET_MAGIC = [ 0xAB, 0xCD, 0xEF ]
 
 //
@@ -56,8 +63,27 @@ export const RevisionA6_12 = {
 }
 
 //
+export const ALTER_GPIO_CLOCK_FLAG = 0x80
+export const ALTER_DAC_REF_FLAG = 0x80
+export const ALTER_DAC_VALUE_FLAG = 0x80
+export const ALTER_ADC_REF_FLAG = 0x80
+export const ALTER_INTERRUPT_FLAG = 0x80
+
+//
 export function dont_care() { return 0x00 }
-export function any_other() { return 0x00 }
+export function any_other(other: number) { return dont_care() & ~other }
+
+//
+export const STATUS_I2C_CANCLE_FLAG = 0x10
+export const STATUS_SET_CLOCK_FLAG = 0x20
+
+//
+export const StatusSuccess: Status = 'success'
+export const StatusBusy: Status = 'busy'
+export const StatusError: Status = 'error'
+export const StatusNotAllowed: Status = 'not-allowed'
+export const StatusNotSupported: Status = 'not-supported'
+
 
 //
 export const I2CReadPending0: I2CReadPending = 0

@@ -7,7 +7,7 @@ import { decodeReadWriteResponse } from '../decoders.js'
 import { newReportBuffer } from '../encoders.js'
 import { Unused } from '../throw.js'
 
-const MAX_BYTES_LENGTH = 60
+export const MAX_BYTES_LENGTH = 60
 
 export class I2CWriteDataResponseCoder {
 	static encode(msg: I2CWriteDataResponse): ArrayBuffer { throw new Unused() }

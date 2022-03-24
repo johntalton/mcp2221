@@ -6,7 +6,8 @@ import {
 	gpio0Designation, gpio1Designation, gpio2Designation, gpio3Designation,
 	decodeInterruptFlags,
 	decodeGPClockValues,
-	decodeRequestedmA
+	decodeRequestedmA,
+	isBitSet
 } from '../decoders.js'
 
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
@@ -15,10 +16,8 @@ import { DecoderBufferSource } from '../converter.js'
 import { Unknown, Unused } from '../throw.js'
 import { SRAM_GET_COMMAND } from '../../messages/message.consts.js'
 
-
-
-const EXPECTED_CHIP_BYTE_LENGTH = 18
-const EXPECTED_GP_BYTE_LENGTH = 4
+export const EXPECTED_CHIP_BYTE_LENGTH = 18
+export const EXPECTED_GP_BYTE_LENGTH = 4
 
 export class GetSRAMSettingsResponseCoder {
 	static encode(_msg: GetSRAMSettingsResponse): ArrayBuffer { throw new Unused() }
@@ -72,8 +71,8 @@ export class GetSRAMSettingsResponseCoder {
 		const gpio2 = decodeGpioByte(gpio2Byte, gpio2Designation)
 		const gpio3 = decodeGpioByte(gpio3Byte, gpio3Designation)
 
-		const negativeEdge = (adcStatusMaskByte >> 6 & 0b1) === 1
-		const positiveEdge = (adcStatusMaskByte >> 5 & 0b1) === 1
+		const negativeEdge = isBitSet(adcStatusMaskByte, 6) // (adcStatusMaskByte >> 6 & 0b1) === 1
+		const positiveEdge = isBitSet(adcStatusMaskByte, 5) // (adcStatusMaskByte >> 5 & 0b1) === 1
 		const edge = decodeInterruptFlags(negativeEdge, positiveEdge)
 
 		return {

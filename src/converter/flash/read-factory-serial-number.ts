@@ -26,7 +26,7 @@ export class ReadFlashDataFactorySerialNumberResponseCoder {
 
 		return {
 			opaque: '__direct_from_the_facts__',
-			command, subCommand: 0x05,
+			command, subCommand: READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND,
 			status, statusCode,
 
 			descriptor: String.fromCharCode(...factorySN),

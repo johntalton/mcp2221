@@ -7,11 +7,6 @@ export type Request = Message & {
 }
 
 export type Status = 'success' | 'busy' | 'not-supported' | 'not-allowed' | 'error'
-export const StatusSuccess: Status = 'success'
-export const StatusBusy: Status = 'busy'
-export const StatusError: Status = 'error'
-export const StatusNotAllowed: Status = 'not-allowed'
-export const StatusNotSupported: Status = 'not-supported'
 
 export type WithStatus = {
   status: Status,

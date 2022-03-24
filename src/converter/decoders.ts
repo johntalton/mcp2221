@@ -30,13 +30,20 @@ import {
 	Gp0DesignationGPIO, Gp0DesignationSSPND, Gp0DesignationUART_RX,
 	Gp1DesignationADC_1, Gp1DesignationClockOutput, Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
-	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C
+	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C, USB_STRING_MAGIC_THREE
 } from '../messages/message.consts.js'
 
-import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported, Response, Success } from '../messages/message.js'
+import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported } from '../messages/message.consts.js'
 
 import { DecoderBufferSource } from './converter.js'
 import { Invalid, Unknown } from './throw.js'
+import { Response, Success } from '../messages/message.js'
+
+export const USB_STRING_MAX_BYTE_LENGTH = 60
+
+export function isBitSet(value: number, bitToCheck: number) {
+	return ((value >> bitToCheck) & 0b1) === 0b1
+}
 
 export function decodeUSBString(sourceBuffer: DecoderBufferSource, byteLength: number) {
 	const length = byteLength / 2
@@ -177,9 +184,6 @@ export function decodeChipSecurityCode(chipSecurityCode: number): Security {
 }
 
 export function decodeRuntimeChipByte(chipByte: number): RuntimeChipSettings {
-	const isBitSet = (chipByte: number, shiftBy: number) => {
-		return ((chipByte >> shiftBy) & 0b1) === 0b1
-	}
 	const ledState = (chipByte: number, shiftBy: number) => {
 		return isBitSet(chipByte, shiftBy) ? InitialLEDStateOn : InitialLEDStateOff
 	}
@@ -328,9 +332,6 @@ export function isStatusSuccess(response: Response): response is Success {
 }
 
 export function decodeFlashDataUSBStringResponse(commandNumber: number, subCommandNumber: number, sourceBuffer: DecoderBufferSource) {
-	const MAGIC_THREE = 0x03
-	const USB_STRING_MAX_BYTE_LENGTH = 60
-
 	const dv = ArrayBuffer.isView(sourceBuffer) ?
 			new DataView(sourceBuffer.buffer, sourceBuffer.byteOffset, sourceBuffer.byteLength) :
 			new DataView(sourceBuffer)
@@ -341,7 +342,7 @@ export function decodeFlashDataUSBStringResponse(commandNumber: number, subComma
 
 	const subCommandByteLength = dv.getUint8(2)
 	const three = dv.getUint8(3)
-	if(three !== MAGIC_THREE) { throw new Invalid('usb string sentinal value', three) }
+	if(three !== USB_STRING_MAGIC_THREE) { throw new Invalid('usb string sentinal value', three) }
 
 	const usbByteLength = subCommandByteLength - 2
 	if(usbByteLength < 0 || usbByteLength > USB_STRING_MAX_BYTE_LENGTH) { throw new Invalid('usb string length', usbByteLength) }

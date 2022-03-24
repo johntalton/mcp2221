@@ -9,18 +9,18 @@ import {
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
 	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C,
 	VoltageOff, Voltage1V, Voltage2V, Voltage4V,
-	VoltageOptionVdd, VoltageOptionVrm
+	VoltageOptionVdd, VoltageOptionVrm, USB_STRING_MAGIC_THREE, MAX_REPORT_SIZE, ALTER_GPIO_CLOCK_FLAG, any_other, ALTER_DAC_REF_FLAG, ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG
 } from '../messages/message.consts.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption
 } from '../messages/message.fragments.js'
-import { Unknown } from './throw.js'
+import { Invalid, Unknown } from './throw.js'
 
 
 export function newReportBuffer() {
-	const buffer = Uint8Array.from({ length: 64 }, () => Math.trunc(Math.random() * 255))
+	const buffer = Uint8Array.from({ length: MAX_REPORT_SIZE }, () => Math.trunc(Math.random() * 255))
 	return buffer.buffer
 }
 
@@ -34,8 +34,13 @@ export function encodeUSBString(str: string): ArrayBuffer {
 	return dest16.buffer
 }
 
+export function encodeI2CDivider(freq: number) {
+  if(freq < 50 || freq > 400) { throw new Invalid('freq', freq) }
+  return  Math.floor((12000000 / (freq * 1000)) - 3)
+}
+
 export function encodeGPClockAlter(clock?: GPClock): number {
-	if(clock === undefined) { return dont_care() & 0x7f }
+	if(clock === undefined) { return any_other(ALTER_GPIO_CLOCK_FLAG) }
 	const { dutyCycle, divider } = clock
 
 	const dutyCycleBits = (dutyCycle === DutyCycle00) ? 0b00 :
@@ -56,7 +61,7 @@ export function encodeGPClockAlter(clock?: GPClock): number {
 	if(dutyCycleBits === undefined) { throw new Unknown('dutyCycle', dutyCycleBits) }
 	if(dividerBits === undefined) { throw new Unknown('divider', dividerBits) }
 
-	return 0x80 | (dutyCycleBits << 3) | dividerBits
+	return ALTER_GPIO_CLOCK_FLAG | (dutyCycleBits << 3) | dividerBits
 }
 
 export function encodeVoltateBits(referenceVoltage: Voltage): number | undefined {
@@ -72,29 +77,29 @@ export function encodeVoltageOptionsBits(referenceOptions: VoltageOption): numbe
 }
 
 export function encodeDACReferenceAlter(dac?: GeneralPurposeAlterDAC): number {
-	if (dac === undefined) { return dont_care() & 0x7f }
+	if (dac === undefined) { return any_other(ALTER_DAC_REF_FLAG) }
 
 	const { referenceVoltage, referenceOptions } = dac
 
 	// check for defined dac but undefined refs (this is initialValue set only)
-	if (referenceVoltage === undefined) { return dont_care() & 0x7f }
-	if (referenceOptions === undefined) { return dont_care() & 0x7f }
+	if (referenceVoltage === undefined) { return any_other(ALTER_DAC_REF_FLAG) }
+	if (referenceOptions === undefined) { return any_other(ALTER_DAC_REF_FLAG) }
 
 	const referenceVoltageBits = encodeVoltateBits(referenceVoltage)
 	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
 
 	if(referenceVoltageBits === undefined) { throw new Unknown('dac reference voltage', referenceVoltageBits) }
 
-	return 0x80 | (referenceVoltageBits << 1) | referenceOptionsBit
+	return ALTER_DAC_REF_FLAG | (referenceVoltageBits << 1) | referenceOptionsBit
 }
 
 export function encodeDACValueAlter(initialValue?: number): number {
-	if(initialValue === undefined) { return dont_care() &  0x7f }
-	return 0x80 | (initialValue & 0b11111)
+	if(initialValue === undefined) { return any_other(ALTER_DAC_VALUE_FLAG) }
+	return ALTER_DAC_VALUE_FLAG | (initialValue & 0b11111)
 }
 
 export function encodeADCReferenceAlter(adc?: GeneralPurposeAlterADC): number {
-	if(adc === undefined) { return dont_care() & 0x7f }
+	if(adc === undefined) { return any_other(ALTER_ADC_REF_FLAG) }
 
 	const { referenceVoltage, referenceOptions } = adc
 
@@ -103,18 +108,18 @@ export function encodeADCReferenceAlter(adc?: GeneralPurposeAlterADC): number {
 
 	if(referenceVoltageBits === undefined) { throw new Unknown('adc reference voltage', referenceVoltageBits) }
 
-	return 0x80 | (referenceVoltageBits << 1) | referenceOptionsBit
+	return ALTER_ADC_REF_FLAG | (referenceVoltageBits << 1) | referenceOptionsBit
 }
 
 export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): number {
-	if(interrupt === undefined) { return dont_care() & 0x7f }
+	if(interrupt === undefined) { return any_other(ALTER_INTERRUPT_FLAG) }
 
 	const { edge, clear  } = interrupt
 
 	const hasEdge = edge !== undefined
 	const hasClear = clear !== undefined
 
-	if(!hasClear || !hasEdge) { return dont_care() & 0x7f }
+	if(!hasClear || !hasEdge) { return any_other(ALTER_INTERRUPT_FLAG) }
 
 	const positiveEdgeBit = (edge === 'both' || edge === 'positive') ? 0b1 : 0b0
 	const negativeEdgeBit = (edge === 'both' || edge === 'negative') ? 0b1 : 0b0
@@ -123,7 +128,7 @@ export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): 
 
 	const clearBit = clear === true ? 0b1 : 0b0
 
-	return 0x80 | edgeBits | clearBit
+	return ALTER_INTERRUPT_FLAG | edgeBits | clearBit
 }
 
 export function encodeGpio0Designation(designation: Gp0Designation) {
@@ -180,11 +185,13 @@ export function encodeGpioAlter<D>(gpio?: Gpio<D>, encodeDesignation?: (designat
 	return (outputValue << 4) | (directionBits << 3) | designationBits
 }
 
+export const MAX_16BIT_USB_STRING_LENGTH = 30
+
 export function encodeFlashDataUSBStringRequest(commandNumber: number, subCommandNubmer: number, descriptor: string) {
 	const strBuffer = encodeUSBString(descriptor)
 	const str16 = new Uint16Array(strBuffer)
 
-	if(str16.length > 30) { throw new Error('descriptor too long') }
+	if(str16.length > MAX_16BIT_USB_STRING_LENGTH) { throw new Error('descriptor too long') }
 
 	const report = newReportBuffer()
 
@@ -192,7 +199,7 @@ export function encodeFlashDataUSBStringRequest(commandNumber: number, subComman
 	dv.setUint8(0, commandNumber)
 	dv.setUint8(1, subCommandNubmer)
 	dv.setUint8(2, strBuffer.byteLength + 2)
-	dv.setUint8(3, 0x03)
+	dv.setUint8(3, USB_STRING_MAGIC_THREE)
 
 	const report16 = new Uint16Array(report, 4)
 	report16.set(str16)

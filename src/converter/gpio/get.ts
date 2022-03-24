@@ -9,7 +9,6 @@ import {
 } from '../decoders.js'
 import { Unused } from '../throw.js'
 
-
 export class GetGPIOValuesResponseCoder {
 	static encode(res: GetGPIOValuesResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): GetGPIOValuesResponse {
