@@ -1,24 +1,26 @@
 import { WriteFlashDataUSBSerialNumberRequest } from '../../messages/flash.request.js'
 import { WriteFlashDataResponse } from '../../messages/flash.response.js'
+import { WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeStatusResponse } from '../decoders.js'
-import { encodeUSBString, newReportBuffer } from '../encoders.js'
+import { encodeFlashDataUSBStringRequest } from '../encoders.js'
+import { Unused } from '../throw.js'
 
 export class WriteFlashDataUSBSerialNumberResponseCoder {
-	static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Error('unused') }
+	static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): WriteFlashDataResponse {
 		const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, 0xB1) as WriteFlashDataResponse
+		const response = decodeStatusResponse(dv, WRITE_FLASH_DATA_COMMAND) as WriteFlashDataResponse
 		const { command, status, statusCode } = response
 		if(statusCode !== 0) { return response }
 
 		return {
-			opaque: '_and_now_for_something__',
-			command,
+			opaque: '__and_now_for_something__',
+			command, subCommand: WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND,
 			status, statusCode
 		}
 	}
@@ -27,22 +29,10 @@ export class WriteFlashDataUSBSerialNumberResponseCoder {
 export class WriteFlashDataUSBSerialNumberRequestCoder {
 	static encode(req: WriteFlashDataUSBSerialNumberRequest): ArrayBuffer {
 		const { descriptor } = req
-
-		const strBuffer = encodeUSBString(descriptor)
-		const str16 = new Uint16Array(strBuffer)
-
-		const report = newReportBuffer()
-
-		const dv = new DataView(report)
-		dv.setUint8(0, 0xB1)
-		dv.setUint8(1, 0x04)
-		dv.setUint8(2, strBuffer.byteLength + 2)
-		dv.setUint8(3, 0x03)
-
-		const report16 = new Uint16Array(report, 4)
-		report16.set(str16)
-
-		return report
+		return encodeFlashDataUSBStringRequest(
+			WRITE_FLASH_DATA_COMMAND,
+			WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND,
+			descriptor)
 	}
-	static decode(bufferSource: DecoderBufferSource): WriteFlashDataUSBSerialNumberRequest { throw new Error('unused') }
+	static decode(bufferSource: DecoderBufferSource): WriteFlashDataUSBSerialNumberRequest { throw new Unused() }
 }

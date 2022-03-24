@@ -16,6 +16,7 @@ import {
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption
 } from '../messages/message.fragments.js'
+import { Unknown } from './throw.js'
 
 
 export function newReportBuffer() {
@@ -26,16 +27,10 @@ export function newReportBuffer() {
 export function encodeUSBString(str: string): ArrayBuffer {
 	const dest16 = new Uint16Array(str.length)
 
-	// js strings are utf16, length refers to 16bit charCodes, not multi byte codePoints
-	// and the typed array is in its unit length, also 16bit (it should work :P)
-	if(str.length > dest16.length) { throw new Error('destination buffer too small') }
-
-	//
 	for(var i = 0; i < str.length; i++){
 		dest16[i] = str.charCodeAt(i)
 	}
 
-	// return raw ArrayBuffer
 	return dest16.buffer
 }
 
@@ -58,8 +53,8 @@ export function encodeGPClockAlter(clock?: GPClock): number {
 		divider === Divider24000 ? 0b001 :
 			undefined
 
-	if(dutyCycleBits === undefined) { throw new Error('undefined dutyCycle') }
-	if(dividerBits === undefined) { throw new Error('undefined divider') }
+	if(dutyCycleBits === undefined) { throw new Unknown('dutyCycle', dutyCycleBits) }
+	if(dividerBits === undefined) { throw new Unknown('divider', dividerBits) }
 
 	return 0x80 | (dutyCycleBits << 3) | dividerBits
 }
@@ -88,7 +83,7 @@ export function encodeDACReferenceAlter(dac?: GeneralPurposeAlterDAC): number {
 	const referenceVoltageBits = encodeVoltateBits(referenceVoltage)
 	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
 
-	if(referenceVoltageBits === undefined) { throw new Error('unknown dac reference voltage') }
+	if(referenceVoltageBits === undefined) { throw new Unknown('dac reference voltage', referenceVoltageBits) }
 
 	return 0x80 | (referenceVoltageBits << 1) | referenceOptionsBit
 }
@@ -106,7 +101,7 @@ export function encodeADCReferenceAlter(adc?: GeneralPurposeAlterADC): number {
 	const referenceVoltageBits  = encodeVoltateBits(referenceVoltage)
 	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
 
-	if(referenceVoltageBits === undefined) { throw new Error('unknown adc reference voltage') }
+	if(referenceVoltageBits === undefined) { throw new Unknown('adc reference voltage', referenceVoltageBits) }
 
 	return 0x80 | (referenceVoltageBits << 1) | referenceOptionsBit
 }
@@ -136,7 +131,7 @@ export function encodeGpio0Designation(designation: Gp0Designation) {
 	if(designation === Gp0DesignationSSPND) { return 0b01 }
 	if(designation === Gp0DesignationGPIO) { return 0b00 }
 
-	throw new Error('unknown gpio0 designation')
+	throw new Unknown('gpio0 designation', designation)
 }
 
 export function encodeGpio1Designation(designation: Gp1Designation) {
@@ -146,7 +141,7 @@ export function encodeGpio1Designation(designation: Gp1Designation) {
 	if (designation === Gp1DesignationClockOutput) { return 0b001 }
 	if(designation === Gp1DesignationGPIO) { return 0b00 }
 
-	throw new Error('unknown gpio1 designation')
+	throw new Unknown('gpio1 designation', designation)
 }
 
 export function encodeGpio2Designation(designation: Gp2Designation) {
@@ -155,7 +150,7 @@ export function encodeGpio2Designation(designation: Gp2Designation) {
 	if (designation === Gp2DesignationUSB) { return 0b01 }
 	if(designation === Gp2DesignationGPIO) { return 0b00 }
 
-	throw new Error('unknown gpio2 designation')
+	throw new Unknown('gpio2 designation', designation)
 }
 
 export function encodeGpio3Designation(designation: Gp3Designation) {
@@ -164,13 +159,13 @@ export function encodeGpio3Designation(designation: Gp3Designation) {
 	if(designation === Gp3DesignationLedI2C) { return 0b01 }
 	if(designation === Gp3DesignationGPIO) { return 0b00 }
 
-	throw new Error('unknown gpio3 designation')
+	throw new Unknown('gpio3 designation', designation)
 }
 
 export function encodeGpioAlter<D>(gpio?: Gpio<D>, encodeDesignation?: (designation: D) => number): number {
 	if(gpio === undefined) { return dont_care() }
 
-	if(encodeDesignation === undefined) { throw new Error('unknown designation encoder') }
+	if(encodeDesignation === undefined) { throw new Unknown('designation encoder fu', encodeDesignation) }
 
 	const { designation, direction, outputValue } = gpio
 
@@ -180,7 +175,27 @@ export function encodeGpioAlter<D>(gpio?: Gpio<D>, encodeDesignation?: (designat
 		direction === GpioDirectionOut ? 0b0 :
 			undefined
 
-	if(directionBits === undefined) { throw new Error('undefined direction') }
+	if(directionBits === undefined) { throw new Unknown('direction', directionBits) }
 
 	return (outputValue << 4) | (directionBits << 3) | designationBits
+}
+
+export function encodeFlashDataUSBStringRequest(commandNumber: number, subCommandNubmer: number, descriptor: string) {
+	const strBuffer = encodeUSBString(descriptor)
+	const str16 = new Uint16Array(strBuffer)
+
+	if(str16.length > 30) { throw new Error('descriptor too long') }
+
+	const report = newReportBuffer()
+
+	const dv = new DataView(report)
+	dv.setUint8(0, commandNumber)
+	dv.setUint8(1, subCommandNubmer)
+	dv.setUint8(2, strBuffer.byteLength + 2)
+	dv.setUint8(3, 0x03)
+
+	const report16 = new Uint16Array(report, 4)
+	report16.set(str16)
+
+	return report
 }

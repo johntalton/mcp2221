@@ -8,8 +8,6 @@ export default async function send_request<Req, Res>(binding: Binding, req: Req,
 	const buffer = converter.from(req)
 
 	const writtenBytes = await binding.write(buffer)
-	if (writtenBytes < 0) { throw new Error('bytes written error') }
-
 	const resBuffer = await binding.read(64)
 
 	await delayMs(1)

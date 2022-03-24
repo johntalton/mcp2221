@@ -72,18 +72,9 @@ export type WriteFlashDataResponseBase = Response & (Success | NotSupported | No
   command: 0xB1
 }
 
-// export type WriteFlashDataSuccessResponse = WriteFlashDataResponseBase & Success & {
-// }
-
-// export type WriteFlashDataNotSupportedResponse = WriteFlashDataResponseBase & NotSupported & {
-// }
-
-// export type WriteFlashDataNotAllowedResponse = WriteFlashDataResponseBase & NotAllowed & {
-// }
-
-// export type WriteFlashDataResponse = WriteFlashDataSuccessResponse | WriteFlashDataNotSupportedResponse | WriteFlashDataNotAllowedResponse
-
-export type WriteFlashDataResponse = WriteFlashDataResponseBase
+export type WriteFlashDataResponse = WriteFlashDataResponseBase & {
+  subCommand: 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05
+}
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordResponse = Response & (Success | NotAllowed) & {

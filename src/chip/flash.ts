@@ -18,7 +18,7 @@ import {
 } from '../converter/flash/flash.js'
 
 import send_request from './util.js'
-import { write } from 'fs'
+import { Invalid, Unknown } from '../converter/throw.js'
 
 function isReadSubCommand<D extends ReadFlashDataRequest>(subCommand: number, req: ReadFlashDataRequest): req is D {
 	return req.subCommand === subCommand
@@ -65,7 +65,7 @@ export class MCP2221Flash extends Bindable implements Flash {
 		if (isReadSubCommand<ReadFlashDataUSBSerialNumberRequest>(0x04, req)) { return this.readUSBSerialNumber(req) }
 		if (isReadSubCommand<ReadFlashDataFactorySerialNumberRequest>(0x05, req)) { return this.readFactorySerialNumber(req) }
 
-		throw new Error('unknown subCommand')
+		throw new Unknown('subCommand', subCommand)
 	}
 
 	async writeChipSettings(req: WriteFlashDataChipSettingsRequest): Promise<WriteFlashDataResponse> {
@@ -97,9 +97,9 @@ export class MCP2221Flash extends Bindable implements Flash {
 		if (isWriteSubCommand<WriteFlashDataUSBManufacturerRequest>(0x02, req)) { return this.writeUSBManufacturer(req) }
 		if (isWriteSubCommand<WriteFlashDataUSBProductRequest>(0x03, req)) { return this.writeUSBProduct(req) }
 		if (isWriteSubCommand<WriteFlashDataUSBSerialNumberRequest>(0x04, req)) { return this.writeUSBSerialNumber(req) }
-		if (isWriteSubCommand(0x05, req)) { throw new Error('writing factory sn not allowed') }
+		if (isWriteSubCommand(0x05, req)) { throw new Invalid('writing factory sn not allowed', subCommand) }
 
-		throw new Error('unknown subCommand')
+		throw new Unknown('subCommand', subCommand)
 	}
 
 	async sendPassword(req: SendFlashAccessPasswordRequest): Promise<SendFlashAccessPasswordResponse> {

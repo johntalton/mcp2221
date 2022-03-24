@@ -1,14 +1,8 @@
-
-import { BitSmush } from '@johntalton/bitsmush'
-
-import {
-	decodeStatusResponse,
-} from '../decoders.js'
-
+import { decodeStatusResponse, } from '../decoders.js'
 import { SetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { SetSRAMSettingsResponse, } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
-import { dont_care } from '../../messages/message.consts.js'
+import { dont_care, SRAM_SET_COMMAND } from '../../messages/message.consts.js'
 
 import {
 	encodeGPClockAlter,
@@ -20,15 +14,16 @@ import {
 	encodeGpio0Designation, encodeGpio1Designation,
 	encodeGpio2Designation, encodeGpio3Designation, newReportBuffer
 } from '../encoders.js'
+import { Unused } from '../throw.js'
 
 export class SetSRAMSettingsResponseCoder {
-	static encode(_msg: SetSRAMSettingsResponse): ArrayBuffer { throw new Error('unused') }
+	static encode(_msg: SetSRAMSettingsResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): SetSRAMSettingsResponse {
 		const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, 0x60) as SetSRAMSettingsResponse
+		const response = decodeStatusResponse(dv, SRAM_SET_COMMAND) as SetSRAMSettingsResponse
 		const { command, status, statusCode } = response
 		if(statusCode !== 0) { return response }
 
@@ -72,7 +67,7 @@ export class SetSRAMSettingsRequestCoder {
 		const buffer = newReportBuffer()
 		const dv = new DataView(buffer)
 
-		dv.setUint8(0, 0x60)
+		dv.setUint8(0, SRAM_SET_COMMAND)
 		dv.setUint8(1, dont_care())
 		dv.setUint8(2, clockOutputByte)
 		dv.setUint8(3, dacReferenceByte)
@@ -87,5 +82,5 @@ export class SetSRAMSettingsRequestCoder {
 
 		return buffer
 	}
-	static decode(_bufferSource: DecoderBufferSource): SetSRAMSettingsRequest { throw new Error('unused') }
+	static decode(_bufferSource: DecoderBufferSource): SetSRAMSettingsRequest { throw new Unused() }
 }

@@ -12,23 +12,30 @@ import {
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { GetSRAMSettingsResponse } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
+import { Unknown, Unused } from '../throw.js'
+import { SRAM_GET_COMMAND } from '../../messages/message.consts.js'
+
+
+
+const EXPECTED_CHIP_BYTE_LENGTH = 18
+const EXPECTED_GP_BYTE_LENGTH = 4
 
 export class GetSRAMSettingsResponseCoder {
-	static encode(_msg: GetSRAMSettingsResponse): ArrayBuffer { throw new Error('unused') }
+	static encode(_msg: GetSRAMSettingsResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): GetSRAMSettingsResponse {
 		const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, 0x61) as GetSRAMSettingsResponse
+		const response = decodeStatusResponse(dv, SRAM_GET_COMMAND) as GetSRAMSettingsResponse
 		const { command, status, statusCode } = response
 		if(statusCode !== 0) { return response }
 
 		const chipBytesLength = dv.getUint8(2)
 		const gpBytesLength = dv.getUint8(3)
 
-		if (chipBytesLength != 18) { throw new Error('unknown chip data length') }
-		if (gpBytesLength !== 4) { throw new Error('unknown gpio data length') }
+		if (chipBytesLength != EXPECTED_CHIP_BYTE_LENGTH) { throw new Unknown('chip data length', chipBytesLength) }
+		if (gpBytesLength !== EXPECTED_GP_BYTE_LENGTH) { throw new Unknown('gpio data length', gpBytesLength) }
 
 		const statusMaskByte = dv.getUint8(4)
 		const gpClockOutputByte = dv.getUint8(5)
@@ -103,9 +110,8 @@ export class GetSRAMSettingsResponseCoder {
 
 export class GetSRAMSettingsRequestCoder {
 	static encode(msg: GetSRAMSettingsRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([
-			0x61, 0x00
-		])
+		// newReportBuffer
+		return Uint8ClampedArray.from([ SRAM_GET_COMMAND ])
 	}
-	static decode(_bufferSource: DecoderBufferSource): GetSRAMSettingsRequest { throw new Error('unused') }
+	static decode(_bufferSource: DecoderBufferSource): GetSRAMSettingsRequest { throw new Unused() }
 }

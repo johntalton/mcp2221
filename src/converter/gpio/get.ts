@@ -1,20 +1,23 @@
 import { GetGPIOValuesRequest } from '../../messages/gpio.request.js'
 import { GetGPIOValuesResponse } from '../../messages/gpio.response.js'
+import { GPIO_GET_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import {
 	decodeStatusResponse,
 	decodeGpioValues
 } from '../decoders.js'
+import { Unused } from '../throw.js'
+
 
 export class GetGPIOValuesResponseCoder {
-	static encode(res: GetGPIOValuesResponse): ArrayBuffer { throw new Error('unused') }
+	static encode(res: GetGPIOValuesResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): GetGPIOValuesResponse {
 		const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, 0x51) as GetGPIOValuesResponse
+		const response = decodeStatusResponse(dv, GPIO_GET_COMMAND) as GetGPIOValuesResponse
 		const { command, status, statusCode } = response
 		if(statusCode !== 0) { return response }
 
@@ -48,9 +51,7 @@ export class GetGPIOValuesResponseCoder {
 
 export class GetGPIOValuesRequestCoder {
 	static encode(res: GetGPIOValuesRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([
-			0x51
-		])
+		return Uint8ClampedArray.from([ GPIO_GET_COMMAND ])
 	}
-	static decode(bufferSource: DecoderBufferSource): GetGPIOValuesRequest { throw new Error('unused') }
+	static decode(bufferSource: DecoderBufferSource): GetGPIOValuesRequest { throw new Unused() }
 }

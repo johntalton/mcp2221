@@ -9,8 +9,42 @@ import {
   I2CReadPending
 } from './message.fragments.js'
 
+export const STATUS_COMMAND = 0x10
+export const RESET_CHIP_COMMAND = 0x70
+
+export const GPIO_SET_COMMAND = 0x50
+export const GPIO_GET_COMMAND = 0x51
+
+export const SRAM_SET_COMMAND = 0x60
+export const SRAM_GET_COMMAND = 0x61
+
+export const I2C_READ_DATA_COMMAND = 0x91
+export const I2C_READ_DATA_REPEATED_START_COMMAND = 0x93
+export const I2C_READ_GET_DATA_COMMAND = 0x40
+export const I2C_READ_DATA_NO_STOP_COMMAND = 0x94
+export const I2C_WRITE_DATA_REPEATED_START_COMMAND = 0x92
+export const I2C_WRITE_DATA_COMMAND = 0x90
+
+export const READ_FLASH_DATA_COMMAND = 0xB0
+export const READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND = 0x01
+export const READ_FLASH_USB_MANUFACTURER_SUB_COMMAND_CODE = 0x02
+export const READ_FLASH_USB_PRODUCT_SUB_COMMAND_CODE = 0x03
+export const READ_FLASH_USB_SERIAL_NUMBER_SUB_COMMAND_CODE = 0x04
+export const READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND = 0x05
+
+export const WRITE_FLASH_DATA_COMMAND = 0xB1
+export const WRITE_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND = 0x00
+export const WRITE_FLASH_DATA_GP_SETTINGS_SUB_COMMAND = 0x01
+export const WRITE_FLASH_DATA_MANUFACTURER_SUB_COMMAND = 0x02
+export const WRITE_FLASH_DATA_PRODUCT_SUB_COMMAND = 0x03
+export const WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND = 0x04
+
+export const SEND_FLASH_ACCESS_COMMAND = 0xB2
+
+//
 export const RESET_MAGIC = [ 0xAB, 0xCD, 0xEF ]
 
+//
 export const RevisionA6_11 = {
   hardware: { major: 'A', minor: '6' },
   firmware: { major: '1', minor: '1' }
@@ -21,8 +55,8 @@ export const RevisionA6_12 = {
   firmware: { major: '1', minor: '2' }
 }
 
+//
 export function dont_care() { return 0x00 }
-
 export function any_other() { return 0x00 }
 
 //

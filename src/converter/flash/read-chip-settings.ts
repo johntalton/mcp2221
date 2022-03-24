@@ -1,22 +1,26 @@
 import { ReadFlashDataChipSettingsRequest, ReadFlashDataRequest } from '../../messages/flash.request.js'
 import { ReadFlashDataChipSettingsResponse } from '../../messages/flash.response.js'
+import { READ_FLASH_DATA_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeADCByte, decodeChipSecurityCode, decodeDACByte, decodeGPClockValues, decodeInterruptFlags, decodeRequestedmA, decodeStatusResponse } from '../decoders.js'
+import { Unused } from '../throw.js'
+
+const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
 
 export class ReadFlashDataChipSettingsResponseCoder {
-	static encode(res: ReadFlashDataChipSettingsRequest): ArrayBuffer { throw new Error('unused') }
+	static encode(res: ReadFlashDataChipSettingsRequest): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse {
 		const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, 0xB0) as ReadFlashDataChipSettingsResponse
+		const response = decodeStatusResponse(dv, READ_FLASH_DATA_COMMAND) as ReadFlashDataChipSettingsResponse
 		const { command, status, statusCode } = response
 		if(statusCode !== 0) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
-		if(subCommandByteLength !== 10) { throw new Error('subcommand length error') }
+		if(subCommandByteLength !== EXPECTED_CHIP_SETTINGS_BYTE_LENGTH) { throw new Error('subcommand length error') }
 
 		const enableAndSecurityByte = dv.getUint8(4)
 		const gpClockDividerByte = dv.getUint8(5)
@@ -73,7 +77,7 @@ export class ReadFlashDataChipSettingsResponseCoder {
 
 export class ReadFlashDataChipSettingsRequestCoder {
 	static encode(req:  ReadFlashDataRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([ 0xB0, 0x00 ])
+		return Uint8ClampedArray.from([ READ_FLASH_DATA_COMMAND, 0x00 ])
 	}
-	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse { throw new Error('unused') }
+	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse { throw new Unused() }
 }

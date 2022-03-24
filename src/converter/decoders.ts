@@ -33,9 +33,10 @@ import {
 	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C
 } from '../messages/message.consts.js'
 
-import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported, Response } from '../messages/message.js'
+import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported, Response, Success } from '../messages/message.js'
 
 import { DecoderBufferSource } from './converter.js'
+import { Invalid, Unknown } from './throw.js'
 
 export function decodeUSBString(sourceBuffer: DecoderBufferSource, byteLength: number) {
 	const length = byteLength / 2
@@ -54,7 +55,7 @@ export function decodeGPClockValues(dutyCycleValue: number, dividerValue: number
 				(dutyCycleValue === 0b11) ? DutyCycle75 :
 					undefined
 
-	if (dutyCycle === undefined) { throw new Error('unknown duty cycle') }
+	if (dutyCycle === undefined) { throw new Unknown('duty cycle', dutyCycle) }
 
 	const divider = (dividerValue === 0b111) ? Divider00375 :
 		(dividerValue === 0b110) ? Divider00750 :
@@ -66,7 +67,7 @@ export function decodeGPClockValues(dutyCycleValue: number, dividerValue: number
 								(dividerValue === 0b000) ? undefined : // reserved
 									undefined
 
-	if (divider === undefined) { throw new Error('unknown divider ' + dividerValue) }
+	if (divider === undefined) { throw new Unknown('divider', dividerValue) }
 
 	return { dutyCycle, divider }
 }
@@ -82,7 +83,7 @@ function decodeReferenceVoltageBits(volt: number): Voltage {
 				volt === 0b11 ? Voltage4V :
 					undefined
 
-	if (rv === undefined) { throw new Error('undefined ref voltage') }
+	if (rv === undefined) { throw new Unknown('ref voltage', rv) }
 
 	return rv
 }
@@ -114,7 +115,7 @@ export function gpio0Designation(value: number): Gp0Designation {
 	if (value === 0b01) { return Gp0DesignationSSPND }
 	if (value === 0b00) { return Gp0DesignationGPIO }
 
-	throw new Error('unknown designation')
+	throw new Unknown('designation', value)
 }
 
 export function gpio1Designation(value: number): Gp1Designation {
@@ -124,7 +125,7 @@ export function gpio1Designation(value: number): Gp1Designation {
 	if (value === 0b001) { return Gp1DesignationClockOutput }
 	if (value === 0b000) { return Gp1DesignationGPIO }
 
-	throw new Error('unknown designation')
+	throw new Unknown('designation', value)
 }
 
 export function gpio2Designation(value: number): Gp2Designation {
@@ -133,7 +134,7 @@ export function gpio2Designation(value: number): Gp2Designation {
 	if (value === 0b01) { return Gp2DesignationUSB }
 	if (value === 0b00) { return Gp2DesignationGPIO }
 
-	throw new Error('unknown designation')
+	throw new Unknown('designation', value)
 }
 
 export function gpio3Designation(value: number): Gp3Designation {
@@ -142,7 +143,7 @@ export function gpio3Designation(value: number): Gp3Designation {
 	if (value === 0b01) { return Gp3DesignationLedI2C }
 	if (value === 0b00) { return Gp3DesignationGPIO }
 
-	throw new Error('unknown designation')
+	throw new Unknown('designation', value)
 }
 
 export function decodeGpioByte<D>(gpioByte: number, designationFn: (value: number) => D): Gpio<D> {
@@ -172,7 +173,7 @@ export function decodeChipSecurityCode(chipSecurityCode: number): Security {
 	if(chipSecurityCode === 0b01) { return SecurityPasswordProtected }
 	if(chipSecurityCode === 0b10) { return SecurityPermanentlyLocked }
 
-	throw new Error('security attribute undefined')
+	throw new Unknown('security attribute', chipSecurityCode)
 }
 
 export function decodeRuntimeChipByte(chipByte: number): RuntimeChipSettings {
@@ -222,8 +223,7 @@ export function decodeInterruptFlags(negativEdge: boolean, positiveEdge: boolean
 export function decodeResponse(dv: DataView, commandNumber: number) {
 	const command = dv.getUint8(0)
 
-	if (command === undefined) { throw new Error('undefined command byte') }
-	if (command !== commandNumber) { throw new Error('invalid command byte decoded') }
+	if (command !== commandNumber) { throw new Invalid('command byte decoded', command) }
 
 	return { command }
 }
@@ -232,7 +232,6 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 	const { command } = decodeResponse(dv, commandNumber)
 
 	const statusCode = dv.getUint8(1)
-	if (statusCode === undefined) { throw new Error('status code undedined') }
 
 	if (statusCode === 0x41) {
 		//Error reading the I2C slave data from the I2C engine
@@ -273,7 +272,7 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 	}
 
 	if (statusCode !== 0x00) {
-		throw new Error('invalid statusCode')
+		throw new Unknown('statusCode', statusCode)
 	}
 
 	return {
@@ -289,7 +288,6 @@ function _decodeReadWriteResponse(dv: DataView, commandNumber: number) {
 
 	const i2cState = dv.getUint8(2)
 
-	if (i2cState === undefined) { throw new Error('undefined i2c state') }
 	const i2cStateName = decodeI2CState(i2cState)
 
 	return {
@@ -314,7 +312,7 @@ export function decodeReadWriteResponse(commandNumber: number, bufferSource: Dec
 
 	//const userData = new Uint8Array(dv.buffer, dv.byteOffset + 3)
 	//const userData = new Uint8Array(dv.buffer, dv.byteOffset + 4, byteLength)
-	//if(byteLength < 0 || byteLength > 60) { throw new Error('invalid byte length: ' + byteLength) }
+	//if(byteLength < 0 || byteLength > 60) { throw new Invalid('byte length', byteLength) }
 
 	return {
 		opaque,
@@ -324,6 +322,42 @@ export function decodeReadWriteResponse(commandNumber: number, bufferSource: Dec
 		//buffer: userData.slice().buffer
 	}
 }
+
+export function isStatusSuccess(response: Response): response is Success {
+	return response.statusCode === 0
+}
+
+export function decodeFlashDataUSBStringResponse(commandNumber: number, subCommandNumber: number, sourceBuffer: DecoderBufferSource) {
+	const MAGIC_THREE = 0x03
+	const USB_STRING_MAX_BYTE_LENGTH = 60
+
+	const dv = ArrayBuffer.isView(sourceBuffer) ?
+			new DataView(sourceBuffer.buffer, sourceBuffer.byteOffset, sourceBuffer.byteLength) :
+			new DataView(sourceBuffer)
+
+	const response = decodeStatusResponse(dv, commandNumber)
+	const { command, status, statusCode } = response
+	if(!isStatusSuccess(response)) { return response }
+
+	const subCommandByteLength = dv.getUint8(2)
+	const three = dv.getUint8(3)
+	if(three !== MAGIC_THREE) { throw new Invalid('usb string sentinal value', three) }
+
+	const usbByteLength = subCommandByteLength - 2
+	if(usbByteLength < 0 || usbByteLength > USB_STRING_MAX_BYTE_LENGTH) { throw new Invalid('usb string length', usbByteLength) }
+
+	const usbDv = new DataView(dv.buffer, dv.byteOffset + 4)
+	const descriptor = decodeUSBString(usbDv, usbByteLength)
+
+	return {
+		opaque: '__usb_string__',
+		command, subCommand: subCommandNumber,
+		status, statusCode,
+
+		descriptor
+	}
+}
+
 
 const I2C_STATES: Record<number, string> = {
 	0x00: 'IDLE',
