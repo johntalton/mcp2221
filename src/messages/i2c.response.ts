@@ -68,26 +68,25 @@ export type I2CReadDataRepeatedSTARTBusyResponse = I2CReadDataRepeatedSTARTRespo
 export type I2CReadDataRepeatedSTARTResponse = I2CReadDataRepeatedSTARTSuccessResponse | I2CReadDataRepeatedSTARTBusyResponse
 
 //
-
-
 export type I2CReadGetDataResponseBase = Response & (Success | Error) & {
 	command: 0x40,
-
-	validData?: boolean,
-	readBackBytes?: number,
-	buffer?: ArrayBuffer
 }
 
-export type I2CReadGetDataResponseSuccess = I2CReadGetDataResponseBase & Success & {
+export type WithReturnBuffer = {
 	validData: true,
 	readBackBytes: number,
 	buffer: ArrayBuffer
 }
 
-export type I2CReadGetDataResponseError = I2CReadGetDataResponseBase & Error & {
+export type WithoutReturnBuffer = {
 	validData: false,
 	readBackBytes: -1,
-	buffer: undefined
+	buffer?: undefined
 }
 
-export type I2CReadGetDataResponse = I2CReadGetDataResponseSuccess | I2CReadGetDataResponseError
+export type I2CReadGetDataResponseSuccessWithBuffer = I2CReadGetDataResponseBase & Success & WithReturnBuffer
+export type I2CReadGetDataResponseErrorWithBuffer = I2CReadGetDataResponseBase & Error & WithReturnBuffer
+export type I2CReadGetDataResponseErrorWithoutBuffer = I2CReadGetDataResponseBase & Success & WithoutReturnBuffer
+
+
+export type I2CReadGetDataResponse = I2CReadGetDataResponseSuccessWithBuffer | I2CReadGetDataResponseErrorWithBuffer | I2CReadGetDataResponseErrorWithoutBuffer

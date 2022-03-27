@@ -4,7 +4,7 @@ import { DecoderBufferSource } from '../converter.js'
 
 import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCLE_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.consts.js'
 
-import { decodeStatusResponse, decodeI2CState, isBitSet } from '../decoders.js'
+import { decodeStatusResponse, decodeI2CState, isBitSet, isStatusSuccess } from '../decoders.js'
 import { I2CReadPending } from '../../messages/message.fragments.js'
 import { encodeI2CDivider, newReportBuffer } from '../encoders.js'
 import { Invalid, Unused } from '../throw.js'
@@ -18,9 +18,9 @@ export class StatusParametersResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, STATUS_COMMAND) as StatusParametersResponse
+		const response = decodeStatusResponse(STATUS_COMMAND, bufferSource) as StatusParametersResponse
 		const { command, status, statusCode } = response
-		if (statusCode !== 0) { return response }
+		if(!isStatusSuccess(response)) { return response }
 
 		const cancelTransferByte = dv.getUint8(2)
 		const setSpeedByte = dv.getUint8(3)

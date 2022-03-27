@@ -3,7 +3,8 @@ import { ReadFlashDataChipSettingsResponse } from '../../messages/flash.response
 import { READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, READ_FLASH_DATA_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeADCByte, decodeChipSecurityCode, decodeDACByte, decodeGPClockValues, decodeInterruptFlags, decodeRequestedmA, decodeStatusResponse, isBitSet } from '../decoders.js'
+import { decodeADCByte, decodeChipSecurityCode, decodeDACByte, decodeGPClockValues, decodeInterruptFlags, decodeRequestedmA, decodeStatusResponse, isBitSet, isStatusSuccess } from '../decoders.js'
+import { newReportBuffer } from '../encoders.js'
 import { Unused } from '../throw.js'
 
 export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
@@ -15,9 +16,9 @@ export class ReadFlashDataChipSettingsResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, READ_FLASH_DATA_COMMAND) as ReadFlashDataChipSettingsResponse
+		const response = decodeStatusResponse(READ_FLASH_DATA_COMMAND, bufferSource) as ReadFlashDataChipSettingsResponse
 		const { command, status, statusCode } = response
-		if(statusCode !== 0) { return response }
+		if(!isStatusSuccess(response)) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
 		if(subCommandByteLength !== EXPECTED_CHIP_SETTINGS_BYTE_LENGTH) { throw new Error('subcommand length error') }
@@ -77,7 +78,13 @@ export class ReadFlashDataChipSettingsResponseCoder {
 
 export class ReadFlashDataChipSettingsRequestCoder {
 	static encode(req:  ReadFlashDataRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([ READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND ])
+		const report = newReportBuffer()
+		const dv = new DataView(report)
+
+		dv.setUint8(0, READ_FLASH_DATA_COMMAND)
+		dv.setUint8(1, READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND)
+
+		return report
 	}
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse { throw new Unused() }
 }

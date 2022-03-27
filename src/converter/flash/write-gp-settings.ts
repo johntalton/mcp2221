@@ -3,33 +3,33 @@ import { WriteFlashDataResponse } from '../../messages/flash.response.js'
 import { WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_GP_SETTINGS_SUB_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeStatusResponse } from '../decoders.js'
+import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'
+import { newReportBuffer } from '../encoders.js'
 import { Unimplemented, Unused } from '../throw.js'
 
 export class WriteFlashDataGPSettingsResponseCoder {
 	static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): WriteFlashDataResponse {
-		const dv = ArrayBuffer.isView(bufferSource) ?
-			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
-			new DataView(bufferSource)
-
-		const response = decodeStatusResponse(dv, WRITE_FLASH_DATA_COMMAND) as WriteFlashDataResponse
-		const { command, status, statusCode } = response
-		if(statusCode !== 0) { return response }
+		const response = decodeStatusResponse(WRITE_FLASH_DATA_COMMAND, bufferSource) as WriteFlashDataResponse
+		if(!isStatusSuccess(response)) { return response }
 
 		return {
+			...response,
 			opaque: '__hold_up_hold_up__',
-			command, subCommand: WRITE_FLASH_DATA_GP_SETTINGS_SUB_COMMAND,
-			status, statusCode
+			subCommand: WRITE_FLASH_DATA_GP_SETTINGS_SUB_COMMAND,
 		}
 	}
 }
 
 export class WriteFlashDataGPSettingsRequestCoder {
 	static encode(req: WriteFlashDataGPSettingsRequest): ArrayBuffer {
-		// return Uint8ClampedArray.from([
-		// 	WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_GP_SETTINGS_SUB_COMMAND
-		// ])
+		const report = newReportBuffer()
+		const dv = new DataView(report)
+
+		dv.setUint8(0, WRITE_FLASH_DATA_COMMAND)
+
+		// return report
+
 
 		throw new Unimplemented()
 	}

@@ -224,7 +224,11 @@ export function decodeInterruptFlags(negativEdge: boolean, positiveEdge: boolean
 	return InterruptEdgeOff
 }
 
-export function decodeResponse(dv: DataView, commandNumber: number) {
+export function decodeResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
+	const dv = ArrayBuffer.isView(bufferSource) ?
+			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+			new DataView(bufferSource)
+
 	const command = dv.getUint8(0)
 
 	if (command !== commandNumber) { throw new Invalid('command byte decoded', command) }
@@ -232,8 +236,12 @@ export function decodeResponse(dv: DataView, commandNumber: number) {
 	return { command }
 }
 
-export function decodeStatusResponse(dv: DataView, commandNumber: number) {
-	const { command } = decodeResponse(dv, commandNumber)
+export function decodeStatusResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
+	const dv = ArrayBuffer.isView(bufferSource) ?
+			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+			new DataView(bufferSource)
+
+	const { command } = decodeResponse(commandNumber, bufferSource)
 
 	const statusCode = dv.getUint8(1)
 
@@ -288,19 +296,11 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 }
 
 export function _decodeReadResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
-	const dv = ArrayBuffer.isView(bufferSource) ?
-		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
-		new DataView(bufferSource)
-
-	return decodeStatusResponse(dv, commandNumber)
+	return decodeStatusResponse(commandNumber, bufferSource)
 }
 
 export function _decodeWriteResponse(commandNumber: number, bufferSource: DecoderBufferSource): Response {
-	const dv = ArrayBuffer.isView(bufferSource) ?
-		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
-		new DataView(bufferSource)
-
-	return decodeStatusResponse(dv, commandNumber)
+	return decodeStatusResponse(commandNumber, bufferSource)
 }
 
 export function decodeReadWithI2CStateResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
@@ -308,7 +308,7 @@ export function decodeReadWithI2CStateResponse(commandNumber: number, bufferSour
 		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 		new DataView(bufferSource)
 
-	const response =  decodeStatusResponse(dv, commandNumber)
+	const response =  decodeStatusResponse(commandNumber, bufferSource)
 
 	//
 	const ok = true // response.statusCode === 0x00
@@ -326,10 +326,10 @@ export function decodeWriteWithI2CStateResponse(commandNumber: number, bufferSou
 		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 		new DataView(bufferSource)
 
-	const response = decodeStatusResponse(dv, commandNumber)
+	const response = decodeStatusResponse(commandNumber, bufferSource)
 
 	//
-	const ok = response.statusCode === 0x00
+	const ok = true // response.statusCode === 0x00
 	const i2cState = ok ? dv.getUint8(2) : undefined
 	const i2cStateName = i2cState !== undefined ? decodeI2CState(i2cState) : undefined
 
@@ -349,12 +349,12 @@ export function isStatusSuccess(response: Response): response is Success {
 	return response.statusCode === 0
 }
 
-export function decodeFlashDataUSBStringResponse(commandNumber: number, subCommandNumber: number, sourceBuffer: DecoderBufferSource) {
-	const dv = ArrayBuffer.isView(sourceBuffer) ?
-			new DataView(sourceBuffer.buffer, sourceBuffer.byteOffset, sourceBuffer.byteLength) :
-			new DataView(sourceBuffer)
+export function decodeFlashDataUSBStringResponse(commandNumber: number, subCommandNumber: number, bufferSource: DecoderBufferSource) {
+	const dv = ArrayBuffer.isView(bufferSource) ?
+			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+			new DataView(bufferSource)
 
-	const response = decodeStatusResponse(dv, commandNumber)
+	const response = decodeStatusResponse(commandNumber, bufferSource)
 	const { command, status, statusCode } = response
 	if(!isStatusSuccess(response)) { return response }
 

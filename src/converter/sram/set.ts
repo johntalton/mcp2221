@@ -1,4 +1,4 @@
-import { decodeStatusResponse, } from '../decoders.js'
+import { decodeStatusResponse, isStatusSuccess, } from '../decoders.js'
 import { SetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { SetSRAMSettingsResponse, } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
@@ -23,9 +23,9 @@ export class SetSRAMSettingsResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, SRAM_SET_COMMAND) as SetSRAMSettingsResponse
+		const response = decodeStatusResponse(SRAM_SET_COMMAND, bufferSource) as SetSRAMSettingsResponse
 		const { command, status, statusCode } = response
-		if(statusCode !== 0) { return response }
+		if(!isStatusSuccess(response)) { return response }
 
 		//
 		return {

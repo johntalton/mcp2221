@@ -7,7 +7,8 @@ import {
 	decodeInterruptFlags,
 	decodeGPClockValues,
 	decodeRequestedmA,
-	isBitSet
+	isBitSet,
+	isStatusSuccess
 } from '../decoders.js'
 
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
@@ -15,6 +16,7 @@ import { GetSRAMSettingsResponse } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
 import { Unknown, Unused } from '../throw.js'
 import { SRAM_GET_COMMAND } from '../../messages/message.consts.js'
+import { newReportBuffer } from '../encoders.js'
 
 export const EXPECTED_CHIP_BYTE_LENGTH = 18
 export const EXPECTED_GP_BYTE_LENGTH = 4
@@ -26,9 +28,9 @@ export class GetSRAMSettingsResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, SRAM_GET_COMMAND) as GetSRAMSettingsResponse
+		const response = decodeStatusResponse(SRAM_GET_COMMAND, bufferSource) as GetSRAMSettingsResponse
 		const { command, status, statusCode } = response
-		if(statusCode !== 0) { return response }
+		if(!isStatusSuccess(response)) { return response }
 
 		const chipBytesLength = dv.getUint8(2)
 		const gpBytesLength = dv.getUint8(3)
@@ -97,7 +99,7 @@ export class GetSRAMSettingsResponseCoder {
 				mARequested
 			},
 
-			password: String.fromCharCode(...currentSuppliedPassword),
+			password: String.fromCharCode(...currentSuppliedPassword), // TODO wrong :P
 
 			gpio0,
 			gpio1,
@@ -109,8 +111,12 @@ export class GetSRAMSettingsResponseCoder {
 
 export class GetSRAMSettingsRequestCoder {
 	static encode(msg: GetSRAMSettingsRequest): ArrayBuffer {
-		// newReportBuffer
-		return Uint8ClampedArray.from([ SRAM_GET_COMMAND ])
+		const report = newReportBuffer()
+		const dv = new DataView(report)
+
+		dv.setUint8(0, SRAM_GET_COMMAND)
+
+		return report
 	}
 	static decode(_bufferSource: DecoderBufferSource): GetSRAMSettingsRequest { throw new Unused() }
 }

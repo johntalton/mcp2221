@@ -23,6 +23,7 @@ export type StatusParametersResponse = Response & Success & {
 
     SCL: number,
     SDA: number,
+    ACKed: boolean,
 
     pendingValue: I2CReadPending
   },

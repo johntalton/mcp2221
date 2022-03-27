@@ -5,11 +5,16 @@ import {
 	Divider06000, Divider12000, Divider24000,
 	GpioDirectionIn, GpioDirectionOut,
 	Gp0DesignationUART_RX, Gp0DesignationGPIO, Gp0DesignationSSPND,
-	Gp1DesignationADC_1, Gp1DesignationClockOutput, Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
+	Gp1DesignationADC_1, Gp1DesignationClockOutput,
+	Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
 	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C,
 	VoltageOff, Voltage1V, Voltage2V, Voltage4V,
-	VoltageOptionVdd, VoltageOptionVrm, USB_STRING_MAGIC_THREE, MAX_REPORT_SIZE, ALTER_GPIO_CLOCK_FLAG, any_other, ALTER_DAC_REF_FLAG, ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG
+	VoltageOptionVdd, VoltageOptionVrm,
+	USB_STRING_MAGIC_THREE, MAX_REPORT_SIZE,
+	ALTER_GPIO_CLOCK_FLAG, any_other, ALTER_DAC_REF_FLAG,
+	ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG,
+	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive
 } from '../messages/message.consts.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
@@ -19,8 +24,8 @@ import {
 import { Invalid, Unknown } from './throw.js'
 
 
-//const fillFn = () => Math.trunc(Math.random() * 255)
-const fillFn = () => 0xFF
+const fillFn = () => Math.trunc(Math.random() * 255)
+// const fillFn = () => 0xFF
 
 export function newReportBuffer() {
 	const buffer = Uint8Array.from({ length: MAX_REPORT_SIZE }, fillFn)
@@ -124,8 +129,8 @@ export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): 
 
 	if(!hasClear || !hasEdge) { return any_other(ALTER_INTERRUPT_FLAG) }
 
-	const positiveEdgeBit = (edge === 'both' || edge === 'positive') ? 0b1 : 0b0
-	const negativeEdgeBit = (edge === 'both' || edge === 'negative') ? 0b1 : 0b0
+	const positiveEdgeBit = (edge === InterruptEdgeBoth || edge === InterruptEdgePositive) ? 0b1 : 0b0
+	const negativeEdgeBit = (edge === InterruptEdgeBoth || edge === InterruptEdgeNegative) ? 0b1 : 0b0
 	const edgeBitsPrelim = 0b1010 | (positiveEdgeBit << 2) | negativeEdgeBit
 	const edgeBits = hasEdge ? edgeBitsPrelim : 0b0000
 

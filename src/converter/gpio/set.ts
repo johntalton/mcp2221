@@ -4,8 +4,9 @@ import { GPIO_SET_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import {
-	decodeStatusResponse
+	decodeStatusResponse, isStatusSuccess
 } from '../decoders.js'
+import { newReportBuffer } from '../encoders.js'
 import { Unimplemented, Unused } from '../throw.js'
 
 export class SetGPIOOutputValuesResponseCoder {
@@ -15,9 +16,9 @@ export class SetGPIOOutputValuesResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, GPIO_SET_COMMAND) as SetGPIOOutputValuesResponse
+		const response = decodeStatusResponse(GPIO_SET_COMMAND, bufferSource) as SetGPIOOutputValuesResponse
 		const { command, status, statusCode } = response
-		if(statusCode !== 0) { return response }
+		if(!isStatusSuccess(response)) { return response }
 
 		throw new Unimplemented()
 	}
@@ -25,9 +26,12 @@ export class SetGPIOOutputValuesResponseCoder {
 
 export class SetGPIOOutputValuesRequestCoder {
 	static encode(res: SetGPIOOutputValuesRequest): ArrayBuffer {
-		// return Uint8ClampedArray.from([
-		// 	GPIO_SET_COMMAND,
-		// ])
+		const report = newReportBuffer()
+		const dv = new DataView(report)
+
+		dv.setUint8(0, GPIO_SET_COMMAND)
+
+		// return report
 
 		throw new Unimplemented()
 	}

@@ -3,7 +3,8 @@ import { ReadFlashDataFactorySerialNumberResponse } from '../../messages/flash.r
 import { READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeStatusResponse } from '../decoders.js'
+import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'
+import { newReportBuffer } from '../encoders.js'
 import { Unused } from '../throw.js'
 
 export class ReadFlashDataFactorySerialNumberResponseCoder {
@@ -13,9 +14,9 @@ export class ReadFlashDataFactorySerialNumberResponseCoder {
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
-		const response = decodeStatusResponse(dv, READ_FLASH_DATA_COMMAND) as ReadFlashDataFactorySerialNumberResponse
+		const response = decodeStatusResponse(READ_FLASH_DATA_COMMAND, bufferSource) as ReadFlashDataFactorySerialNumberResponse
 		const { command, status, statusCode } = response
-		if(statusCode !== 0) { return response }
+		if(!isStatusSuccess(response)) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
 
@@ -37,7 +38,13 @@ export class ReadFlashDataFactorySerialNumberResponseCoder {
 
 export class ReadFlashDataFactorySerialNumberRequestCoder {
 	static encode(req: ReadFlashDataRequest): ArrayBuffer {
-		return Uint8ClampedArray.from([ READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND ])
+		const report = newReportBuffer()
+		const dv = new DataView(report)
+
+		dv.setUint8(0, READ_FLASH_DATA_COMMAND)
+		dv.setUint8(1, READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND)
+
+		return report
 	}
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataFactorySerialNumberRequest { throw new Unused() }
 }
