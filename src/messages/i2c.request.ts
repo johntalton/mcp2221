@@ -35,6 +35,6 @@ export type I2CReadDataRepeatedSTARTRequest = Request & WithAddress & {
 }
 
 // I²C Read Data – Get I²C Data
-export type I2CReadGetDataRequest = Request & WithAddress & {
+export type I2CReadGetDataRequest = Request & {
   command?: 0x40
 }

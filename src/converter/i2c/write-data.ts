@@ -3,7 +3,7 @@ import { I2CWriteDataResponse, } from '../../messages/i2c.response.js'
 import { I2C_WRITE_DATA_COMMAND } from '../../messages/message.consts.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { decodeReadWriteResponse } from '../decoders.js'
+import { decodeWriteResponse } from '../decoders.js'
 import { newReportBuffer } from '../encoders.js'
 import { Unused } from '../throw.js'
 
@@ -12,7 +12,7 @@ export const MAX_BYTES_LENGTH = 60
 export class I2CWriteDataResponseCoder {
 	static encode(msg: I2CWriteDataResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): I2CWriteDataResponse {
-		return decodeReadWriteResponse(I2C_WRITE_DATA_COMMAND, bufferSource) as I2CWriteDataResponse
+		return decodeWriteResponse(I2C_WRITE_DATA_COMMAND, bufferSource) as I2CWriteDataResponse
 	}
 }
 

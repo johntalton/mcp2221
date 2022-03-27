@@ -2,7 +2,7 @@ import { Response, Success, Busy, Error } from './message.js'
 
 //
 export type I2CWriteDataResponseBase = Response & (Success | Busy) & {
-  command: 0x90
+	command: 0x90
 }
 
 export type I2CWriteDataSuccessResponse = I2CWriteDataResponseBase & Success & {
@@ -15,7 +15,7 @@ export type I2CWriteDataResponse = I2CWriteDataSuccessResponse | I2CWriteDataBus
 
 //
 export type I2CWriteDataRepeatedSTARTResponseBase = Response & (Success | Busy) & {
-  command: 0x92
+	command: 0x92
 }
 
 export type I2CWriteDataRepeatedSTARTSuccessResponse = I2CWriteDataRepeatedSTARTResponseBase & Success & {
@@ -28,7 +28,7 @@ export type I2CWriteDataRepeatedSTARTResponse = I2CWriteDataRepeatedSTARTSuccess
 
 //
 export type I2CWriteDataNoSTOPResponseBase = Response & (Success | Busy) & {
-  command: 0x94
+	command: 0x94
 }
 
 export type I2CWriteDataNoSTOPSuccessResponse = I2CWriteDataNoSTOPResponseBase & Success & {
@@ -41,11 +41,11 @@ export type I2CWriteDataNoSTOPResponse = I2CWriteDataNoSTOPSuccessResponse | I2C
 
 //
 export type I2CReadDataResponseBase = Response | (Success | Busy) & {
-  command: 0x91
+	command: 0x91
 }
 
 export type I2CReadDataSuccessResponse = I2CReadDataResponseBase & Success & {
-  buffer: ArrayBuffer
+	// buffer: ArrayBuffer
 }
 
 export type I2CReadDataBusyResponse = I2CReadDataResponseBase & Busy & {
@@ -55,11 +55,11 @@ export type I2CReadDataResponse = I2CReadDataSuccessResponse | I2CReadDataBusyRe
 
 //
 export type I2CReadDataRepeatedSTARTResponseBase = Response | (Success | Busy) & {
-  command: 0x91
+	command: 0x91
 }
 
 export type I2CReadDataRepeatedSTARTSuccessResponse = I2CReadDataRepeatedSTARTResponseBase & Success & {
-  buffer: ArrayBuffer
+	// buffer: ArrayBuffer
 }
 
 export type I2CReadDataRepeatedSTARTBusyResponse = I2CReadDataRepeatedSTARTResponseBase & Busy & {
@@ -68,8 +68,26 @@ export type I2CReadDataRepeatedSTARTBusyResponse = I2CReadDataRepeatedSTARTRespo
 export type I2CReadDataRepeatedSTARTResponse = I2CReadDataRepeatedSTARTSuccessResponse | I2CReadDataRepeatedSTARTBusyResponse
 
 //
-export type I2CReadGetDataResponse = Response & (Success | Error) & {
-  command: 0x40,
 
-  buffer?: ArrayBuffer
+
+export type I2CReadGetDataResponseBase = Response & (Success | Error) & {
+	command: 0x40,
+
+	validData?: boolean,
+	readBackBytes?: number,
+	buffer?: ArrayBuffer
 }
+
+export type I2CReadGetDataResponseSuccess = I2CReadGetDataResponseBase & Success & {
+	validData: true,
+	readBackBytes: number,
+	buffer: ArrayBuffer
+}
+
+export type I2CReadGetDataResponseError = I2CReadGetDataResponseBase & Error & {
+	validData: false,
+	readBackBytes: -1,
+	buffer: undefined
+}
+
+export type I2CReadGetDataResponse = I2CReadGetDataResponseSuccess | I2CReadGetDataResponseError

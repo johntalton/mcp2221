@@ -19,8 +19,11 @@ import {
 import { Invalid, Unknown } from './throw.js'
 
 
+//const fillFn = () => Math.trunc(Math.random() * 255)
+const fillFn = () => 0xFF
+
 export function newReportBuffer() {
-	const buffer = Uint8Array.from({ length: MAX_REPORT_SIZE }, () => Math.trunc(Math.random() * 255))
+	const buffer = Uint8Array.from({ length: MAX_REPORT_SIZE }, fillFn)
 	return buffer.buffer
 }
 

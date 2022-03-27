@@ -238,7 +238,7 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 	const statusCode = dv.getUint8(1)
 
 	if (statusCode === 0x41) {
-		//Error reading the I2C slave data from the I2C engine
+		//Error reading the I2C data from the I2C engine
 		return {
 			opaque: '__i2c_engine_error__',
 			command,
@@ -287,46 +287,64 @@ export function decodeStatusResponse(dv: DataView, commandNumber: number) {
 	}
 }
 
-function _decodeReadWriteResponse(dv: DataView, commandNumber: number) {
-	const { opaque, command, status, statusCode } = decodeStatusResponse(dv, commandNumber)
-
-	const i2cState = dv.getUint8(2)
-
-	const i2cStateName = decodeI2CState(i2cState)
-
-	return {
-		opaque,
-		command,
-		status, statusCode,
-		i2cState, i2cStateName
-	}
-}
-
-export function decodeReadWriteResponse(commandNumber: number, bufferSource: DecoderBufferSource): Response {
+export function _decodeReadResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
 	const dv = ArrayBuffer.isView(bufferSource) ?
 		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 		new DataView(bufferSource)
 
-	const {
-		opaque,
-		command,
-		status, statusCode,
-		i2cState, i2cStateName
-	} = _decodeReadWriteResponse(dv, commandNumber)
+	return decodeStatusResponse(dv, commandNumber)
+}
 
-	//const userData = new Uint8Array(dv.buffer, dv.byteOffset + 3)
-	//const userData = new Uint8Array(dv.buffer, dv.byteOffset + 4, byteLength)
-	//if(byteLength < 0 || byteLength > 60) { throw new Invalid('byte length', byteLength) }
+export function _decodeWriteResponse(commandNumber: number, bufferSource: DecoderBufferSource): Response {
+	const dv = ArrayBuffer.isView(bufferSource) ?
+		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+		new DataView(bufferSource)
+
+	return decodeStatusResponse(dv, commandNumber)
+}
+
+export function decodeReadWithI2CStateResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
+	const dv = ArrayBuffer.isView(bufferSource) ?
+		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+		new DataView(bufferSource)
+
+	const response =  decodeStatusResponse(dv, commandNumber)
+
+	//
+	const ok = true // response.statusCode === 0x00
+	const i2cState = ok ? dv.getUint8(2) : undefined
+	const i2cStateName = i2cState !== undefined ? decodeI2CState(i2cState) : undefined
 
 	return {
-		opaque,
-		command,
-		status, statusCode,
+		...response,
 		i2cState, i2cStateName
-		//buffer: userData.slice().buffer
 	}
 }
 
+export function decodeWriteWithI2CStateResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
+	const dv = ArrayBuffer.isView(bufferSource) ?
+		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
+		new DataView(bufferSource)
+
+	const response = decodeStatusResponse(dv, commandNumber)
+
+	//
+	const ok = response.statusCode === 0x00
+	const i2cState = ok ? dv.getUint8(2) : undefined
+	const i2cStateName = i2cState !== undefined ? decodeI2CState(i2cState) : undefined
+
+	return {
+		...response,
+		i2cState, i2cStateName
+	}
+}
+
+//
+export const decodeWriteResponse = decodeWriteWithI2CStateResponse
+export const decodeReadResponse = decodeReadWithI2CStateResponse
+
+
+//
 export function isStatusSuccess(response: Response): response is Success {
 	return response.statusCode === 0
 }
@@ -375,7 +393,7 @@ const I2C_STATES: Record<number, string> = {
 	0x22: 'ADDRESS_ACK',
 	0x23: 'ADDRESS_TIMEOUT',
 	0x24: 'ADDRESS_NACK_STOP_END',
-	0x25: 'ADDRESS_NACK_STOP', // ?
+	0x25: 'ADDRESS_NACK_STOP', // ADDRNOTFOUND  WR NACK
 	//
 	0x30: 'ADDRESS_',
 	0x31: 'ADDRESS__WAIT_SEND',
@@ -394,11 +412,11 @@ const I2C_STATES: Record<number, string> = {
 	0x52: 'READ_DATA_timeout', // timeout
 	0x53: 'READ_DATA_',
 	0x54: 'READ_DATA_partial', // partial
-	0x55: 'READ_DATA_complete', // complete
+	0x55: 'READ_DATA_complete', // complete / DATAREADY
 	//
 	0x60: 'STOP',
 	0x61: 'STOP_WAIT',
-	0x62: 'STOP_TIMEOUT',
+	0x62: 'STOP_TIMEOUT', // stop timeout
 	//
 	0x70: '?',
 	0x7F: 'ERR', // ?
