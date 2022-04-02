@@ -45,12 +45,12 @@ export function isBitSet(value: number, bitToCheck: number) {
 	return ((value >> bitToCheck) & 0b1) === 0b1
 }
 
-export function decodeUSBString(sourceBuffer: DecoderBufferSource, byteLength: number) {
+export function decodeUSBString(bufferSource: DecoderBufferSource, byteLength: number) {
 	const length = byteLength / 2
 
-	const ab16 = ArrayBuffer.isView(sourceBuffer) ?
-		new Uint16Array(sourceBuffer.buffer, sourceBuffer.byteOffset, length) :
-		new Uint16Array(sourceBuffer, length)
+	const ab16 = ArrayBuffer.isView(bufferSource) ?
+		new Uint16Array(bufferSource.buffer, bufferSource.byteOffset, length) :
+		new Uint16Array(bufferSource, length)
 
 	return String.fromCharCode(...ab16)
 }
