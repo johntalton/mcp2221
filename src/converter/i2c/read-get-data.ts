@@ -39,8 +39,9 @@ export class I2CReadGetDataResponseCoder {
 
 		const user8 = new Uint8Array(dv.buffer, dv.byteOffset + 4, readBackBytes)
 
-		// note.  slicing out user data for return (copy)
-		const buffer = user8.slice()
+		// note.  slicing out user data for return (copy - thus offset back to zero)
+		const userSlice = user8.slice()
+		const buffer = ArrayBuffer.isView(userSlice) ? userSlice.buffer : userSlice
 
 		return {
 			...response,
