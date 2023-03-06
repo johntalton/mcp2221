@@ -2,7 +2,7 @@ import { StatusParametersRequest } from '../../messages/common.request.js'
 import { StatusParametersResponse } from '../../messages/common.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCLE_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.consts.js'
+import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCEL_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.consts.js'
 
 import { decodeStatusResponse, decodeI2CState, isBitSet, isStatusSuccess } from '../decoders.js'
 import { I2CReadPending } from '../../messages/message.fragments.js'
@@ -133,7 +133,7 @@ export class StatusParametersRequestCoder {
 		const shouldCancel = cancelI2c !== undefined && cancelI2c === true
 		const shouldClock = i2cClock !== undefined
 
-		const cancleValue = shouldCancel ? STATUS_I2C_CANCLE_FLAG : any_other(STATUS_I2C_CANCLE_FLAG)
+		const cancelValue = shouldCancel ? STATUS_I2C_CANCEL_FLAG : any_other(STATUS_I2C_CANCEL_FLAG)
 		const setClockValue = shouldClock ? STATUS_SET_CLOCK_FLAG : any_other(STATUS_SET_CLOCK_FLAG)
 		const clockValue = shouldClock ? encodeI2CDivider(i2cClock) : dont_care()
 
@@ -142,7 +142,7 @@ export class StatusParametersRequestCoder {
 
 		dv.setUint8(0, STATUS_COMMAND)
 		dv.setUint8(1, dont_care())
-		dv.setUint8(2, cancleValue)
+		dv.setUint8(2, cancelValue)
 	  dv.setUint8(3, setClockValue)
 		dv.setUint8(4, clockValue)
 

@@ -63,7 +63,7 @@ export class MCP2221Flash extends Bindable implements Flash {
 		return send_request(this.binding, req, ReadFlashDataFactorySerialNumber)
 	}
 
-	// ofical interface
+	// official interface
 	async read(req: ReadFlashDataRequest): Promise<ReadFlashDataResponse> {
 		const { subCommand } = req
 
@@ -97,7 +97,7 @@ export class MCP2221Flash extends Bindable implements Flash {
 		return send_request(this.binding, req, WriteFlashDataUSBSerialNumber)
 	}
 
-	// offical interface
+	// official interface
 	async write(req: WriteFlashDataRequest): Promise<WriteFlashDataResponse> {
 		const { subCommand } = req
 

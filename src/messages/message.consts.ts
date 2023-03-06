@@ -74,7 +74,7 @@ export function dont_care() { return 0x00 }
 export function any_other(other: number) { return dont_care() & ~other }
 
 //
-export const STATUS_I2C_CANCLE_FLAG = 0x10
+export const STATUS_I2C_CANCEL_FLAG = 0x10
 export const STATUS_SET_CLOCK_FLAG = 0x20
 
 //

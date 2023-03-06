@@ -14,20 +14,21 @@ import {
 	USB_STRING_MAGIC_THREE, MAX_REPORT_SIZE,
 	ALTER_GPIO_CLOCK_FLAG, any_other, ALTER_DAC_REF_FLAG,
 	ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG,
-	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive
+	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive, SecurityUnsecured, SecurityPasswordProtected, SecurityPermanentlyLocked
 } from '../messages/message.consts.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,
-	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption
+	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption, ChipSettings, Security, GeneralPurpose, Divider, InterruptEdge, DutyCycle
 } from '../messages/message.fragments.js'
 import { Invalid, Unknown } from './throw.js'
 
 
-const fillFn = () => Math.trunc(Math.random() * 255)
+// const fillFn = () => Math.trunc(Math.random() * 255)
 // const fillFn = () => 0xFF
+const fillFn = () => 0x00
 
-export function newReportBuffer() {
+export function newReportBuffer(): ArrayBuffer {
 	const buffer = Uint8Array.from({ length: MAX_REPORT_SIZE }, fillFn)
 	return buffer.buffer
 }
@@ -42,7 +43,7 @@ export function encodeUSBString(str: string): ArrayBuffer {
 	return dest16.buffer
 }
 
-export function encodeI2CDivider(freq: number) {
+export function encodeI2CDivider(freq: number): number {
   if(freq < 50 || freq > 400) { throw new Invalid('freq', freq) }
   return  Math.floor((12000000 / (freq * 1000)) - 3)
 }
@@ -72,7 +73,7 @@ export function encodeGPClockAlter(clock?: GPClock): number {
 	return ALTER_GPIO_CLOCK_FLAG | (dutyCycleBits << 3) | dividerBits
 }
 
-export function encodeVoltateBits(referenceVoltage: Voltage): number | undefined {
+export function encodeVoltageBits(referenceVoltage: Voltage): number | undefined {
 	return referenceVoltage === VoltageOff ? 0b00 :
 		referenceVoltage === Voltage1V ? 0b01 :
 		referenceVoltage === Voltage2V ? 0b10 :
@@ -93,7 +94,7 @@ export function encodeDACReferenceAlter(dac?: GeneralPurposeAlterDAC): number {
 	if (referenceVoltage === undefined) { return any_other(ALTER_DAC_REF_FLAG) }
 	if (referenceOptions === undefined) { return any_other(ALTER_DAC_REF_FLAG) }
 
-	const referenceVoltageBits = encodeVoltateBits(referenceVoltage)
+	const referenceVoltageBits = encodeVoltageBits(referenceVoltage)
 	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
 
 	if(referenceVoltageBits === undefined) { throw new Unknown('dac reference voltage', referenceVoltageBits) }
@@ -111,7 +112,7 @@ export function encodeADCReferenceAlter(adc?: GeneralPurposeAlterADC): number {
 
 	const { referenceVoltage, referenceOptions } = adc
 
-	const referenceVoltageBits  = encodeVoltateBits(referenceVoltage)
+	const referenceVoltageBits  = encodeVoltageBits(referenceVoltage)
 	const referenceOptionsBit = encodeVoltageOptionsBits(referenceOptions)
 
 	if(referenceVoltageBits === undefined) { throw new Unknown('adc reference voltage', referenceVoltageBits) }
@@ -139,7 +140,7 @@ export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): 
 	return ALTER_INTERRUPT_FLAG | edgeBits | clearBit
 }
 
-export function encodeGpio0Designation(designation: Gp0Designation) {
+export function encodeGpio0Designation(designation: Gp0Designation): number {
 	if(designation === Gp0DesignationUART_RX) { return 0b10 }
 	if(designation === Gp0DesignationSSPND) { return 0b01 }
 	if(designation === Gp0DesignationGPIO) { return 0b00 }
@@ -147,7 +148,7 @@ export function encodeGpio0Designation(designation: Gp0Designation) {
 	throw new Unknown('gpio0 designation', designation)
 }
 
-export function encodeGpio1Designation(designation: Gp1Designation) {
+export function encodeGpio1Designation(designation: Gp1Designation): number {
 	if (designation === Gp1DesignationInterruptDetection) { return 0b100 }
 	if (designation === Gp1DesignationUART_TX) { return 0b011 }
 	if (designation === Gp1DesignationADC_1) { return 0b010 }
@@ -157,7 +158,7 @@ export function encodeGpio1Designation(designation: Gp1Designation) {
 	throw new Unknown('gpio1 designation', designation)
 }
 
-export function encodeGpio2Designation(designation: Gp2Designation) {
+export function encodeGpio2Designation(designation: Gp2Designation): number {
 	if (designation === Gp2DesignationDAC_1) { return 0b11 }
 	if (designation === Gp2DesignationADC_2) { return 0b10 }
 	if (designation === Gp2DesignationUSB) { return 0b01 }
@@ -166,7 +167,7 @@ export function encodeGpio2Designation(designation: Gp2Designation) {
 	throw new Unknown('gpio2 designation', designation)
 }
 
-export function encodeGpio3Designation(designation: Gp3Designation) {
+export function encodeGpio3Designation(designation: Gp3Designation): number {
 	if(designation === Gp3DesignationDAC_2) { return 0b11 }
 	if(designation === Gp3DesignationADC_3) { return 0b10 }
 	if(designation === Gp3DesignationLedI2C) { return 0b01 }
@@ -195,7 +196,7 @@ export function encodeGpioAlter<D>(gpio?: Gpio<D>, encodeDesignation?: (designat
 
 export const MAX_16BIT_USB_STRING_LENGTH = 30
 
-export function encodeFlashDataUSBStringRequest(commandNumber: number, subCommandNubmer: number, descriptor: string) {
+export function encodeFlashDataUSBStringRequest(commandNumber: number, subCommandNubmer: number, descriptor: string): ArrayBuffer {
 	const strBuffer = encodeUSBString(descriptor)
 	const str16 = new Uint16Array(strBuffer)
 
@@ -213,4 +214,62 @@ export function encodeFlashDataUSBStringRequest(commandNumber: number, subComman
 	report16.set(str16)
 
 	return report
+}
+
+export function encodeSecurity(security: Security): number {
+	if(security === SecurityUnsecured) { return 0x00 }
+	if(security === SecurityPasswordProtected) { return 0x01 }
+	if(security === SecurityPermanentlyLocked) { return 0x11 }
+
+	throw new Unknown('security', security)
+}
+
+export function encodeChipSettings(chip: ChipSettings): number {
+	const { enabledCDCSerialEnumeration, security } = chip
+
+	const securityBits = encodeSecurity(security)
+	const enabledCDCBits = enabledCDCSerialEnumeration ? 1 : 0
+
+	return (enabledCDCBits << 7) | securityBits
+}
+
+export function encodeDivider(divider: Divider): number {
+	if(divider === Divider00375) { return 0b111 }
+	if(divider === Divider00750) { return 0b110 }
+	if(divider === Divider01500) { return 0b101 }
+	if(divider === Divider03000) { return 0b100 }
+	if(divider === Divider06000) { return 0b011 }
+	if(divider === Divider12000) { return 0b010 }
+	if(divider === Divider24000) { return 0b001 }
+
+	throw new Unknown('divider', divider)
+}
+
+export function encodeDutyCycle(dutyCycle: DutyCycle): number {
+	if(dutyCycle === DutyCycle00) { return 0b00 }
+	if(dutyCycle === DutyCycle25) { return 0b01 }
+	if(dutyCycle === DutyCycle50) { return 0b10 }
+	if(dutyCycle === DutyCycle75) { return 0b11 }
+
+	throw new Unknown('dutyCycle', dutyCycle)
+}
+
+export function encodeGPClock(clock: GPClock): number {
+	const { dutyCycle, divider } = clock
+
+	const dutyCycleBits = encodeDutyCycle(dutyCycle)
+	const dividerBits = encodeDivider(divider)
+
+	return (dutyCycleBits << 3) | dividerBits
+
+}
+
+export function _encodeInterruptEdge(edge: InterruptEdge) {
+	const positiveEdgeBit = (edge === InterruptEdgeBoth || edge === InterruptEdgePositive) ? 0b1 : 0b0
+	const negativeEdgeBit = (edge === InterruptEdgeBoth || edge === InterruptEdgeNegative) ? 0b1 : 0b0
+
+	return {
+		negativeBit: negativeEdgeBit,
+		positiveBit: positiveEdgeBit
+	}
 }

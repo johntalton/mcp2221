@@ -29,8 +29,6 @@ export class WriteFlashDataGPSettingsRequestCoder {
 		dv.setUint8(0, WRITE_FLASH_DATA_COMMAND)
 
 		// return report
-
-
 		throw new Unimplemented()
 	}
 	static decode(bufferSource: DecoderBufferSource): WriteFlashDataGPSettingsRequest { throw new Unused() }
