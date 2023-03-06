@@ -1,6 +1,6 @@
 import { ReadFlashDataGPSettingsRequest, ReadFlashDataRequest } from '../../messages/flash.request.js'
 import { ReadFlashDataGPSettingsResponse } from '../../messages/flash.response.js'
-import { READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND } from '../../messages/message.consts.js'
+import { READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeGpioByte, decodeStatusResponse, gpio0Designation, gpio1Designation, gpio2Designation, gpio3Designation, isStatusSuccess } from '../decoders.js'

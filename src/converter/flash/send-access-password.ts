@@ -1,6 +1,6 @@
 import { SendFlashAccessPasswordRequest } from '../../messages/flash.request.js'
 import { SendFlashAccessPasswordResponse } from '../../messages/flash.response.js'
-import { SEND_FLASH_ACCESS_COMMAND } from '../../messages/message.consts.js'
+import { SEND_FLASH_ACCESS_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'

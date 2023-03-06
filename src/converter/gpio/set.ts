@@ -1,6 +1,6 @@
 import { SetGPIOOutputValuesRequest } from '../../messages/gpio.request.js'
 import { SetGPIOOutputValuesResponse } from '../../messages/gpio.response.js'
-import { GPIO_SET_COMMAND } from '../../messages/message.consts.js'
+import { GPIO_SET_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import {

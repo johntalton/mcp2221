@@ -1,6 +1,6 @@
 import { ReadFlashDataRequest, ReadFlashDataUSBSerialNumberRequest } from '../../messages/flash.request.js'
 import { ReadFlashDataUSBSerialNumberResponse } from '../../messages/flash.response.js'
-import { READ_FLASH_DATA_COMMAND, READ_FLASH_USB_SERIAL_NUMBER_SUB_COMMAND_CODE } from '../../messages/message.consts.js'
+import { READ_FLASH_DATA_COMMAND, READ_FLASH_USB_SERIAL_NUMBER_SUB_COMMAND_CODE } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeFlashDataUSBStringResponse } from '../decoders.js'

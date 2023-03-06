@@ -1,6 +1,6 @@
 import { WriteFlashDataUSBSerialNumberRequest } from '../../messages/flash.request.js'
 import { WriteFlashDataResponse } from '../../messages/flash.response.js'
-import { WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND } from '../../messages/message.consts.js'
+import { WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'

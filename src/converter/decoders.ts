@@ -31,9 +31,9 @@ import {
 	Gp1DesignationADC_1, Gp1DesignationClockOutput, Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
 	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C, USB_STRING_MAGIC_THREE
-} from '../messages/message.consts.js'
+} from '../messages/message.constants.js'
 
-import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported } from '../messages/message.consts.js'
+import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported } from '../messages/message.constants.js'
 
 import { DecoderBufferSource } from './converter.js'
 import { Invalid, Unknown } from './throw.js'

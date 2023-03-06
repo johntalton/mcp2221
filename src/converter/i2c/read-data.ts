@@ -1,6 +1,6 @@
 import { I2CReadDataRequest } from '../../messages/i2c.request.js'
 import { I2CReadDataResponse } from '../../messages/i2c.response.js'
-import { I2C_READ_DATA_COMMAND } from '../../messages/message.consts.js'
+import { I2C_READ_DATA_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeReadResponse } from '../decoders.js'

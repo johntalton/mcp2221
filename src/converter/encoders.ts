@@ -15,7 +15,7 @@ import {
 	ALTER_GPIO_CLOCK_FLAG, any_other, ALTER_DAC_REF_FLAG,
 	ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG,
 	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive, SecurityUnsecured, SecurityPasswordProtected, SecurityPermanentlyLocked
-} from '../messages/message.consts.js'
+} from '../messages/message.constants.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,

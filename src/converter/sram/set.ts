@@ -2,7 +2,7 @@ import { decodeStatusResponse, isStatusSuccess, } from '../decoders.js'
 import { SetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { SetSRAMSettingsResponse, } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
-import { dont_care, SRAM_SET_COMMAND } from '../../messages/message.consts.js'
+import { dont_care, SRAM_SET_COMMAND } from '../../messages/message.constants.js'
 
 import {
 	encodeGPClockAlter,

@@ -2,7 +2,7 @@ import { StatusParametersRequest } from '../../messages/common.request.js'
 import { StatusParametersResponse } from '../../messages/common.response.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCEL_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.consts.js'
+import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCEL_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.constants.js'
 
 import { decodeStatusResponse, decodeI2CState, isBitSet, isStatusSuccess } from '../decoders.js'
 import { I2CReadPending } from '../../messages/message.fragments.js'

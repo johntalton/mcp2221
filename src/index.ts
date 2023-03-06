@@ -1,4 +1,4 @@
-export * from './messages/message.consts.js'
+export * from './messages/message.constants.js'
 export * from './messages/message.js'
 
 export * from './messages/common.request.js'

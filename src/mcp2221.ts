@@ -1,16 +1,16 @@
-/* eslint-disable fp/no-this */
-/* eslint-disable immutable/no-this */
-/* eslint-disable fp/no-class */
 /* eslint-disable immutable/no-mutation */
 /* eslint-disable fp/no-mutation */
-/* eslint-disable fp/no-nil */
+/* eslint-disable immutable/no-this */
+/* eslint-disable fp/no-this */
+/* eslint-disable sort-imports */
+/* eslint-disable fp/no-unused-expression */
+import { Bindable, Binding } from './binding.js'
+
 import { Common } from './interface/common.js'
 import { Flash } from './interface/flash.js'
 import { Gpio } from './interface/gpio.js'
 import { I2C } from './interface/i2c.js'
 import { SRAM } from './interface/sram.js'
-
-import { Bindable, Binding } from './binding.js'
 
 import { MCP2221Common } from './chip/common.js'
 import { MCP2221Flash } from './chip/flash.js'

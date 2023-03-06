@@ -1,6 +1,6 @@
 import { I2CWriteDataNoSTOPRequest } from '../../messages/i2c.request.js'
 import { I2CWriteDataNoSTOPResponse } from '../../messages/i2c.response.js'
-import { I2C_READ_DATA_NO_STOP_COMMAND } from '../../messages/message.consts.js'
+import { I2C_READ_DATA_NO_STOP_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeWriteResponse } from '../decoders.js'

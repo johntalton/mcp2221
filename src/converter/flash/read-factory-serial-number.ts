@@ -1,6 +1,6 @@
 import { ReadFlashDataFactorySerialNumberRequest, ReadFlashDataRequest } from '../../messages/flash.request.js'
 import { ReadFlashDataFactorySerialNumberResponse } from '../../messages/flash.response.js'
-import { READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND } from '../../messages/message.consts.js'
+import { READ_FLASH_DATA_COMMAND, READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'

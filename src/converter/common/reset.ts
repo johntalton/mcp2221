@@ -1,7 +1,7 @@
 import { ResetChipRequest } from '../../messages/common.request.js'
 import { DecoderBufferSource } from '../converter.js'
 
-import { RESET_CHIP_COMMAND, RESET_MAGIC } from '../../messages/message.consts.js'
+import { RESET_CHIP_COMMAND, RESET_MAGIC } from '../../messages/message.constants.js'
 import { Unused } from '../throw.js'
 import { newReportBuffer } from '../encoders.js'
 

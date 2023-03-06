@@ -15,7 +15,7 @@ import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { GetSRAMSettingsResponse } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
 import { Unknown, Unused } from '../throw.js'
-import { SRAM_GET_COMMAND } from '../../messages/message.consts.js'
+import { SRAM_GET_COMMAND } from '../../messages/message.constants.js'
 import { newReportBuffer } from '../encoders.js'
 
 export const EXPECTED_CHIP_BYTE_LENGTH = 18
