@@ -6,7 +6,7 @@ export type BindingBufferSource = ArrayBuffer | SharedArrayBuffer | ArrayBufferV
 
 export interface Binding {
 	read(length: number): Promise<ArrayBuffer>
-	write(bufferSource: BindingBufferSource): Promise<number>
+	write(bufferSource: BindingBufferSource): Promise<void>
 }
 
 export class Bindable {
