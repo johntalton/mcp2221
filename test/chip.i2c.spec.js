@@ -4,7 +4,7 @@ import { expect } from 'chai'
 // import { StatusParametersResponse } from '../src'
 import { MCP2221I2C } from '@johntalton/mcp2221/bindings'
 
-const RESPONSE_I2C_ = Uint8Array.from([].concat(Array.from({ length: 64 }))).buffer
+const RESPONSE_I2C_ = Uint8Array.from([ 0 ].concat(Array.from({ length: 64 }))).buffer
 
 const RESPONSE_I2C_WRITE_DATA = Uint8Array.from(
   [ 0x90, 0x00 ]

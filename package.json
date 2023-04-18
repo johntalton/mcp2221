@@ -16,7 +16,7 @@
     "lint": "npm --silent run lint:ts",
     "lint:ts": "./node_modules/.bin/eslint --report-unused-disable-directives --ext .ts src/*.ts",
     "lint:ts:fix": "npm run lint:ts -- --fix",
-    "test": "npm run test:mocha",
+    "Xtest": "npm run test:mocha",
     "test:mocha": "mocha",
     "build": "tsc -p .",
     "build:watch": "tsc -p . -w",

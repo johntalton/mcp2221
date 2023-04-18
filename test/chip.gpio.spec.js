@@ -4,7 +4,7 @@ import { expect } from 'chai'
 // import { StatusParametersResponse } from '../src'
 import { MCP2221Gpio } from '@johntalton/mcp2221/bindings'
 
-const RESPONSE_GPIO_GET = Uint8Array.from([])
+const RESPONSE_GPIO_GET = Uint8Array.from([ 0x00 ])
   .buffer
 
 
