@@ -84,7 +84,6 @@
   "license": "MIT",
   "devDependencies": {
     "@johntalton/eslint-config": "github:johntalton/eslint-config",
-    "@serialport/stream": "^10.5.0",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.6",
@@ -103,7 +102,6 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-spellcheck": "^0.0.20",
     "mocha": "^10.2.0",
-    "node-hid": "^2.1.1",
     "nodemon": "^2.0.4",
 
     "source-map-support": "^0.5.20",
