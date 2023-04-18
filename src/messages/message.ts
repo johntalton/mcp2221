@@ -1,4 +1,3 @@
-
 export type Message = {
   opaque: string,
 }
@@ -7,10 +6,20 @@ export type Request = Message & {
   command?: number
 }
 
-export type Response = Message & {
-  command: number,
-  status: string,
+export type Status = 'success' | 'busy' | 'not-supported' | 'not-allowed' | 'error'
+
+export type WithStatus = {
+  status: Status,
   statusCode?: number
+ }
+
+export type WithI2CState = {
+  i2cState?: number,  // todo this is optional until split respon w/ and w/o status and state
+  i2cStateName?: string
+}
+
+export type Response = Message & WithStatus & WithI2CState & {
+  command: number
 }
 
 export type Success = Response & { status: 'success', statusCode: 0x00 }

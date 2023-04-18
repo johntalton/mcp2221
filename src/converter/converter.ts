@@ -1,6 +1,8 @@
+export type DecoderBufferSource = ArrayBuffer | SharedArrayBuffer | ArrayBufferView
+
 export type Coder<T> = {
   encode: (req: T) => ArrayBuffer,
-  decode: (buffer: ArrayBuffer) => T
+  decode: (bufferSource: DecoderBufferSource) => T
 }
 
 export type Converter<Req, Res> = {

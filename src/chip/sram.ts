@@ -1,22 +1,20 @@
-import { SRAM, Binding } from '../'
+import { SRAM } from '../interface/sram.js'
 
-import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request'
-import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response'
+import { Bindable } from '../binding.js'
 
-import { SetSRAMSettings, GetSRAMSettings } from '../converter/sram'
+import { SetSRAMSettingsRequest, GetSRAMSettingsRequest } from '../messages/sram.request.js'
+import { SetSRAMSettingsResponse, GetSRAMSettingsResponse } from '../messages/sram.response.js'
 
-import send_request from './util'
+import { SetSRAMSettings, GetSRAMSettings } from '../converter/sram/sram.js'
 
-export class MCP2221SRAM implements SRAM {
-  private readonly _binding: Binding
+import send_request from './util.js'
 
-  constructor(binding: Binding) { this._binding = binding }
-
-  set(req: SetSRAMSettingsRequest): Promise<SetSRAMSettingsResponse> {
-    return send_request(this._binding, req, SetSRAMSettings)
+export class MCP2221SRAM extends Bindable implements SRAM {
+  async set(req: SetSRAMSettingsRequest): Promise<SetSRAMSettingsResponse> {
+    return send_request(this.binding, req, SetSRAMSettings)
   }
 
-  get(req: GetSRAMSettingsRequest): Promise<GetSRAMSettingsResponse> {
-    return send_request(this._binding, req, GetSRAMSettings)
+  async get(req: GetSRAMSettingsRequest): Promise<GetSRAMSettingsResponse> {
+    return send_request(this.binding, req, GetSRAMSettings)
   }
 }

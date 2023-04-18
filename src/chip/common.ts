@@ -1,22 +1,20 @@
-import { Common, Binding } from '../'
+import { Bindable } from '../binding.js'
+import { Common } from '../interface/common.js'
 
-import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request'
-import { StatusParametersResponse } from '../messages/common.response'
+import { StatusParametersRequest, ResetChipRequest } from '../messages/common.request.js'
+import { StatusParametersResponse } from '../messages/common.response.js'
 
-import { StatusParameter, ResetChip } from '../converter/common'
+import { StatusParameter, ResetChip } from '../converter/common/common.js'
 
-import send_request from './util'
+import { send_request_only } from './util.js'
+import send_request from './util.js'
 
-export class MCP2221Common implements Common {
-  private readonly _binding: Binding
-
-  constructor(binding: Binding) { this._binding = binding }
-
+export class MCP2221Common extends Bindable implements Common {
   async status(req: StatusParametersRequest): Promise<StatusParametersResponse> {
-    return send_request(this._binding, req, StatusParameter)
+    return send_request(this.binding, req, StatusParameter)
   }
 
   async reset(req: ResetChipRequest): Promise<void> {
-    return send_request(this._binding, req, ResetChip)
+    return send_request_only(this.binding, req, ResetChip)
   }
 }

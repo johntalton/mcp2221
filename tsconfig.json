@@ -6,15 +6,16 @@
     "watch": false,
 
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "ESNext",
     "lib": ["ESNext"],
+
     "esModuleInterop": true,
     "isolatedModules": false,
     "moduleResolution": "node",
 
-    "strict": true,
-
     "skipLibCheck": true,
+
+    "strict": true,
 
     "noEmitOnError": false,
     "noUnusedParameters": false,
@@ -44,9 +45,9 @@
   },
   "compileOnSave": true,
   "include": [
-      "./src/**/*.ts"
+      "src/**/*.ts"
   ],
   "exclude": [
-      "./node_modules/**"
+      "node_modules"
   ]
 }

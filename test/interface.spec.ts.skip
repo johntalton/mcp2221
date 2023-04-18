@@ -3,7 +3,8 @@ import { expect } from 'chai'
 
 import {
   Common, Flash, Gpio, I2C, SRAM
-} from '../'
+} from '@johntalton/mcp2221'
+
 
 describe('Interface', () => {
   describe('Common', () => {

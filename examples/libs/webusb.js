@@ -1,6 +1,7 @@
-const { USB } = require('webusb')
+import webusb from 'webusb'
+const { USB } = webusb
 
-const { MCP2221 } = require('@johntalton/mcp2221')
+import { MCP2221 } from '@johntalton/mcp2221'
 
 function dumpConfig(device) {
   console.log(device.manufacturerName)

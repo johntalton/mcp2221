@@ -1,16 +1,27 @@
 export {
   StatusParametersResponseCoder, StatusParametersRequestCoder,
   ResetChipRequestCoder, ResetChipResponseCoder
-} from './common'
+} from './common/common.js'
 export {
-  ReadFlashDataResponseCoder, ReadFlashDataRequestCoder,
-  WriteFlashDataResponseCoder, WriteFlashDataRequestCoder,
+  ReadFlashDataChipSettingsRequestCoder, ReadFlashDataChipSettingsResponseCoder,
+  ReadFlashDataGPSettingsRequestCoder, ReadFlashDataGPSettingsResponseCoder,
+  ReadFlashDataUSBManufacturerRequestCoder, ReadFlashDataUSBManufacturerResponseCoder,
+  ReadFlashDataUSBProductRequestCoder, ReadFlashDataUSBProductResponseCoder,
+  ReadFlashDataUSBSerialNumberRequestCoder, ReadFlashDataUSBSerialNumberResponseCoder,
+  ReadFlashDataFactorySerialNumberRequestCoder, ReadFlashDataFactorySerialNumberResponseCoder,
+
+  WriteFlashDataChipSettingsRequestCoder, WriteFlashDataChipSettingsResponseCoder,
+  WriteFlashDataGPSettingsRequestCoder, WriteFlashDataGPSettingsResponseCoder,
+  WriteFlashDataUSBManufacturerRequestCoder, WriteFlashDataUSBManufacturerResponseCoder,
+  WriteFlashDataUSBProductRequestCoder, WriteFlashDataUSBProductResponseCoder,
+  WriteFlashDataUSBSerialNumberRequestCoder, WriteFlashDataUSBSerialNumberResponseCoder,
+
   SendFlashAccessPasswordResponseCoder, SendFlashAccessPasswordRequestCoder
-} from './flash'
+} from './flash/flash.js'
 export {
   SetGPIOOutputValuesResponseCoder, SetGPIOOutputValuesRequestCoder,
   GetGPIOValuesResponseCoder, GetGPIOValuesRequestCoder
-} from './gpio'
+} from './gpio/gpio.js'
 export {
   I2CWriteDataResponseCoder,
   I2CWriteDataRequestCoder,
@@ -24,8 +35,8 @@ export {
   I2CReadDataRepeatedSTARTRequestCoder,
   I2CReadGetDataResponseCoder,
   I2CReadGetDataRequestCoder
-} from './i2c'
+} from './i2c/i2c.js'
 export {
   SetSRAMSettingsResponseCoder, SetSRAMSettingsRequestCoder,
   GetSRAMSettingsResponseCoder, GetSRAMSettingsRequestCoder
-} from './sram'
+} from './sram/sram.js'

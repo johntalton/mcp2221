@@ -1,5 +1,5 @@
-import { Response, Success, NotSupported, NotAllowed } from './message'
-import { ChipSettings, GeneralPurpose, UsbSettings, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Product, SerialNumber } from './message.fragments'
+import { Response, Success, NotSupported, NotAllowed } from './message.js'
+import { ChipSettings, GeneralPurpose, UsbSettings, Gpio0, Gpio1, Gpio2, Gpio3, Manufacturer, Product, SerialNumber } from './message.fragments.js'
 
 export type ReadFlashDataResponseBase = Response & (Success | NotSupported) & {
   command: 0xB0
@@ -72,16 +72,9 @@ export type WriteFlashDataResponseBase = Response & (Success | NotSupported | No
   command: 0xB1
 }
 
-export type WriteFlashDataSuccessResponse = WriteFlashDataResponseBase & Success & {
+export type WriteFlashDataResponse = WriteFlashDataResponseBase & {
+  subCommand: 0x00 | 0x01 | 0x02 | 0x03 | 0x04 | 0x05
 }
-
-export type WriteFlashDataNotSupportedResponse = WriteFlashDataResponseBase & NotSupported & {
-}
-
-export type WriteFlashDataNotAllowedResponse = WriteFlashDataResponseBase & NotAllowed & {
-}
-
-export type WriteFlashDataResponse = WriteFlashDataSuccessResponse | WriteFlashDataNotSupportedResponse | WriteFlashDataNotAllowedResponse
 
 // Send Flash Access Password
 export type SendFlashAccessPasswordResponse = Response & (Success | NotAllowed) & {

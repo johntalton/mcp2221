@@ -3,3 +3,5 @@ lib/
 types/
 coverage/
 .vscode/
+package-lock.json
+.DS_Store

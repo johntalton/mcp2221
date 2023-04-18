@@ -1,41 +1,44 @@
-/* eslint-disable fp/no-this */
-/* eslint-disable immutable/no-this */
-/* eslint-disable fp/no-class */
 /* eslint-disable immutable/no-mutation */
 /* eslint-disable fp/no-mutation */
-/* eslint-disable fp/no-nil */
-import { Common, Flash, Gpio, I2C, SRAM } from './'
-import { Binding } from './binding'
+/* eslint-disable immutable/no-this */
+/* eslint-disable fp/no-this */
+/* eslint-disable sort-imports */
+/* eslint-disable fp/no-unused-expression */
+import { Bindable, Binding } from './binding.js'
 
-import { MCP2221Common } from './chip/common'
-import { MCP2221Flash } from './chip/flash'
-import { MCP2221Gpio } from './chip/gpio'
-import { MCP2221I2C } from './chip/i2c'
-import { MCP2221SRAM } from './chip/sram'
+import { Common } from './interface/common.js'
+import { Flash } from './interface/flash.js'
+import { Gpio } from './interface/gpio.js'
+import { I2C } from './interface/i2c.js'
+import { SRAM } from './interface/sram.js'
 
-export class MCP2221 {
-  private readonly _binding: Binding
+import { MCP2221Common } from './chip/common.js'
+import { MCP2221Flash } from './chip/flash.js'
+import { MCP2221Gpio } from './chip/gpio.js'
+import { MCP2221I2C } from './chip/i2c.js'
+import { MCP2221SRAM } from './chip/sram.js'
 
-  readonly common: Common
-  readonly flash: Flash
-  readonly gpio: Gpio
-  readonly i2c: I2C
-  readonly sram: SRAM
+export class MCP2221 extends Bindable {
+	readonly common: Common
+	readonly flash: Flash
+	readonly gpio: Gpio
+	readonly i2c: I2C
+	readonly sram: SRAM
 
-  // factory
-  static openPromisified(binding: Binding): Promise<MCP2221> {
-    return Promise.resolve(new MCP2221(binding))
-  }
+	// factory
+	static from(binding: Binding): MCP2221 {
+		return new MCP2221(binding)
+	}
 
-  constructor(binding: Binding) {
-    this._binding = binding
+	constructor(binding: Binding) {
+		super(binding)
 
-    this.common = new MCP2221Common(this._binding)
-    this.flash = new MCP2221Flash(this._binding)
-    this.gpio = new MCP2221Gpio(this._binding)
-    this.i2c = new MCP2221I2C(this._binding)
-    this.sram = new MCP2221SRAM(this._binding)
-  }
+		this.common = new MCP2221Common(this.binding)
+		this.flash = new MCP2221Flash(this.binding)
+		this.gpio = new MCP2221Gpio(this.binding)
+		this.i2c = new MCP2221I2C(this.binding)
+		this.sram = new MCP2221SRAM(this.binding)
+	}
 }
 
 export const MCP2221A = MCP2221

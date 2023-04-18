@@ -8,7 +8,7 @@ import {
   I2CReadDataRequest, I2CReadDataRepeatedSTARTRequest, I2CReadGetDataRequest,
   GetSRAMSettingsRequest, SetSRAMSettingsRequest,
   ReadFlashDataRequest, WriteFlashDataRequest, SendFlashAccessPasswordRequest
-} from '../'
+} from '@johntalton/mcp2221'
 
 describe('Message', () => {
   describe('Request', () => {
