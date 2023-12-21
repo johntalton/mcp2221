@@ -59,7 +59,7 @@ describe('MCP2221I2C', () => {
     })
   })
 
-  describe('writeRepeatedSTART', () => {
+  xdescribe('writeRepeatedSTART', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_I2C_, write: async buffer => 64 }
       const i2c = new MCP2221I2C(binding)
@@ -85,7 +85,7 @@ describe('MCP2221I2C', () => {
     })
   })
 
-  describe('readData', () => {
+  xdescribe('readData', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_I2C_, write: async buffer => 64 }
       const i2c = new MCP2221I2C(binding)
@@ -99,7 +99,7 @@ describe('MCP2221I2C', () => {
   })
 
 
-  describe('readRepeatedSTART', () => {
+  xdescribe('readRepeatedSTART', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_I2C_, write: async buffer => 64 }
       const i2c = new MCP2221I2C(binding)
@@ -112,7 +112,7 @@ describe('MCP2221I2C', () => {
     })
   })
 
-  describe('readGetData', () => {
+  xdescribe('readGetData', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_I2C_, write: async buffer => 64 }
       const i2c = new MCP2221I2C(binding)

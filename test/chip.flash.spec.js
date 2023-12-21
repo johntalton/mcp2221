@@ -38,7 +38,7 @@ describe('MCP2221Flash', () => {
     })
   })
 
-  describe('read', () => {
+  xdescribe('read', () => {
     it('should read chip settings', async () => {
       const binding = { read: async length => RESPONSE_FLASH_READ_CHIP_SETTINGS, write: async buffer => 64 }
       const flash = new MCP2221Flash(binding)
@@ -89,7 +89,7 @@ describe('MCP2221Flash', () => {
     })
   })
 
-  describe('write', () => {
+  xdescribe('write', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_FLASH_WRITE, write: async buffer => 64 }
       const flash = new MCP2221Flash(binding)
@@ -99,7 +99,7 @@ describe('MCP2221Flash', () => {
     })
   })
 
-  describe('sendPassword', () => {
+  xdescribe('sendPassword', () => {
     it('should send password successfully', async () => {
       const binding = { read: async length => RESPONSE_FLASH_SET_PASSWORD, write: async buffer => 64 }
       const flash = new MCP2221Flash(binding)

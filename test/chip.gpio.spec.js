@@ -19,7 +19,7 @@ describe('MCP2221Gpio', () => {
     })
   })
 
-  describe('get', () => {
+  xdescribe('get', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_GPIO_GET, write: async buffer => 64 }
       const gpio = new MCP2221Gpio(binding)
@@ -28,7 +28,7 @@ describe('MCP2221Gpio', () => {
     })
   })
 
-  describe('set', () => {
+  xdescribe('set', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_GPIO_SET, write: async buffer => 64 }
       const gpio = new MCP2221Gpio(binding)

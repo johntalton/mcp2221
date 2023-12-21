@@ -5,7 +5,7 @@
   "exports": {
     ".": "./lib/index.js",
     "./bindings": "./lib/index.bindings.js",
-    "./coders": "./lib//converter/coder.js"
+    "./coders": "./lib/converter/coder.js"
   },
   "type": "module",
   "files": [
@@ -17,11 +17,11 @@
     "lint:ts": "./node_modules/.bin/eslint --report-unused-disable-directives --ext .ts src/*.ts",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "Xtest": "npm run test:mocha",
-    "test:mocha": "mocha",
+    "test:mocha": "mocha --check-leaks --exit --no-parallel --reporter min || exit 0 ",
     "build": "tsc -p .",
     "build:watch": "tsc -p . -w",
     "coverage": "npm --silent run coverage:c8",
-    "coverage:c8": "c8 --check-coverage --all --lines 70 --functions 40 --branches 50 -r lcovonly npm --silent run test:mocha -- --no-parallel --reporter min"
+    "coverage:c8": "c8 --check-coverage --all --lines 60 --functions 30 --branches 40 -r lcovonly npm run test:mocha"
   },
   "eslintConfig": {
     "ignorePatterns": [

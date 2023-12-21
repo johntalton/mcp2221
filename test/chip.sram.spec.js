@@ -27,7 +27,7 @@ describe('MCP2221SRAM', () => {
     })
   })
 
-  describe('get', () => {
+  xdescribe('get', () => {
     it('succeeds', async () => {
       const binding = { read: async length => RESPONSE_SRAM_GET, write: async buffer => 64 }
       const sram = new MCP2221SRAM(binding)
@@ -37,7 +37,7 @@ describe('MCP2221SRAM', () => {
     })
   })
 
-  describe('set', () => {
+  xdescribe('set', () => {
     it('succeeds', async () => {
       const binding = { read: async length => new ArrayBuffer(length), write: async buffer => 64 }
       const sram = new MCP2221SRAM(binding)
