@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "",
   "exports": {
     ".": "./lib/index.js",
