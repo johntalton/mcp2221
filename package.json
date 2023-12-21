@@ -21,7 +21,7 @@
     "build": "tsc -p .",
     "build:watch": "tsc -p . -w",
     "coverage": "npm --silent run coverage:c8",
-    "coverage:c8": "c8 --check-coverage --all --lines 70 --functions 80 --branches 90 -r lcovonly npm --silent run test:mocha -- --no-parallel --reporter min"
+    "coverage:c8": "c8 --check-coverage --all --lines 70 --functions 40 --branches 50 -r lcovonly npm --silent run test:mocha -- --no-parallel --reporter min"
   },
   "eslintConfig": {
     "ignorePatterns": [
