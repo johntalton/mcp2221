@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "",
   "exports": {
     ".": "./lib/index.js",
@@ -9,7 +9,9 @@
   },
   "type": "module",
   "files": [
-    "lib/**/*.js"
+    "lib/**/*.js",
+    "lib/**/*.d.ts",
+    "lib/**/*.d.ts.map"
   ],
   "types": "./lib",
   "scripts": {
