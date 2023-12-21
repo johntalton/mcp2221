@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "",
   "exports": {
     ".": "./lib/index.js",
@@ -37,7 +37,10 @@
     },
     "rules": {
       "no-tabs": "off",
-      "indent": ["error", "tab"],
+      "indent": [
+        "error",
+        "tab"
+      ],
       "max-len": [
         "warn",
         {
@@ -86,28 +89,26 @@
     "@johntalton/eslint-config": "github:johntalton/eslint-config",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.14.6",
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "c8": "^7.9.0",
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "c8": "^8.0.1",
     "chai": "^4.2.0",
-    "eslint": "^8.35.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-fp": "^2.3.0",
-    "eslint-plugin-functional": "^5.0.4",
+    "eslint-plugin-functional": "^6.0.0",
     "eslint-plugin-immutable": "^1.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-no-loops": "^0.3.0",
     "eslint-plugin-no-use-extend-native": "^0.5.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-security": "^2.1.0",
     "eslint-plugin-spellcheck": "^0.0.20",
     "mocha": "^10.2.0",
-    "nodemon": "^2.0.4",
-
+    "nodemon": "^3.0.2",
     "source-map-support": "^0.5.20",
     "ts-node": "^10.0.0"
   },
-
   "dependencies": {
     "@johntalton/bitsmush": "^1.0.0"
   }
