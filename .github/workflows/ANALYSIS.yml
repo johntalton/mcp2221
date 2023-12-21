@@ -12,9 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: github/codeql-action/init@v2
+    - uses: github/codeql-action/init@v3
       with:
         languages: javascript
         config-file: ./.github/codeql-config.yml
       
-    - uses: github/codeql-action/analyze@v2
+    - uses: github/codeql-action/analyze@v3
