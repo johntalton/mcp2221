@@ -3,7 +3,7 @@ Simple library to control MCP 2221 (A) via USB.
 
 [![npm Version](http://img.shields.io/npm/v/@johntalton/mcp2221.svg)](https://www.npmjs.com/package/@johntalton/mcp2221)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/johntalton/mcp2221)
-![CI](https://github.com/johntalton/mcp2221/workflows/CI/badge.svg?branch=master&event=push)
+![CI](https://github.com/johntalton/mcp2221/workflows/CI/badge.svg)
 ![CodeQL](https://github.com/johntalton/mcp2221/workflows/CodeQL/badge.svg)
 ![GitHub](https://img.shields.io/github/license/johntalton/mcp2221)
 [![Downloads Per Month](http://img.shields.io/npm/dm/@johntalton/mcp2221.svg)](https://www.npmjs.com/package/@johntalton/mcp2221)
