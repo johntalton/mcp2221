@@ -15,7 +15,6 @@ export class ReadFlashDataFactorySerialNumberResponseCoder {
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(READ_FLASH_DATA_COMMAND, bufferSource) as ReadFlashDataFactorySerialNumberResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
@@ -26,11 +25,9 @@ export class ReadFlashDataFactorySerialNumberResponseCoder {
 		const factorySN = new Uint8Array(dv.buffer, begin, end)
 
 		return {
-			opaque: '__direct_from_the_facts__',
-			command, subCommand: READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND,
-			status, statusCode,
-
-			descriptor: String.fromCharCode(...factorySN),
+			...response,
+			subCommand: READ_FLASH_DATA_FACTORY_SERIAL_NUMBER_SUB_COMMAND,
+			descriptor: String.fromCharCode(...factorySN), // todo decodeText
 			//factorySN
 		}
 	}

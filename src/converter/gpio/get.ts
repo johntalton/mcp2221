@@ -19,7 +19,6 @@ export class GetGPIOValuesResponseCoder {
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(GPIO_GET_COMMAND, bufferSource) as GetGPIOValuesResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
 		const gpio0Value = dv.getUint8(2)
@@ -40,18 +39,14 @@ export class GetGPIOValuesResponseCoder {
 		const gpio3 = decodeGpioValues(gpio3Value, gpio3Direction)
 
 		return {
-			opaque: '__here_are_your_ios__',
-			command,
-			status,
-			statusCode,
-
+			...response,
 			gpio0, gpio1, gpio2, gpio3
 		}
 	}
 }
 
 export class GetGPIOValuesRequestCoder {
-	static encode(res: GetGPIOValuesRequest): ArrayBuffer {
+	static encode(req: GetGPIOValuesRequest): ArrayBuffer {
 		const report = newReportBuffer()
 		const dv = new DataView(report)
 

@@ -15,7 +15,6 @@ export class WriteFlashDataGPSettingsResponseCoder {
 
 		return {
 			...response,
-			opaque: '__hold_up_hold_up__',
 			subCommand: WRITE_FLASH_DATA_GP_SETTINGS_SUB_COMMAND,
 		}
 	}

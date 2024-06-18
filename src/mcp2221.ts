@@ -1,9 +1,3 @@
-/* eslint-disable immutable/no-mutation */
-/* eslint-disable fp/no-mutation */
-/* eslint-disable immutable/no-this */
-/* eslint-disable fp/no-this */
-/* eslint-disable sort-imports */
-/* eslint-disable fp/no-unused-expression */
 import { Bindable, Binding } from './binding.js'
 
 import { Common } from './interface/common.js'

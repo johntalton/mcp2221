@@ -35,6 +35,7 @@ export type InitialLEDState = 'on' | 'off'
 export type SuspendState = 'on' | 'off'
 export type USBCFGState = 'on' | 'off'
 
+export type CancelationStatus = 'none' | 'marked' | 'idle'
 
 export type ChipSettings = {
 	enabledCDCSerialEnumeration: boolean,

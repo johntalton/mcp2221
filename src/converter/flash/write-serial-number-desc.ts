@@ -15,7 +15,6 @@ export class WriteFlashDataUSBSerialNumberResponseCoder {
 
 		return {
 			...response,
-			opaque: '__and_now_for_something__',
 			subCommand: WRITE_FLASH_DATA_SERIAL_NUMBER_SUB_COMMAND
 		}
 	}

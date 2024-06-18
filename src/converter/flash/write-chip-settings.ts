@@ -1,11 +1,11 @@
 import { WriteFlashDataChipSettingsRequest } from '../../messages/flash.request.js'
 import { WriteFlashDataResponse } from '../../messages/flash.response.js'
-import { WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND } from '../../messages/message.constants.js'
+import { WRITE_FLASH_DATA_COMMAND, WRITE_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, ACCESS_PASSWORD_BYTE_LENGTH } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'
-import { encodeChipSettings, encodeDivider, encodeGPClock, encodeVoltageOptionsBits, encodeVoltageBits, newReportBuffer, _encodeInterruptEdge } from '../encoders.js'
-import { Unimplemented, Unknown, Unused } from '../throw.js'
+import { encodeChipSettings, encodeDivider, encodeGPClock, encodeVoltageOptionsBits, encodeVoltageBits, newReportBuffer, _encodeInterruptEdge, encodeAccessPassword } from '../encoders.js'
+import { Invalid, Unimplemented, Unknown, Unused } from '../throw.js'
 
 export class WriteFlashDataChipSettingsResponseCoder {
 	static encode(res: WriteFlashDataResponse): ArrayBuffer { throw new Unused() }
@@ -15,7 +15,6 @@ export class WriteFlashDataChipSettingsResponseCoder {
 
 		return {
 			...response,
-			opaque: '__oh_now_hold_on__',
 			subCommand: WRITE_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND
 		}
 	}
@@ -42,7 +41,7 @@ export class WriteFlashDataChipSettingsRequestCoder {
 		const adcRefOptBits = encodeVoltageOptionsBits(adc.referenceOptions)
 
 		// password
-		// const password8 = Uint8Array.from([ ...password ])
+		const password8 = encodeAccessPassword(password)
 
 		//
 		if(dacRefVBits === undefined) { throw new Unknown('dac.referenceVoltage', dac.referenceVoltage) }
@@ -68,12 +67,10 @@ export class WriteFlashDataChipSettingsRequestCoder {
 		dv.setUint8(10, powerAttribute)
 		dv.setUint8(11, mARequested)
 
-		const PASSWORD_LENGTH = 8
-		const passwordBuffer = new Uint8Array(dv.buffer, 12, PASSWORD_LENGTH)
+
+		const passwordBuffer = new Uint8Array(dv.buffer, dv.byteOffset + 12, ACCESS_PASSWORD_BYTE_LENGTH)
 		// passwordBuffer.set(password8)
-
-		// password
-
+		console.log('dry run password write', password8)
 
 		return buffer
 	}

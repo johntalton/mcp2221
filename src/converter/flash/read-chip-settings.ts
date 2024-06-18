@@ -10,14 +10,13 @@ import { Unused } from '../throw.js'
 export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
 
 export class ReadFlashDataChipSettingsResponseCoder {
-	static encode(res: ReadFlashDataChipSettingsRequest): ArrayBuffer { throw new Unused() }
+	static encode(res: ReadFlashDataChipSettingsResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse {
 		const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(READ_FLASH_DATA_COMMAND, bufferSource) as ReadFlashDataChipSettingsResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
@@ -68,9 +67,8 @@ export class ReadFlashDataChipSettingsResponseCoder {
 		}
 
 		return {
-			opaque: '__is_this_what_you_want__',
-			command, subCommand: READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND,
-			status, statusCode,
+			...response,
+			subCommand: READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND,
 			chip, gp, usb
 		}
 	}
@@ -86,5 +84,5 @@ export class ReadFlashDataChipSettingsRequestCoder {
 
 		return report
 	}
-	static decode(bufferSource: DecoderBufferSource): ReadFlashDataChipSettingsResponse { throw new Unused() }
+	static decode(bufferSource: DecoderBufferSource): ReadFlashDataRequest { throw new Unused() }
 }

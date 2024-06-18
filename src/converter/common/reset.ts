@@ -5,6 +5,11 @@ import { RESET_CHIP_COMMAND, RESET_MAGIC } from '../../messages/message.constant
 import { Unused } from '../throw.js'
 import { newReportBuffer } from '../encoders.js'
 
+export class ResetChipResponseCoder {
+	static encode(res: void): ArrayBuffer { throw new Unused() }
+	static decode(bufferSource: DecoderBufferSource): void { return }
+}
+
 export class ResetChipRequestCoder {
 	static encode(req: ResetChipRequest): ArrayBuffer {
 		const report = newReportBuffer()
@@ -21,7 +26,3 @@ export class ResetChipRequestCoder {
 	static decode(bufferSource: DecoderBufferSource): ResetChipRequest { throw new Unused() }
 }
 
-export class ResetChipResponseCoder {
-	static encode(res: void): ArrayBuffer { throw new Unused() }
-	static decode(bufferSource: DecoderBufferSource): void { return }
-}

@@ -5,7 +5,9 @@ import {
 	Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
 	GPClock,
-	RuntimeChipSettings
+	RuntimeChipSettings,
+	Password,
+	CancelationStatus
 } from '../messages/message.fragments.js'
 
 import {
@@ -30,7 +32,8 @@ import {
 	Gp0DesignationGPIO, Gp0DesignationSSPND, Gp0DesignationUART_RX,
 	Gp1DesignationADC_1, Gp1DesignationClockOutput, Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
-	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C, USB_STRING_MAGIC_THREE
+	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C, USB_STRING_MAGIC_THREE,
+	NO_ALTER_GPIO_FLAG
 } from '../messages/message.constants.js'
 
 import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported } from '../messages/message.constants.js'
@@ -171,6 +174,35 @@ export function decodeGpioValues(valueValue: number, directionValue: number) {
 	}
 }
 
+export function decodeGpioVariableAlter(buffer: DecoderBufferSource) {
+	function _decodeSingleGpioVariableAlter(alterRaw: number, valueRaw: number) {
+		const isNotGpio = alterRaw === 0xEE
+		const wasNotRequestedAlter = alterRaw === NO_ALTER_GPIO_FLAG
+
+		if(isNotGpio) { return undefined }
+		if(wasNotRequestedAlter) { return undefined }
+
+		return valueRaw
+	}
+
+	const u8 = ArrayBuffer.isView(buffer) ?
+		new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength) :
+		new Uint8Array(buffer)
+
+	const [ alterOutput, outputRaw, alterDirection, directionRaw ] = u8
+
+	const o = _decodeSingleGpioVariableAlter(alterOutput, outputRaw)
+	const d = _decodeSingleGpioVariableAlter(alterDirection, directionRaw)
+
+	const outputValue = (o === undefined) ? undefined : (o === 0x00) ? Logic0 : Logic1
+	const direction = (d === undefined) ? undefined : (d === 0x00) ? GpioDirectionOut : GpioDirectionIn
+
+	return {
+		// alterOutput, outputRaw, alterDirection, directionRaw,
+		outputValue, direction
+	}
+}
+
 export function decodeRequestedmA(mARequestedByte: number): number {
 	return mARequestedByte * 2
 }
@@ -217,9 +249,9 @@ export function decodeRuntimeChipByte(chipByte: number): RuntimeChipSettings {
 	}
 }
 
-export function decodeInterruptFlags(negativEdge: boolean, positiveEdge: boolean): InterruptEdge {
-	if (negativEdge && positiveEdge) { return InterruptEdgeBoth }
-	if (negativEdge) { return InterruptEdgeNegative }
+export function decodeInterruptFlags(negativeEdge: boolean, positiveEdge: boolean): InterruptEdge {
+	if (negativeEdge && positiveEdge) { return InterruptEdgeBoth }
+	if (negativeEdge) { return InterruptEdgeNegative }
 	if (positiveEdge) { return InterruptEdgePositive }
 	return InterruptEdgeOff
 }
@@ -237,6 +269,10 @@ export function decodeResponse(commandNumber: number, bufferSource: DecoderBuffe
 }
 
 export function decodeStatusResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
+	if(bufferSource.byteLength < 2) {
+		throw new Error('invalid buffer length: ' + bufferSource?.byteLength)
+	}
+
 	const dv = ArrayBuffer.isView(bufferSource) ?
 			new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
 			new DataView(bufferSource)
@@ -355,7 +391,6 @@ export function decodeFlashDataUSBStringResponse(commandNumber: number, subComma
 			new DataView(bufferSource)
 
 	const response = decodeStatusResponse(commandNumber, bufferSource)
-	const { command, status, statusCode } = response
 	if(!isStatusSuccess(response)) { return response }
 
 	const subCommandByteLength = dv.getUint8(2)
@@ -369,10 +404,8 @@ export function decodeFlashDataUSBStringResponse(commandNumber: number, subComma
 	const descriptor = decodeUSBString(usbDv, usbByteLength)
 
 	return {
-		opaque: '__usb_string__',
-		command, subCommand: subCommandNumber,
-		status, statusCode,
-
+		...response,
+		subCommand: subCommandNumber,
 		descriptor
 	}
 }
@@ -426,4 +459,17 @@ const I2C_STATES: Record<number, string> = {
 
 export function decodeI2CState(value: number) {
 	return I2C_STATES[value]
+}
+
+export function decodeI2CCancel(value: number): CancelationStatus {
+	if(value === 0x00) { return 'none' }
+	if(value === 0x10) { return 'marked' }
+	if(value === 0x11) { return 'idle' }
+
+	throw new Invalid('cancelation code', value)
+}
+
+export function decodeAccessPassword(buffer: DecoderBufferSource): Password {
+	const decoder = new TextDecoder()
+	return decoder.decode(buffer)
 }

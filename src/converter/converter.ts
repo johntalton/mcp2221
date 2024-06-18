@@ -1,4 +1,5 @@
-export type DecoderBufferSource = ArrayBuffer | SharedArrayBuffer | ArrayBufferView
+export type DecoderBufferSource = ArrayBufferLike | ArrayBufferView
+export type EncoderBufferTarget = ArrayBufferLike | ArrayBufferView
 
 export type Coder<T> = {
   encode: (req: T) => ArrayBuffer,

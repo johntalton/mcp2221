@@ -1,7 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "3.0.3",
-  "description": "",
+  "version": "3.1.0",
   "exports": {
     ".": "./lib/index.js",
     "./bindings": "./lib/index.bindings.js",
@@ -9,109 +8,19 @@
   },
   "type": "module",
   "files": [
+    "src/**/*.ts",
     "lib/**/*.js",
     "lib/**/*.d.ts",
     "lib/**/*.d.ts.map"
   ],
   "types": "./lib",
   "scripts": {
-    "lint": "npm --silent run lint:ts",
-    "lint:ts": "./node_modules/.bin/eslint --report-unused-disable-directives --ext .ts src/*.ts",
-    "lint:ts:fix": "npm run lint:ts -- --fix",
-    "Xtest": "npm run test:mocha",
-    "test:mocha": "mocha --check-leaks --exit --no-parallel --reporter min || exit 0 ",
     "build": "tsc -p .",
-    "build:watch": "tsc -p . -w",
-    "coverage": "npm --silent run coverage:c8",
-    "coverage:c8": "c8 --check-coverage --all --lines 60 --functions 30 --branches 40 -r lcovonly npm run test:mocha"
+    "build:watch": "tsc -p . -w"
   },
-  "eslintConfig": {
-    "ignorePatterns": [
-      "test/**/*.spec.*",
-      "examples/**",
-      "lib/**"
-    ],
-    "extends": [
-      "@johntalton/eslint-config/ts"
-    ],
-    "env": {
-      "node": true
-    },
-    "rules": {
-      "no-tabs": "off",
-      "indent": [
-        "error",
-        "tab"
-      ],
-      "max-len": [
-        "warn",
-        {
-          "code": 120
-        }
-      ],
-      "fp/no-throw": "off",
-      "fp/no-nil": "off",
-      "fp/no-class": "off",
-      "max-classes-per-file": "off",
-      "spellcheck/spell-checker": [
-        "error",
-        {
-          "ignoreRequire": true,
-          "identifiers": false,
-          "minLength": 4,
-          "skipWords": [
-            "gpio",
-            "sram",
-            "mcp2221"
-          ]
-        }
-      ]
-    }
-  },
-  "mocha": {
-    "spec": [
-      "test/*.spec.js"
-    ],
-    "grep": "@broken|@slow",
-    "invert": true,
-    "parallel": true,
-    "watch": false,
-    "sort": false,
-    "forbitOnly": true,
-    "check-leaks": true,
-    "global": []
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/johntalton/mcp2221.git"
-  },
-  "author": "johntalton@gmail.com",
   "license": "MIT",
-  "devDependencies": {
-    "@johntalton/eslint-config": "github:johntalton/eslint-config",
-    "@types/chai": "^4.2.14",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "^20.10.5",
-    "c8": "^9.1.0",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "chai": "^5.1.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-fp": "^2.3.0",
-    "eslint-plugin-functional": "^6.0.0",
-    "eslint-plugin-immutable": "^1.0.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-mocha": "^10.1.0",
-    "eslint-plugin-no-loops": "^0.3.0",
-    "eslint-plugin-no-use-extend-native": "^0.5.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-security": "^2.1.0",
-    "eslint-plugin-spellcheck": "^0.0.20",
-    "mocha": "^10.2.0",
-    "nodemon": "^3.0.2",
-    "source-map-support": "^0.5.20",
-    "ts-node": "^10.0.0"
-  },
   "dependencies": {
-    "@johntalton/bitsmush": "^1.0.0"
+    "@johntalton/bitsmush": "^1.0.1",
+    "typescript": "^5.4.5"
   }
 }

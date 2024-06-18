@@ -11,7 +11,6 @@ export class ReadFlashDataUSBManufacturerResponseCoder {
 	static encode(res: ReadFlashDataUSBManufacturerResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataUSBManufacturerResponse {
 		return decodeFlashDataUSBStringResponse(
-			// opaque: '__man_your_facturer__'
 			READ_FLASH_DATA_COMMAND,
 			READ_FLASH_USB_MANUFACTURER_SUB_COMMAND_CODE,
 			bufferSource) as ReadFlashDataUSBManufacturerResponse

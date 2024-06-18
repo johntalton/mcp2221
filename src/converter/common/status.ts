@@ -4,7 +4,7 @@ import { DecoderBufferSource } from '../converter.js'
 
 import { dont_care, any_other, STATUS_COMMAND, STATUS_I2C_CANCEL_FLAG, STATUS_SET_CLOCK_FLAG } from '../../messages/message.constants.js'
 
-import { decodeStatusResponse, decodeI2CState, isBitSet, isStatusSuccess } from '../decoders.js'
+import { decodeStatusResponse, decodeI2CState, isBitSet, isStatusSuccess, decodeI2CCancel } from '../decoders.js'
 import { I2CReadPending } from '../../messages/message.fragments.js'
 import { encodeI2CDivider, newReportBuffer } from '../encoders.js'
 import { Invalid, Unused } from '../throw.js'
@@ -19,7 +19,6 @@ export class StatusParametersResponseCoder {
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(STATUS_COMMAND, bufferSource) as StatusParametersResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
 		const cancelTransferByte = dv.getUint8(2)
@@ -37,13 +36,17 @@ export class StatusParametersResponseCoder {
 
 		const address = dv.getUint16(16, true)
 
+		const unused18 = dv.getUint8(18)
+
 		const ACKByte = dv.getUint8(20)
+		const unused21 = dv.getUint8(21)
 		const SCL = dv.getUint8(22)
 		const SDA = dv.getUint8(23)
 
 		const interruptEdgeDetectorStateByte = dv.getUint8(24)
 		const pendingValue = dv.getUint8(25) as I2CReadPending
 
+		// todo spec does not say Ascii, but one can assume
 		const rhmaj = String.fromCharCode(dv.getUint8(46))
 		const rhmin = String.fromCharCode(dv.getUint8(47))
 		const rfmaj = String.fromCharCode(dv.getUint8(48))
@@ -56,24 +59,20 @@ export class StatusParametersResponseCoder {
 		//
 		const interruptEdgeDetectorState = interruptEdgeDetectorStateByte === 1
 
-		const i2cCancelled = cancelTransferByte !== 0x00
+		const i2cCancelled = decodeI2CCancel(cancelTransferByte)
 
 		const setSpeedRequested = setSpeedByte !== 0x00
-		const setSpeedSuccessfull = setSpeedByte === 0x20
+		const setSpeedSuccessful = setSpeedByte === 0x20
 
-		const i2cClock = setSpeedSuccessfull ? speedDividerByte : undefined
-
+		const i2cClock = setSpeedRequested ? speedDividerByte : undefined
 		const i2cStateName = decodeI2CState(i2cState)
-		//const newSpeed = setSpeedSet ? speedDividerByte : undefined
-		//console.log('________', i2cClock)
-
 		const ACKed = isBitSet(ACKByte, 6) ? false : true
 
 		//
 		if (rhmaj !== 'A') { throw new Invalid('hardware major byte decoded', rhmaj) }
 		if (rhmin !== '6') { throw new Invalid('hardware minor byte decoded', rhmin) }
 		if (rfmaj !== '1') { throw new Invalid('firmware major byte decoded', rfmaj) }
-		if (!['1', '2'].includes(rfmin)) { console.log('invalid firmware minor byte decoded') }
+		// if (!['1', '2'].includes(rfmin)) { console.log('invalid firmware minor byte decoded') }
 
 		const revision = {
 			hardware: { major: rhmaj, minor: rhmin },
@@ -81,17 +80,16 @@ export class StatusParametersResponseCoder {
 		}
 
 		return {
-			opaque: '__kinda_mostly_close__',
-			command,
-			status,
-			statusCode,
+			...response,
 
+			i2cInitialized: unused21 !== 0,
+			i2cConfused: (unused18 === 0x08) && (i2cState !== 0x45),
 
 			i2cCancelled,
 
 			setSpeedByte, speedDividerByte,
 			setSpeedRequested,
-			setSpeedSuccessfull,
+			setSpeedSuccessful,
 			i2cClock,
 
 			i2cState, i2cStateName,
@@ -145,8 +143,6 @@ export class StatusParametersRequestCoder {
 		dv.setUint8(2, cancelValue)
 	  dv.setUint8(3, setClockValue)
 		dv.setUint8(4, clockValue)
-
-		// console.log(new Uint8Array(buffer))
 
 		return buffer
 	}

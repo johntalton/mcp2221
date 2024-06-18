@@ -1,10 +1,10 @@
 import { SendFlashAccessPasswordRequest } from '../../messages/flash.request.js'
 import { SendFlashAccessPasswordResponse } from '../../messages/flash.response.js'
-import { SEND_FLASH_ACCESS_COMMAND } from '../../messages/message.constants.js'
+import { ACCESS_PASSWORD_BYTE_LENGTH, SEND_FLASH_ACCESS_COMMAND, dont_care } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeStatusResponse, isStatusSuccess } from '../decoders.js'
-import { newReportBuffer } from '../encoders.js'
+import { encodeAccessPassword, newReportBuffer } from '../encoders.js'
 import { Unimplemented, Unused } from '../throw.js'
 
 export class SendFlashAccessPasswordResponseCoder {
@@ -13,20 +13,23 @@ export class SendFlashAccessPasswordResponseCoder {
 		const response = decodeStatusResponse(SEND_FLASH_ACCESS_COMMAND, bufferSource) as SendFlashAccessPasswordResponse
 		if(!isStatusSuccess(response)) { return response }
 
-		throw new Unimplemented()
+		return response
 	}
 }
 
 export class SendFlashAccessPasswordRequestCoder {
 	static encode(req: SendFlashAccessPasswordRequest): ArrayBuffer {
+		const { password } = req ?? {}
+
 		const report = newReportBuffer()
 		const dv = new DataView(report)
 
 		dv.setUint8(0, SEND_FLASH_ACCESS_COMMAND)
+		dv.setUint8(1, dont_care())
 
-		//return report
+		encodeAccessPassword(password, new Uint8Array(report, 2, ACCESS_PASSWORD_BYTE_LENGTH))
 
-		throw new Unimplemented()
+		return report
 	}
 
 	static decode(bufferSource: DecoderBufferSource): SendFlashAccessPasswordRequest { throw new Unused() }

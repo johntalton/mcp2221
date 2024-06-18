@@ -14,19 +14,25 @@ import {
 	USB_STRING_MAGIC_THREE, MAX_REPORT_SIZE,
 	ALTER_GPIO_CLOCK_FLAG, any_other, ALTER_DAC_REF_FLAG,
 	ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG,
-	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive, SecurityUnsecured, SecurityPasswordProtected, SecurityPermanentlyLocked
+	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive, SecurityUnsecured, SecurityPasswordProtected, SecurityPermanentlyLocked,
+	ACCESS_PASSWORD_BYTE_LENGTH,
+	NO_ALTER_GPIO_FLAG
 } from '../messages/message.constants.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,
-	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption, ChipSettings, Security, GeneralPurpose, Divider, InterruptEdge, DutyCycle
+	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption, ChipSettings, Security, GeneralPurpose, Divider, InterruptEdge, DutyCycle,
+	Password,
+	GpioAlter
 } from '../messages/message.fragments.js'
+import { EncoderBufferTarget } from './converter.js'
 import { Invalid, Unknown } from './throw.js'
 
 
 // const fillFn = () => Math.trunc(Math.random() * 255)
 // const fillFn = () => 0xFF
-const fillFn = () => 0x00
+// const fillFn = () => 0x00
+const fillFn = dont_care
 
 export function newReportBuffer(): ArrayBuffer {
 	const buffer = Uint8Array.from({ length: MAX_REPORT_SIZE }, fillFn)
@@ -45,7 +51,7 @@ export function encodeUSBString(str: string): ArrayBuffer {
 
 export function encodeI2CDivider(freq: number): number {
   if(freq < 50 || freq > 400) { throw new Invalid('freq', freq) }
-  return  Math.floor((12000000 / (freq * 1000)) - 3)
+  return  Math.floor((12_000_000 / (freq * 1000))) - 2
 }
 
 export function encodeGPClockAlter(clock?: GPClock): number {
@@ -194,6 +200,29 @@ export function encodeGpioAlter<D>(gpio?: Gpio<D>, encodeDesignation?: (designat
 	return (outputValue << 4) | (directionBits << 3) | designationBits
 }
 
+export function encodeGpioVariableAlter(gpio?: GpioAlter, targetBuffer: EncoderBufferTarget = new ArrayBuffer(4)) {
+	const u8 = ArrayBuffer.isView(targetBuffer) ?
+		new Uint8Array(targetBuffer.buffer, targetBuffer.byteOffset, targetBuffer.byteLength) :
+		new Uint8Array(targetBuffer)
+
+	const valid = gpio !==  undefined
+
+	const value = gpio?.outputValue ?? 0
+	const gpioDirection = gpio?.direction ?? GpioDirectionOut
+	const direction = gpioDirection === GpioDirectionIn ? 0x01 : 0x00
+
+	const alterValue = valid && (gpio?.outputValue !== undefined)
+	const alterDirection = valid && (gpio?.direction !== undefined)
+
+	u8[0] = alterValue ? any_other(NO_ALTER_GPIO_FLAG) : NO_ALTER_GPIO_FLAG
+	u8[1] = value
+
+	u8[2] = alterDirection ? any_other(NO_ALTER_GPIO_FLAG) : NO_ALTER_GPIO_FLAG
+	u8[3] = direction
+
+	return u8
+}
+
 export const MAX_16BIT_USB_STRING_LENGTH = 30
 
 export function encodeFlashDataUSBStringRequest(commandNumber: number, subCommandNubmer: number, descriptor: string): ArrayBuffer {
@@ -273,3 +302,17 @@ export function _encodeInterruptEdge(edge: InterruptEdge) {
 		positiveBit: positiveEdgeBit
 	}
 }
+
+export function encodeAccessPassword(password: Password, into: EncoderBufferTarget = new Uint8Array(ACCESS_PASSWORD_BYTE_LENGTH)): ArrayBuffer {
+	const password8 = ArrayBuffer.isView(into) ?
+		new Uint8Array(into.buffer, into.byteOffset, ACCESS_PASSWORD_BYTE_LENGTH) :
+		new Uint8Array(into, 0, ACCESS_PASSWORD_BYTE_LENGTH)
+
+	const encoder = new TextEncoder()
+	const { read, written } = encoder.encodeInto(password, password8)
+	if(read < password.length) { throw new Invalid('password', 'too long') }
+	if(written < ACCESS_PASSWORD_BYTE_LENGTH) { console.warn('padding password right zero') }
+
+	return password8
+}
+

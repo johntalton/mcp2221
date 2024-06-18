@@ -15,7 +15,6 @@ export class WriteFlashDataUSBProductResponseCoder {
 
 		return {
 			...response,
-			opaque: '__this_is_the_result__',
 			subCommand: WRITE_FLASH_DATA_PRODUCT_SUB_COMMAND
 		}
 	}

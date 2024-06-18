@@ -11,7 +11,6 @@ export class ReadFlashDataUSBSerialNumberResponseCoder {
 	static encode(res: ReadFlashDataUSBSerialNumberResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): ReadFlashDataUSBSerialNumberResponse {
 		return decodeFlashDataUSBStringResponse(
-			//opaque: '__im_not_a_number_im_a_free_man__',
 			READ_FLASH_DATA_COMMAND,
 			READ_FLASH_USB_SERIAL_NUMBER_SUB_COMMAND_CODE,
 			bufferSource) as ReadFlashDataUSBSerialNumberResponse

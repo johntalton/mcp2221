@@ -8,14 +8,15 @@ import {
 	decodeGPClockValues,
 	decodeRequestedmA,
 	isBitSet,
-	isStatusSuccess
+	isStatusSuccess,
+	decodeAccessPassword
 } from '../decoders.js'
 
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { GetSRAMSettingsResponse } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
 import { Unknown, Unused } from '../throw.js'
-import { SRAM_GET_COMMAND } from '../../messages/message.constants.js'
+import { ACCESS_PASSWORD_BYTE_LENGTH, SRAM_GET_COMMAND } from '../../messages/message.constants.js'
 import { newReportBuffer } from '../encoders.js'
 
 export const EXPECTED_CHIP_BYTE_LENGTH = 18
@@ -29,7 +30,6 @@ export class GetSRAMSettingsResponseCoder {
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(SRAM_GET_COMMAND, bufferSource) as GetSRAMSettingsResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
 		const chipBytesLength = dv.getUint8(2)
@@ -50,7 +50,8 @@ export class GetSRAMSettingsResponseCoder {
 		const mARequestedByte = dv.getUint8(13)
 		const mARequested = decodeRequestedmA(mARequestedByte)
 
-		const currentSuppliedPassword = new Uint8Array(dv.buffer, dv.byteOffset + 14, 8)
+		const currentSuppliedPassword = new Uint8Array(dv.buffer, dv.byteOffset + 14, ACCESS_PASSWORD_BYTE_LENGTH)
+		const password = decodeAccessPassword(currentSuppliedPassword)
 
 		const gpio0Byte = dv.getUint8(22)
 		const gpio1Byte = dv.getUint8(23)
@@ -78,10 +79,7 @@ export class GetSRAMSettingsResponseCoder {
 		const edge = decodeInterruptFlags(negativeEdge, positiveEdge)
 
 		return {
-			opaque: '__here_we_go__',
-			command,
-			status,
-			statusCode,
+			...response,
 
 			chip,
 			gp: {
@@ -99,7 +97,7 @@ export class GetSRAMSettingsResponseCoder {
 				mARequested
 			},
 
-			password: String.fromCharCode(...currentSuppliedPassword), // TODO wrong :P
+			password,
 
 			gpio0,
 			gpio1,

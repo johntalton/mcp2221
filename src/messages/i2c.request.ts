@@ -2,7 +2,7 @@ import { Request } from './message.js'
 
 type WithAddress = { address: number }
 
-type I2CBufferSource = ArrayBuffer | SharedArrayBuffer | ArrayBufferView
+type I2CBufferSource = ArrayBufferLike | ArrayBufferView
 type WithInputBuffer = { buffer: I2CBufferSource }
 
 // I²C Write Data

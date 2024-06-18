@@ -24,16 +24,9 @@ export class SetSRAMSettingsResponseCoder {
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(SRAM_SET_COMMAND, bufferSource) as SetSRAMSettingsResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
-		//
-		return {
-			opaque: '__response_from_set__',
-			command,
-			status,
-			statusCode
-		}
+		return response
 	}
 }
 

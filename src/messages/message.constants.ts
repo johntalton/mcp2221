@@ -5,7 +5,8 @@ import {
   Voltage, VoltageOption,
   Security, InterruptEdge,
   Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
-  I2CReadPending
+  I2CReadPending,
+  CancelationStatus
 } from './message.fragments.js'
 import { Status } from './message.js'
 
@@ -52,6 +53,9 @@ export const USB_STRING_MAGIC_THREE = 0x03
 export const RESET_MAGIC = [ 0xAB, 0xCD, 0xEF ]
 
 //
+export const ACCESS_PASSWORD_BYTE_LENGTH = 8
+
+//
 export const RevisionA6_11 = {
   hardware: { major: 'A', minor: '6' },
   firmware: { major: '1', minor: '1' }
@@ -71,7 +75,14 @@ export const ALTER_INTERRUPT_FLAG = 0x80
 
 //
 export function dont_care() { return 0x00 }
-export function any_other(other: number) { return dont_care() & ~other }
+export function not_zero() { return 0xff }
+export function any_other(other: number) {
+  if(other === 0) { return not_zero() }
+  return dont_care() & ~other
+}
+
+//
+export const NO_ALTER_GPIO_FLAG = 0x00
 
 //
 export const STATUS_I2C_CANCEL_FLAG = 0x10
@@ -84,6 +95,10 @@ export const StatusError: Status = 'error'
 export const StatusNotAllowed: Status = 'not-allowed'
 export const StatusNotSupported: Status = 'not-supported'
 
+//
+export const I2CCancelationNone: CancelationStatus = 'none'
+export const I2CCancelationMarked: CancelationStatus = 'marked'
+export const I2CCancelationIdle: CancelationStatus = 'idle'
 
 //
 export const I2CReadPending0: I2CReadPending = 0

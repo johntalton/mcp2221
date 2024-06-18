@@ -1,16 +1,19 @@
 import { Response, Success } from './message.js'
-import { I2CReadPending, I2CClock, Revision } from './message.fragments.js'
+import { I2CReadPending, I2CClock, Revision, CancelationStatus } from './message.fragments.js'
 
 export type StatusParametersResponse = Response & Success & {
   command: 0x10,
 
-  i2cCancelled?: boolean,
+  i2cInitialized: boolean, // Extended
+  i2cConfused: boolean, // Extended
+
+  i2cCancelled: CancelationStatus,
   i2cClock?: I2CClock,
 
   setSpeedByte?: number, // extra
   speedDividerByte?: number,
   setSpeedRequested?: boolean,
-  setSpeedSuccessfull?: boolean,
+  setSpeedSuccessful?: boolean,
 
   i2c: {
     address: number,

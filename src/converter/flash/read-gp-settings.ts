@@ -17,7 +17,6 @@ export class ReadFlashDataGPSettingsResponseCoder {
 			new DataView(bufferSource)
 
 		const response = decodeStatusResponse(READ_FLASH_DATA_COMMAND, bufferSource) as ReadFlashDataGPSettingsResponse
-		const { command, status, statusCode } = response
 		if(!isStatusSuccess(response)) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
@@ -34,10 +33,8 @@ export class ReadFlashDataGPSettingsResponseCoder {
 		const gpio3 = decodeGpioByte(gpio3Byte, gpio3Designation)
 
 		return {
-			opaque: '__general_io__',
-			command, subCommand: READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND,
-			status, statusCode,
-
+			...response,
+			subCommand: READ_FLASH_DATA_GP_SETTINGS_SUB_COMMAND,
 			gpio0, gpio1, gpio2, gpio3
 		}
 	}
