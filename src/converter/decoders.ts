@@ -270,7 +270,7 @@ export function decodeResponse(commandNumber: number, bufferSource: DecoderBuffe
 
 export function decodeStatusResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
 	if(bufferSource.byteLength < 2) {
-		throw new Error('invalid buffer length: ' + bufferSource?.byteLength)
+		throw new Invalid('bufferSource.byteLength', bufferSource?.byteLength)
 	}
 
 	const dv = ArrayBuffer.isView(bufferSource) ?

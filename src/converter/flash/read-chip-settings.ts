@@ -1,13 +1,11 @@
 import { ReadFlashDataChipSettingsRequest, ReadFlashDataRequest } from '../../messages/flash.request.js'
 import { ReadFlashDataChipSettingsResponse } from '../../messages/flash.response.js'
-import { READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, READ_FLASH_DATA_COMMAND } from '../../messages/message.constants.js'
+import { EXPECTED_CHIP_SETTINGS_BYTE_LENGTH, READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, READ_FLASH_DATA_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
 
 import { decodeADCByte, decodeChipSecurityCode, decodeDACByte, decodeGPClockValues, decodeInterruptFlags, decodeRequestedmA, decodeStatusResponse, isBitSet, isStatusSuccess } from '../decoders.js'
 import { newReportBuffer } from '../encoders.js'
-import { Unused } from '../throw.js'
-
-export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
+import { Invalid, Unused } from '../throw.js'
 
 export class ReadFlashDataChipSettingsResponseCoder {
 	static encode(res: ReadFlashDataChipSettingsResponse): ArrayBuffer { throw new Unused() }
@@ -20,7 +18,7 @@ export class ReadFlashDataChipSettingsResponseCoder {
 		if(!isStatusSuccess(response)) { return response }
 
 		const subCommandByteLength = dv.getUint8(2)
-		if(subCommandByteLength !== EXPECTED_CHIP_SETTINGS_BYTE_LENGTH) { throw new Error('subcommand length error') }
+		if(subCommandByteLength !== EXPECTED_CHIP_SETTINGS_BYTE_LENGTH) { throw new Invalid('subcommand length', subCommandByteLength) }
 
 		const enableAndSecurityByte = dv.getUint8(4)
 		const gpClockDividerByte = dv.getUint8(5)

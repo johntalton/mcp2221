@@ -48,8 +48,6 @@ export class SetGPIOOutputValuesRequestCoder {
 		encodeGpioVariableAlter(gpio2, u8.subarray(10, 14))
 		encodeGpioVariableAlter(gpio3, u8.subarray(14, 18))
 
-		console.log(u8)
-
 		return report
 	}
 	static decode(bufferSource: DecoderBufferSource): SetGPIOOutputValuesRequest { throw new Unused() }

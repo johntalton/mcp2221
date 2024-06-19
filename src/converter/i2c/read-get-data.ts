@@ -5,7 +5,7 @@ import { DecoderBufferSource } from '../converter.js'
 
 import { decodeReadResponse, isStatusSuccess } from '../decoders.js'
 import { newReportBuffer } from '../encoders.js'
-import { Unused } from '../throw.js'
+import { Invalid, Unused } from '../throw.js'
 
 export const READ_BACK_BYTES_ERROR_FLAG = 127
 
@@ -35,7 +35,7 @@ export class I2CReadGetDataResponseCoder {
 		}
 
 		const readBackBytes = readBackBytesByte
-		if((readBackBytes < 0 || readBackBytes > 60)) { throw new Error('read back bytes out of range') }
+		if((readBackBytes < 0 || readBackBytes > 60)) { throw new Invalid('readBytes out of range', readBackBytes) }
 
 		const user8 = new Uint8Array(dv.buffer, dv.byteOffset + 4, readBackBytes)
 

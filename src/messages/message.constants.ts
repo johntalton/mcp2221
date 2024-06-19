@@ -89,6 +89,11 @@ export const STATUS_I2C_CANCEL_FLAG = 0x10
 export const STATUS_SET_CLOCK_FLAG = 0x20
 
 //
+export const EXPECTED_CHIP_BYTE_LENGTH = 18
+export const EXPECTED_GP_BYTE_LENGTH = 4
+export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
+
+//
 export const StatusSuccess: Status = 'success'
 export const StatusBusy: Status = 'busy'
 export const StatusError: Status = 'error'

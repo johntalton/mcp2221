@@ -15,12 +15,9 @@ import {
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
 import { GetSRAMSettingsResponse } from '../../messages/sram.response.js'
 import { DecoderBufferSource } from '../converter.js'
-import { Unknown, Unused } from '../throw.js'
-import { ACCESS_PASSWORD_BYTE_LENGTH, SRAM_GET_COMMAND } from '../../messages/message.constants.js'
+import { Invalid, Unused } from '../throw.js'
+import { ACCESS_PASSWORD_BYTE_LENGTH, EXPECTED_CHIP_BYTE_LENGTH, EXPECTED_GP_BYTE_LENGTH, SRAM_GET_COMMAND } from '../../messages/message.constants.js'
 import { newReportBuffer } from '../encoders.js'
-
-export const EXPECTED_CHIP_BYTE_LENGTH = 18
-export const EXPECTED_GP_BYTE_LENGTH = 4
 
 export class GetSRAMSettingsResponseCoder {
 	static encode(_msg: GetSRAMSettingsResponse): ArrayBuffer { throw new Unused() }
@@ -35,8 +32,8 @@ export class GetSRAMSettingsResponseCoder {
 		const chipBytesLength = dv.getUint8(2)
 		const gpBytesLength = dv.getUint8(3)
 
-		if (chipBytesLength != EXPECTED_CHIP_BYTE_LENGTH) { throw new Unknown('chip data length', chipBytesLength) }
-		if (gpBytesLength !== EXPECTED_GP_BYTE_LENGTH) { throw new Unknown('gpio data length', gpBytesLength) }
+		if (chipBytesLength != EXPECTED_CHIP_BYTE_LENGTH) { throw new Invalid('chip data length', chipBytesLength) }
+		if (gpBytesLength !== EXPECTED_GP_BYTE_LENGTH) { throw new Invalid('gpio data length', gpBytesLength) }
 
 		const statusMaskByte = dv.getUint8(4)
 		const gpClockOutputByte = dv.getUint8(5)

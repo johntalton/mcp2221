@@ -14,7 +14,7 @@ import {
 	encodeGpio0Designation, encodeGpio1Designation,
 	encodeGpio2Designation, encodeGpio3Designation, newReportBuffer
 } from '../encoders.js'
-import { Unused } from '../throw.js'
+import { Invalid, Unused } from '../throw.js'
 
 export class SetSRAMSettingsResponseCoder {
 	static encode(_msg: SetSRAMSettingsResponse): ArrayBuffer { throw new Unused() }
@@ -48,8 +48,14 @@ export class SetSRAMSettingsRequestCoder {
 			gpio2 !== undefined ||
 			gpio3 !== undefined
 
+
+		if(hasAnyGpio && gpio0 === undefined) { throw new Invalid('gpio0', undefined) }
+		if(hasAnyGpio && gpio1 === undefined) { throw new Invalid('gpio1', undefined) }
+		if(hasAnyGpio && gpio2 === undefined) { throw new Invalid('gpio2', undefined) }
+		if(hasAnyGpio && gpio3 === undefined) { throw new Invalid('gpio3', undefined) }
+
 		//
-		const alterGpioByte = hasAnyGpio ? 0x80 : 0x00
+		const alterGpioByte = hasAnyGpio ? 0x80 : 0
 
 		const gpio0Byte = encodeGpioAlter(gpio0, encodeGpio0Designation)
 		const gpio1Byte = encodeGpioAlter(gpio1, encodeGpio1Designation)

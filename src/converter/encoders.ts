@@ -73,8 +73,8 @@ export function encodeGPClockAlter(clock?: GPClock): number {
 		divider === Divider24000 ? 0b001 :
 			undefined
 
-	if(dutyCycleBits === undefined) { throw new Unknown('dutyCycle', dutyCycleBits) }
-	if(dividerBits === undefined) { throw new Unknown('divider', dividerBits) }
+	if(dutyCycleBits === undefined) { throw new Unknown('dutyCycle', dutyCycle) }
+	if(dividerBits === undefined) { throw new Unknown('divider', divider) }
 
 	return ALTER_GPIO_CLOCK_FLAG | (dutyCycleBits << 3) | dividerBits
 }
@@ -134,7 +134,7 @@ export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): 
 	const hasEdge = edge !== undefined
 	const hasClear = clear !== undefined
 
-	if(!hasClear || !hasEdge) { return any_other(ALTER_INTERRUPT_FLAG) }
+	if(!hasClear && !hasEdge) { return any_other(ALTER_INTERRUPT_FLAG) }
 
 	const positiveEdgeBit = (edge === InterruptEdgeBoth || edge === InterruptEdgePositive) ? 0b1 : 0b0
 	const negativeEdgeBit = (edge === InterruptEdgeBoth || edge === InterruptEdgeNegative) ? 0b1 : 0b0
@@ -143,7 +143,7 @@ export function encodeInterruptAlter(interrupt?: GeneralPurposeAlterInterrupt): 
 
 	const clearBit = clear === true ? 0b1 : 0b0
 
-	return ALTER_INTERRUPT_FLAG | edgeBits | clearBit
+	return ALTER_INTERRUPT_FLAG | (edgeBits << 1) | clearBit
 }
 
 export function encodeGpio0Designation(designation: Gp0Designation): number {
