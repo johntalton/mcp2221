@@ -10,13 +10,15 @@ export interface Binding {
   writable: WritableStream
 }
 
+
+export type BYOBMode = 'byob'
+const BYOB_MODE:BYOBMode = 'byob'
+
 export type ReadOptions = {
 	timeoutMs?: number,
 	signal?: AbortSignal,
-	mode?: string
+	mode?: BYOBMode|undefined
 }
-
-const BYOB_MODE:string = 'byob'
 
 export function makeHIDStreamBinding(source: Binding) {
 	return {
@@ -33,7 +35,7 @@ export function makeHIDStreamBinding(source: Binding) {
 			if (source.readable.locked) { throw new Error('locked reader') }
 			if (signal?.aborted ?? false) { throw new Error('read aborted') }
 
-			const reader = source.readable.getReader({ mode })
+			const reader: any = source.readable.getReader({ mode })
 
 			const flags = {
 				aborted: false,
@@ -44,14 +46,14 @@ export function makeHIDStreamBinding(source: Binding) {
 				console.warn('aborted')
 				flags.aborted = true
 				reader.cancel('aborted')
-					.catch(e => console.warn(e))
+					.catch((e: any) => console.warn(e))
 			})
 
 			const timer = setTimeout(() => {
 				console.warn('timeout')
 				flags.timedout = true
 				reader.cancel('timeout')
-					.catch(e => console.warn(e))
+					.catch((e: any) => console.warn(e))
 			}, timeoutMs)
 
 			let sharedReadBuffer = new ArrayBuffer(count)
