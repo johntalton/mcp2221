@@ -2,14 +2,14 @@ import { I2CReadDataRepeatedSTARTRequest } from '../../messages/i2c.request.js'
 import { I2CReadDataRepeatedSTARTResponse } from '../../messages/i2c.response.js'
 import { I2C_READ_DATA_REPEATED_START_COMMAND } from '../../messages/message.constants.js'
 import { DecoderBufferSource } from '../converter.js'
-import { decodeReadResponse } from '../decoders.js'
+import { decodeReadWithI2CStateResponse } from '../decoders.js'
 import { newReportBuffer } from '../encoders.js'
 import { Unimplemented, Unused } from '../throw.js'
 
 export class I2CReadDataRepeatedSTARTResponseCoder {
 	static encode(_msg: I2CReadDataRepeatedSTARTResponse): ArrayBuffer { throw new Unused() }
 	static decode(bufferSource: DecoderBufferSource): I2CReadDataRepeatedSTARTResponse {
-		return decodeReadResponse(I2C_READ_DATA_REPEATED_START_COMMAND, bufferSource) as I2CReadDataRepeatedSTARTResponse
+		return decodeReadWithI2CStateResponse(I2C_READ_DATA_REPEATED_START_COMMAND, bufferSource) as I2CReadDataRepeatedSTARTResponse
 	}
 }
 

@@ -5,9 +5,9 @@ import {
 	Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation,
 	GPClock,
-	RuntimeChipSettings,
 	Password,
-	CancelationStatus
+	CancelationStatus,
+	ChipSettings
 } from '../messages/message.fragments.js'
 
 import {
@@ -33,7 +33,8 @@ import {
 	Gp1DesignationADC_1, Gp1DesignationClockOutput, Gp1DesignationGPIO, Gp1DesignationInterruptDetection, Gp1DesignationUART_TX,
 	Gp2DesignationADC_2, Gp2DesignationDAC_1, Gp2DesignationGPIO, Gp2DesignationUSB,
 	Gp3DesignationADC_3, Gp3DesignationDAC_2, Gp3DesignationGPIO, Gp3DesignationLedI2C, USB_STRING_MAGIC_THREE,
-	NO_ALTER_GPIO_FLAG
+	NO_ALTER_GPIO_FLAG,
+	USB_STRING_MAX_BYTE_LENGTH
 } from '../messages/message.constants.js'
 
 import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupported } from '../messages/message.constants.js'
@@ -41,8 +42,6 @@ import { StatusSuccess, StatusBusy, StatusError, StatusNotAllowed, StatusNotSupp
 import { DecoderBufferSource } from './converter.js'
 import { Invalid, Unknown } from './throw.js'
 import { Response, Success } from '../messages/message.js'
-
-export const USB_STRING_MAX_BYTE_LENGTH = 60
 
 export function isBitSet(value: number, bitToCheck: number) {
 	return ((value >> bitToCheck) & 0b1) === 0b1
@@ -203,6 +202,15 @@ export function decodeGpioVariableAlter(buffer: DecoderBufferSource) {
 	}
 }
 
+export function decodePowerAttribute(powerAttribute: number) {
+	const selfPower = (powerAttribute & 0b0100_0000) !== 0
+	const remoteWake = (powerAttribute & 0b0010_0000) !== 0
+
+	return {
+		selfPower, remoteWake
+	}
+}
+
 export function decodeRequestedmA(mARequestedByte: number): number {
 	return mARequestedByte * 2
 }
@@ -215,7 +223,7 @@ export function decodeChipSecurityCode(chipSecurityCode: number): Security {
 	throw new Unknown('security attribute', chipSecurityCode)
 }
 
-export function decodeRuntimeChipByte(chipByte: number): RuntimeChipSettings {
+export function decodeChipByte(chipByte: number): ChipSettings {
 	const ledState = (chipByte: number, shiftBy: number) => {
 		return isBitSet(chipByte, shiftBy) ? InitialLEDStateOn : InitialLEDStateOff
 	}
@@ -331,14 +339,6 @@ export function decodeStatusResponse(commandNumber: number, bufferSource: Decode
 	}
 }
 
-export function _decodeReadResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
-	return decodeStatusResponse(commandNumber, bufferSource)
-}
-
-export function _decodeWriteResponse(commandNumber: number, bufferSource: DecoderBufferSource): Response {
-	return decodeStatusResponse(commandNumber, bufferSource)
-}
-
 export function decodeReadWithI2CStateResponse(commandNumber: number, bufferSource: DecoderBufferSource) {
 	const dv = ArrayBuffer.isView(bufferSource) ?
 		new DataView(bufferSource.buffer, bufferSource.byteOffset, bufferSource.byteLength) :
@@ -374,11 +374,6 @@ export function decodeWriteWithI2CStateResponse(commandNumber: number, bufferSou
 		i2cState, i2cStateName
 	}
 }
-
-//
-export const decodeWriteResponse = decodeWriteWithI2CStateResponse
-export const decodeReadResponse = decodeReadWithI2CStateResponse
-
 
 //
 export function isStatusSuccess(response: Response): response is Success {
@@ -426,7 +421,7 @@ const I2C_STATES: Record<number, string> = {
 	0x22: 'ADDRESS_ACK',
 	0x23: 'ADDRESS_TIMEOUT',
 	0x24: 'ADDRESS_NACK_STOP_END',
-	0x25: 'ADDRESS_NACK_STOP', // ADDRNOTFOUND  WR NACK
+	0x25: 'ADDRESS_NACK_STOP',
 	//
 	0x30: 'ADDRESS_',
 	0x31: 'ADDRESS__WAIT_SEND',
@@ -434,25 +429,25 @@ const I2C_STATES: Record<number, string> = {
 	0x33: 'ADDRESS__TIMEOUT',
 	//
 	0x40: 'WRITE_DATA',
-	0x41: 'WRITE_DATA_WAIT_SEND', // partial data
+	0x41: 'WRITE_DATA_WAIT_SEND',
 	0x42: 'WRITE_DATA_ACK',
-	0x43: 'WRITE_DATA_WAIT', // more data
+	0x43: 'WRITE_DATA_WAIT',
 	0x44: 'WRITE_DATA_TIMEOUT',
-	0x45: 'WRITE_DATA_END_NO_STOP', // writing not stop
+	0x45: 'WRITE_DATA_END_NO_STOP',
 	//
 	0x50: 'READ_DATA',
 	0x51: 'READ_DATA_',
-	0x52: 'READ_DATA_timeout', // timeout
-	0x53: 'READ_DATA_',
-	0x54: 'READ_DATA_partial', // partial
-	0x55: 'READ_DATA_complete', // complete / DATAREADY
+	0x52: 'READ_DATA_timeout',
+	0x53: 'READ_DATA_ACK',
+	0x54: 'READ_DATA_WAIT',
+	0x55: 'READ_DATA_COMPLETE',
 	//
 	0x60: 'STOP',
 	0x61: 'STOP_WAIT',
-	0x62: 'STOP_TIMEOUT', // stop timeout
+	0x62: 'STOP_TIMEOUT',
 	//
 	0x70: '?',
-	0x7F: 'ERR', // ?
+	0x7F: 'ERR',
 	//
 	0x80: '?'
 }

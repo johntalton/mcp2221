@@ -22,7 +22,7 @@ export const SRAM_GET_COMMAND = 0x61
 export const I2C_READ_DATA_COMMAND = 0x91
 export const I2C_READ_DATA_REPEATED_START_COMMAND = 0x93
 export const I2C_READ_GET_DATA_COMMAND = 0x40
-export const I2C_READ_DATA_NO_STOP_COMMAND = 0x94
+export const I2C_WRITE_DATA_NO_STOP_COMMAND = 0x94
 export const I2C_WRITE_DATA_REPEATED_START_COMMAND = 0x92
 export const I2C_WRITE_DATA_COMMAND = 0x90
 
@@ -45,6 +45,14 @@ export const SEND_FLASH_ACCESS_COMMAND = 0xB2
 
 //
 export const MAX_REPORT_SIZE = 64
+export const USB_STRING_MAX_BYTE_LENGTH = 60 // MAX_REPORT_SIZE - 4
+export const MAX_16BIT_USB_STRING_LENGTH = 30 // USB_STRING_MAX_BYTE_LENGTH / 2
+export const MAX_I2C_WRITE_BYTES_LENGTH = 60
+export const MAX_I2C_READ_BYTES_LENGTH = 60
+//
+export const EXPECTED_CHIP_BYTE_LENGTH = 18
+export const EXPECTED_GP_BYTE_LENGTH = 4
+export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
 
 //
 export const USB_STRING_MAGIC_THREE = 0x03
@@ -67,6 +75,16 @@ export const RevisionA6_12 = {
 }
 
 //
+export const NO_ALTER_GPIO_FLAG = 0x00
+
+//
+export const STATUS_I2C_CANCEL_FLAG = 0x10
+export const STATUS_SET_CLOCK_FLAG = 0x20
+
+//
+export const READ_BACK_BYTES_I2C_ERROR_FLAG = 127
+
+//
 export const ALTER_GPIO_CLOCK_FLAG = 0x80
 export const ALTER_DAC_REF_FLAG = 0x80
 export const ALTER_DAC_VALUE_FLAG = 0x80
@@ -75,23 +93,11 @@ export const ALTER_INTERRUPT_FLAG = 0x80
 
 //
 export function dont_care() { return 0x00 }
-export function not_zero() { return 0xff }
+export function not_zero() { return 0x01 }
 export function any_other(other: number) {
   if(other === 0) { return not_zero() }
   return dont_care() & ~other
 }
-
-//
-export const NO_ALTER_GPIO_FLAG = 0x00
-
-//
-export const STATUS_I2C_CANCEL_FLAG = 0x10
-export const STATUS_SET_CLOCK_FLAG = 0x20
-
-//
-export const EXPECTED_CHIP_BYTE_LENGTH = 18
-export const EXPECTED_GP_BYTE_LENGTH = 4
-export const EXPECTED_CHIP_SETTINGS_BYTE_LENGTH = 10
 
 //
 export const StatusSuccess: Status = 'success'

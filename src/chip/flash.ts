@@ -40,31 +40,31 @@ function isWriteSubCommand<D extends WriteFlashDataRequest>(subCommand: number, 
 
 export class MCP2221Flash extends Bindable implements Flash {
 	async readChipSettings(req: ReadFlashDataChipSettingsRequest): Promise<ReadFlashDataChipSettingsResponse> {
-		return send_request(this.binding, req, ReadFlashDataChipSettings)
+		return send_request(this, req, ReadFlashDataChipSettings)
 	}
 
 	async readGPSettings(req: ReadFlashDataGPSettingsRequest): Promise<ReadFlashDataGPSettingsResponse> {
-		return send_request(this.binding, req, ReadFlashDataGPSettings)
+		return send_request(this, req, ReadFlashDataGPSettings)
 	}
 
 	async readUSBManufacturer(req: ReadFlashDataUSBManufacturerRequest): Promise<ReadFlashDataUSBManufacturerResponse> {
-		return send_request(this.binding, req, ReadFlashDataUSBManufacturer)
+		return send_request(this, req, ReadFlashDataUSBManufacturer)
 	}
 
 	async readUSBProduct(req: ReadFlashDataUSBProductRequest): Promise<ReadFlashDataUSBProductResponse> {
-		return send_request(this.binding, req, ReadFlashDataUSBProduct)
+		return send_request(this, req, ReadFlashDataUSBProduct)
 	}
 
 	async readUSBSerialNumber(req: ReadFlashDataUSBSerialNumberRequest): Promise<ReadFlashDataUSBSerialNumberResponse> {
-		return send_request(this.binding, req, ReadFlashDataUSBSerialNumber)
+		return send_request(this, req, ReadFlashDataUSBSerialNumber)
 	}
 
 	async readFactorySerialNumber(req: ReadFlashDataFactorySerialNumberRequest): Promise<ReadFlashDataFactorySerialNumberResponse> {
-		return send_request(this.binding, req, ReadFlashDataFactorySerialNumber)
+		return send_request(this, req, ReadFlashDataFactorySerialNumber)
 	}
 
 	// official interface
-	async read(req: ReadFlashDataRequest): Promise<ReadFlashDataResponse> {
+	async readFlash(req: ReadFlashDataRequest): Promise<ReadFlashDataResponse> {
 		const { subCommand } = req
 
 		if (isReadSubCommand<ReadFlashDataChipSettingsRequest>(READ_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, req)) { return this.readChipSettings(req) }
@@ -78,27 +78,27 @@ export class MCP2221Flash extends Bindable implements Flash {
 	}
 
 	async writeChipSettings(req: WriteFlashDataChipSettingsRequest): Promise<WriteFlashDataResponse> {
-		return send_request(this.binding, req, WriteFlashDataChipSettings)
+		return send_request(this, req, WriteFlashDataChipSettings)
 	}
 
 	async writeGPSettings(req: WriteFlashDataGPSettingsRequest): Promise<WriteFlashDataResponse> {
-		return send_request(this.binding, req, WriteFlashDataGPSettings)
+		return send_request(this, req, WriteFlashDataGPSettings)
 	}
 
 	async writeUSBManufacturer(req: WriteFlashDataUSBManufacturerRequest): Promise<WriteFlashDataResponse> {
-		return send_request(this.binding, req, WriteFlashDataUSBManufacturer)
+		return send_request(this, req, WriteFlashDataUSBManufacturer)
 	}
 
 	async writeUSBProduct(req: WriteFlashDataUSBProductRequest): Promise<WriteFlashDataResponse> {
-		return send_request(this.binding, req, WriteFlashDataUSBProduct)
+		return send_request(this, req, WriteFlashDataUSBProduct)
 	}
 
 	async writeUSBSerialNumber(req: WriteFlashDataUSBSerialNumberRequest): Promise<WriteFlashDataResponse> {
-		return send_request(this.binding, req, WriteFlashDataUSBSerialNumber)
+		return send_request(this, req, WriteFlashDataUSBSerialNumber)
 	}
 
 	// official interface
-	async write(req: WriteFlashDataRequest): Promise<WriteFlashDataResponse> {
+	async writeFlash(req: WriteFlashDataRequest): Promise<WriteFlashDataResponse> {
 		const { subCommand } = req
 
 		if (isWriteSubCommand<WriteFlashDataChipSettingsRequest>(WRITE_FLASH_DATA_CHIP_SETTINGS_SUB_COMMAND, req)) { return this.writeChipSettings(req) }
@@ -112,6 +112,6 @@ export class MCP2221Flash extends Bindable implements Flash {
 	}
 
 	async sendPassword(req: SendFlashAccessPasswordRequest): Promise<SendFlashAccessPasswordResponse> {
-		return send_request(this.binding, req, SendFlashAccessPassword)
+		return send_request(this, req, SendFlashAccessPassword)
 	}
 }

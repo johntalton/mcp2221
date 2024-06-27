@@ -1,3 +1,4 @@
+import { EncoderBufferTarget } from '../converter/converter.js'
 import {
   I2CWriteDataRequest, I2CWriteDataRepeatedSTARTRequest, I2CWriteDataNoSTOPRequest,
   I2CReadDataRequest, I2CReadDataRepeatedSTARTRequest, I2CReadGetDataRequest
@@ -14,5 +15,5 @@ export interface I2C {
 
   readData(req: I2CReadDataRequest): Promise<I2CReadDataResponse>
   readRepeatedSTART(req: I2CReadDataRepeatedSTARTRequest): Promise<I2CReadDataRepeatedSTARTResponse>
-  readGetData(req: I2CReadGetDataRequest): Promise<I2CReadGetDataResponse>
+  readGetData(req: I2CReadGetDataRequest, targetBuffer?: EncoderBufferTarget): Promise<I2CReadGetDataResponse>
 }

@@ -1,10 +1,10 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "exports": {
     ".": "./lib/index.js",
     "./bindings": "./lib/index.bindings.js",
-    "./coders": "./lib/converter/coder.js"
+    "./coders": "./lib/converter/index.js"
   },
   "type": "module",
   "files": [
@@ -21,6 +21,6 @@
   "license": "MIT",
   "dependencies": {
     "@johntalton/bitsmush": "^1.0.1",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   }
 }

@@ -40,9 +40,6 @@ export type CancelationStatus = 'none' | 'marked' | 'idle'
 export type ChipSettings = {
 	enabledCDCSerialEnumeration: boolean,
 	security: Security,
-}
-
-export type RuntimeChipSettings = ChipSettings & {
 	uartLED: { tx: InitialLEDState, rx: InitialLEDState },
 	i2cLED: InitialLEDState,
 	SSPND: SuspendState,
@@ -92,7 +89,8 @@ export type GeneralPurposeAlter = {
 export type UsbSettings = {
 	vendorId: number,
 	productId: number,
-	powerAttribute: number
+	selfPower: boolean,
+	remoteWake: boolean,
 	mARequested: number
 }
 

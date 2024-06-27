@@ -27,11 +27,11 @@ export class MCP2221 extends Bindable {
 	constructor(binding: Binding) {
 		super(binding)
 
-		this.common = new MCP2221Common(this.binding)
-		this.flash = new MCP2221Flash(this.binding)
-		this.gpio = new MCP2221Gpio(this.binding)
-		this.i2c = new MCP2221I2C(this.binding)
-		this.sram = new MCP2221SRAM(this.binding)
+		this.common = new MCP2221Common(binding)
+		this.flash = new MCP2221Flash(binding)
+		this.gpio = new MCP2221Gpio(binding)
+		this.i2c = new MCP2221I2C(binding)
+		this.sram = new MCP2221SRAM(binding)
 	}
 }
 

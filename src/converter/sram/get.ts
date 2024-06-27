@@ -1,6 +1,5 @@
 import {
 	decodeStatusResponse,
-	decodeRuntimeChipByte,
 	decodeDACByte, decodeADCByte,
 	decodeGpioByte,
 	gpio0Designation, gpio1Designation, gpio2Designation, gpio3Designation,
@@ -9,7 +8,9 @@ import {
 	decodeRequestedmA,
 	isBitSet,
 	isStatusSuccess,
-	decodeAccessPassword
+	decodeAccessPassword,
+	decodePowerAttribute,
+	decodeChipByte
 } from '../decoders.js'
 
 import { GetSRAMSettingsRequest } from '../../messages/sram.request.js'
@@ -43,9 +44,10 @@ export class GetSRAMSettingsResponseCoder {
 		const usbVID = dv.getUint16(8, true)
 		const usbPID = dv.getUint16(10, true)
 
-		const powerAttribute = dv.getUint8(12)
+		const powerAttributeByte = dv.getUint8(12)
 		const mARequestedByte = dv.getUint8(13)
 		const mARequested = decodeRequestedmA(mARequestedByte)
+		const { remoteWake, selfPower } = decodePowerAttribute(powerAttributeByte)
 
 		const currentSuppliedPassword = new Uint8Array(dv.buffer, dv.byteOffset + 14, ACCESS_PASSWORD_BYTE_LENGTH)
 		const password = decodeAccessPassword(currentSuppliedPassword)
@@ -56,7 +58,7 @@ export class GetSRAMSettingsResponseCoder {
 		const gpio3Byte = dv.getUint8(25)
 
 		//
-		const chip = decodeRuntimeChipByte(statusMaskByte)
+		const chip = decodeChipByte(statusMaskByte)
 
 		const dutyCycle = (gpClockOutputByte >> 3) & 0b11
 		const divider = gpClockOutputByte & 0b111
@@ -90,7 +92,8 @@ export class GetSRAMSettingsResponseCoder {
 			usb: {
 				vendorId: usbVID,
 				productId: usbPID,
-				powerAttribute,
+				selfPower,
+				remoteWake,
 				mARequested
 			},
 

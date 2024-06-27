@@ -16,14 +16,16 @@ import {
 	ALTER_DAC_VALUE_FLAG, ALTER_ADC_REF_FLAG, ALTER_INTERRUPT_FLAG,
 	InterruptEdgeBoth, InterruptEdgeNegative, InterruptEdgePositive, SecurityUnsecured, SecurityPasswordProtected, SecurityPermanentlyLocked,
 	ACCESS_PASSWORD_BYTE_LENGTH,
-	NO_ALTER_GPIO_FLAG
+	NO_ALTER_GPIO_FLAG,
+	MAX_16BIT_USB_STRING_LENGTH
 } from '../messages/message.constants.js'
 import {
 	GeneralPurposeAlterDAC, GeneralPurposeAlterADC,
 	GPClock, GeneralPurposeAlterInterrupt, Gpio,
 	Gp0Designation, Gp1Designation, Gp2Designation, Gp3Designation, Voltage, VoltageOption, ChipSettings, Security, GeneralPurpose, Divider, InterruptEdge, DutyCycle,
 	Password,
-	GpioAlter
+	GpioAlter,
+	UsbSettings
 } from '../messages/message.fragments.js'
 import { EncoderBufferTarget } from './converter.js'
 import { Invalid, Unknown } from './throw.js'
@@ -50,7 +52,7 @@ export function encodeUSBString(str: string): ArrayBuffer {
 }
 
 export function encodeI2CDivider(freq: number): number {
-  if(freq < 50 || freq > 400) { throw new Invalid('freq', freq) }
+  // if(freq < 50 || freq > 400) { throw new Invalid('freq', freq) }
   return  Math.floor((12_000_000 / (freq * 1000))) - 2
 }
 
@@ -223,8 +225,6 @@ export function encodeGpioVariableAlter(gpio?: GpioAlter, targetBuffer: EncoderB
 	return u8
 }
 
-export const MAX_16BIT_USB_STRING_LENGTH = 30
-
 export function encodeFlashDataUSBStringRequest(commandNumber: number, subCommandNubmer: number, descriptor: string): ArrayBuffer {
 	const strBuffer = encodeUSBString(descriptor)
 	const str16 = new Uint16Array(strBuffer)
@@ -253,13 +253,34 @@ export function encodeSecurity(security: Security): number {
 	throw new Unknown('security', security)
 }
 
-export function encodeChipSettings(chip: ChipSettings): number {
-	const { enabledCDCSerialEnumeration, security } = chip
+export function encodeChipSettings({
+	security,
+	enabledCDCSerialEnumeration,
+	uartLED,
+	i2cLED,
+	SSPND,
+	USBCFG
+} : ChipSettings): number {
+	const { rx, tx } = uartLED
 
-	const securityBits = encodeSecurity(security)
-	const enabledCDCBits = enabledCDCSerialEnumeration ? 1 : 0
+	return encodeSecurity(security) |
+		((USBCFG === 'on') ? (1 << 2) : 0) |
+		((SSPND === 'on') ? (1 << 3) : 0) |
+		((i2cLED === 'on') ? (1 << 4) : 0) |
+		((tx === 'on') ? (1 << 5) : 0) |
+		((rx === 'on') ? (1 << 6) : 0) |
+		(enabledCDCSerialEnumeration ? (1 << 7) : 0)
+}
 
-	return (enabledCDCBits << 7) | securityBits
+export function encodePowerAttribute({
+	selfPower,
+	remoteWake
+}: Partial<UsbSettings>) {
+	return (selfPower ? 0b0100_0000 : 0) | (remoteWake ? 0b0010_0000 : 0)
+}
+
+export function encodeRequestedmA(mARequested: number) {
+	return Math.trunc(mARequested / 2)
 }
 
 export function encodeDivider(divider: Divider): number {
@@ -303,7 +324,7 @@ export function _encodeInterruptEdge(edge: InterruptEdge) {
 	}
 }
 
-export function encodeAccessPassword(password: Password, into: EncoderBufferTarget = new Uint8Array(ACCESS_PASSWORD_BYTE_LENGTH)): ArrayBuffer {
+export function encodeAccessPassword(password: Password, into: EncoderBufferTarget = new Uint8Array(ACCESS_PASSWORD_BYTE_LENGTH)): Uint8Array {
 	const password8 = ArrayBuffer.isView(into) ?
 		new Uint8Array(into.buffer, into.byteOffset, ACCESS_PASSWORD_BYTE_LENGTH) :
 		new Uint8Array(into, 0, ACCESS_PASSWORD_BYTE_LENGTH)

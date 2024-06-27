@@ -11,10 +11,10 @@ import send_request from './util.js'
 
 export class MCP2221Common extends Bindable implements Common {
   async status(req: StatusParametersRequest): Promise<StatusParametersResponse> {
-    return send_request(this.binding, req, StatusParameter)
+    return send_request(this, req, StatusParameter)
   }
 
   async reset(req: ResetChipRequest): Promise<void> {
-    return send_request_only(this.binding, req, ResetChip)
+    return send_request_only(this, req, ResetChip)
   }
 }
