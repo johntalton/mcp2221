@@ -6,7 +6,7 @@
 
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": [ "ESNext", "DOM" ],
 
     "esModuleInterop": true,
     "isolatedModules": false,
