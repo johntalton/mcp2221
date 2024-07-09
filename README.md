@@ -19,7 +19,7 @@ Standard [Adafruit](https://www.adafruit.com/product/4471) link.
 - [Security](#security)
 
 
-![i2c scan](https://raw.githubusercontent.com/johntalton/mcp2221/326-is-it-possible-to-use-this-in-nodejs/examples/mcp2221-scan.png)
+![i2c scan](https://raw.githubusercontent.com/johntalton/mcp2221/main/examples/mcp2221-scan.?raw=true)
 
 # Features
 
@@ -116,6 +116,15 @@ await chip.sram.set({ gp: { interrupt: { clear: true } } })
 
 ```
 
+## USB Descriptors
+
+Setting the USB descriptors can effect how the device is discovered.  HID implementation code should take into account those variation (as well as vendor and product ID assignments).
+
+![usb descriptors](https://raw.githubusercontent.com/johntalton/mcp2221/main/examples/mcp2221-descriptors.png?raw=true)
+
+Note: Descriptors are considered parts of the FLASH and are subject to [Security](#security) restriction.
+
+
 # I²C
 
 ## `I2CBus` abstraction (recommended)
@@ -183,4 +192,4 @@ Failure to set the password during a "session" will prevent further password att
 
 Note:  Assumption about string padding (space vs null), justification and encoding (ut-8 etc) effect password byte representation.  It is "wise" to use the same software to get AND set the password.
 
-![password failure](https://raw.githubusercontent.com/johntalton/mcp2221/326-is-it-possible-to-use-this-in-nodejs/examples/mcp2221-no-password-error.png)
+![password failure](https://raw.githubusercontent.com/johntalton/mcp2221/main/examples/mcp2221-no-password-error.png?raw=true)
