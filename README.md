@@ -17,7 +17,7 @@ Standard [Adafruit](https://www.adafruit.com/product/4471) link.
 - [I²C](#direct-api) (raw)
 - [`I2CBus`](#i2cbus-abstraction-recommended)
 
-![i2c scan](./example/mcp2221-scan.png)
+![i2c scan](https://raw.githubusercontent.com/johntalton/mcp2221/326-is-it-possible-to-use-this-in-nodejs/examples/mcp2221-scan.png)
 
 # Features
 
