@@ -16,6 +16,8 @@ Standard [Adafruit](https://www.adafruit.com/product/4471) link.
   - [Node-HID](#node-hid)
 - [I²C](#direct-api) (raw)
 - [`I2CBus`](#i2cbus-abstraction-recommended)
+- [Security](#security)
+
 
 ![i2c scan](https://raw.githubusercontent.com/johntalton/mcp2221/326-is-it-possible-to-use-this-in-nodejs/examples/mcp2221-scan.png)
 
@@ -168,3 +170,17 @@ const [ one, two, three ] = u8
 
 
 ```
+
+# Security
+
+While the chips SRAM settings (gpio etc) can be changed at will, these settings must explicit be save into FLASH.
+
+Under normal conditions the chip's Security setting is "Unlocked".  This allows for writing to the FLASH without restriction.
+
+However, if set to "Password Protected", the chip will enforce the sending of the password (once per "session") prior to FLASH writes.
+
+Failure to set the password during a "session" will prevent further password attempts until the "session" is over.
+
+Note:  Assumption about string padding (space vs null), justification and encoding (ut-8 etc) effect password byte representation.  It is "wise" to use the same software to get AND set the password.
+
+![password failure](https://raw.githubusercontent.com/johntalton/mcp2221/326-is-it-possible-to-use-this-in-nodejs/examples/mcp2221-no-password-error.png)
