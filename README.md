@@ -19,7 +19,7 @@ Standard [Adafruit](https://www.adafruit.com/product/4471) link.
 - [Security](#security)
 
 
-![i2c scan](https://raw.githubusercontent.com/johntalton/mcp2221/main/examples/mcp2221-scan.?raw=true)
+![i2c scan](https://raw.githubusercontent.com/johntalton/mcp2221/main/examples/mcp2221-scan.png?raw=true)
 
 # Features
 
