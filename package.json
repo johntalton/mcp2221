@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "exports": {
     ".": "./lib/index.js",
     "./bindings": "./lib/index.bindings.js",
@@ -19,8 +19,7 @@
     "build:watch": "tsc -p . -w"
   },
   "license": "MIT",
-  "dependencies": {
-    "@johntalton/bitsmush": "^1.0.1",
+  "devDependencies": {
     "typescript": "^5.5.2"
   }
 }
