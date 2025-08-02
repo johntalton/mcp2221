@@ -1,4 +1,3 @@
-import { DecoderBufferSource } from "./converter/converter.js"
 
 export type BindingBufferSource = ArrayBufferLike | ArrayBufferView
 

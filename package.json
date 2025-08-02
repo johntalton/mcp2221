@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "exports": {
     ".": "./lib/index.js",
     "./bindings": "./lib/index.bindings.js",
@@ -10,6 +10,7 @@
   "files": [
     "src/**/*.ts",
     "lib/**/*.js",
+    "lib/**/*.js.map",
     "lib/**/*.d.ts",
     "lib/**/*.d.ts.map"
   ],
@@ -20,6 +21,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.5.2"
+    "typescript": "^5.9.2"
   }
 }

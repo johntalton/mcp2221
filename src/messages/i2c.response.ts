@@ -75,7 +75,7 @@ export type I2CReadGetDataResponseBase = Response & (Success | Error) & {
 export type WithReturnBuffer = {
 	validData: true,
 	readBackBytes: number,
-	buffer: ArrayBuffer
+	buffer: ArrayBuffer|ArrayBufferView
 }
 
 export type WithoutReturnBuffer = {
