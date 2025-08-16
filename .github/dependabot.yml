@@ -4,8 +4,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    assignees:
-      - "octocat"
     commit-message:
       # Prefix all commit messages with "npm"
       prefix: "NPM"
@@ -13,7 +11,5 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    assignees:
-      - "octocat"
     commit-message:
       prefix: "GitHub-Actions"
