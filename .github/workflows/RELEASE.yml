@@ -1,12 +1,15 @@
-name: Publish Package (NPM / GitHub)
+name: Publish
+permissions:
+  contents: read
+  pull-requests: write
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/setup-node@v4
       with:
         registry-url: 'https://registry.npmjs.org/'
@@ -16,11 +19,3 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    # Publish to GitHub
-    # - uses: actions/setup-node@v3.6.0
-    #   with:
-    #     node-version: '14'
-    #     registry-url: 'https://npm.pkg.github.com/'
-    # - run: npm publish
-    #   env:
-    #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
