@@ -1,27 +1,17 @@
 
 export type BindingBufferSource = ArrayBufferLike | ArrayBufferView
 
-export interface Binding {
-	// read(length: number): Promise<ArrayBuffer>
-	// write(bufferSource: BindingBufferSource): Promise<void>
-
-	readable: ReadableStream
-  writable: WritableStream
-}
-
-
-export type BYOBMode = 'byob'
-const BYOB_MODE:BYOBMode = 'byob'
+const BYOB_MODE: ReadableStreamReaderMode = 'byob'
 
 export type ReadOptions = {
 	timeoutMs?: number,
 	signal?: AbortSignal,
-	mode?: BYOBMode|undefined
+	mode?: ReadableStreamReaderMode|undefined
 }
 
-export function makeHIDStreamBinding(source: Binding) {
+export function makeHIDStreamBinding(source: ReadableWritablePair<BindingBufferSource, BindingBufferSource>) {
 	return {
-		async read(count: number, options: ReadOptions = {}) {
+		async read(count: number, options: ReadOptions = {}): Promise<BindingBufferSource> {
 			const {
 				timeoutMs = 100,
 				signal = undefined,
@@ -99,7 +89,7 @@ export function makeHIDStreamBinding(source: Binding) {
 			}
 		},
 
-		async write(buffer: ArrayBufferLike | ArrayBufferView) {
+		async write(buffer: BindingBufferSource) {
 			// source.writable.locked
 			// console.log('bindings:write')
 			const writer = source.writable.getWriter()
@@ -119,9 +109,8 @@ export function makeHIDStreamBinding(source: Binding) {
 export class Bindable {
 	readonly #stream
 
-	constructor(binding: Binding) {
+	constructor(binding: ReadableWritablePair<BindingBufferSource, BindingBufferSource>) {
 		this.#stream = makeHIDStreamBinding(binding)
-
 	}
 
 	get read() { return this.#stream.read }

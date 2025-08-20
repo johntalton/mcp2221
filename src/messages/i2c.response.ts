@@ -1,4 +1,4 @@
-import { Response, Success, Busy, Error } from './message.js'
+import { Response, Success, Busy, Error, I2CBufferSource } from './message.js'
 
 //
 export type I2CWriteDataResponseBase = Response & (Success | Busy) & {
@@ -75,7 +75,7 @@ export type I2CReadGetDataResponseBase = Response & (Success | Error) & {
 export type WithReturnBuffer = {
 	validData: true,
 	readBackBytes: number,
-	buffer: ArrayBuffer|ArrayBufferView
+	buffer: I2CBufferSource
 }
 
 export type WithoutReturnBuffer = {

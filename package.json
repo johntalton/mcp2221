@@ -1,6 +1,6 @@
 {
   "name": "@johntalton/mcp2221",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "exports": {
     ".": "./lib/index.js",
     "./bindings": "./lib/index.bindings.js",

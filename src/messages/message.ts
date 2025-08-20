@@ -18,6 +18,11 @@ export type WithI2CState = {
   i2cStateName?: string
 }
 
+export type WithAddress = { address: number }
+
+export type I2CBufferSource = ArrayBufferLike | ArrayBufferView
+export type WithInputBuffer = { buffer: I2CBufferSource }
+
 export type Response = Message & WithStatus & WithI2CState & {
   command: number
 }

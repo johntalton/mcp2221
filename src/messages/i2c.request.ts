@@ -1,9 +1,4 @@
-import { Request } from './message.js'
-
-type WithAddress = { address: number }
-
-type I2CBufferSource = ArrayBufferLike | ArrayBufferView
-type WithInputBuffer = { buffer: I2CBufferSource }
+import { Request, WithAddress, WithInputBuffer } from './message.js'
 
 // I²C Write Data
 export type I2CWriteDataRequest = Request & WithAddress & WithInputBuffer & {

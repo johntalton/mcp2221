@@ -1,4 +1,4 @@
-import { Bindable, Binding } from './binding.js'
+import { Bindable } from './binding.js'
 
 import { Common } from './interface/common.js'
 import { Flash } from './interface/flash.js'
@@ -20,11 +20,11 @@ export class MCP2221 extends Bindable {
 	readonly sram: SRAM
 
 	// factory
-	static from(binding: Binding): MCP2221 {
+	static from(binding: ReadableWritablePair): MCP2221 {
 		return new MCP2221(binding)
 	}
 
-	constructor(binding: Binding) {
+	constructor(binding: ReadableWritablePair) {
 		super(binding)
 
 		this.common = new MCP2221Common(binding)

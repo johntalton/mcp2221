@@ -1,4 +1,4 @@
-export { Bindable, Binding } from './binding.js'
+export { Bindable } from './binding.js'
 
 export { MCP2221Common } from './chip/common.js'
 export { MCP2221Flash } from './chip/flash.js'
