@@ -97,7 +97,7 @@ NodeJS provides several HID binding packages.  In the following example we will 
 
 As with WebHID, there are several interaction patters, and device discovery techniques. The following code explicit opens the device by vID/pID (note that the MCP2221 has the ability to "change" its IDs, it's defaults are used here).
 
-NOTE: the current NodeHIDStreamSource is un-packaged, and can be found [here](https://github.com/johntalton/webapp-device-playground/blob/main/service/node-hid-stream.js)
+NOTE: the current NodeHIDStreamSource is un-packaged, and can be found [here](https://github.com/johntalton/i2c-bus-service/blob/main/library/src/node-hid-stream.js)
 
 
 ```javascript
